@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><title>R1 mock spreadsheet</title>
+<style>
+html,body{margin:0;background:#fff;font:11px/1 "Helvetica Neue",Arial,sans-serif;color:#222;overflow:hidden}
+#wrap{position:relative;width:100vw;height:100vh;overflow:hidden;background:#fff}
+#tabs{position:absolute;left:0;right:0;top:0;height:26px;background:#e9ecef;border-bottom:1px solid #c9ced3;display:flex;align-items:center;gap:0;padding-left:8px}
+#tabs span{padding:5px 14px;font-size:11px;color:#444;border-right:1px solid #d7dbe0}#tabs span.on{background:#fff;font-weight:600}
+#bar{position:absolute;left:0;right:0;top:26px;height:22px;background:#f6f7f8;border-bottom:1px solid #d7dbe0;font-size:10px;color:#666;display:flex;align-items:center;padding-left:8px;gap:14px}
+#grid{position:absolute;left:0;top:48px;border-collapse:collapse;table-layout:fixed}
+#grid td,#grid th{border:1px solid #d9dde2;width:34px;height:19px;padding:0;text-align:center;font-size:9.5px;white-space:nowrap;overflow:hidden}
+#grid th{background:#f1f3f5;font-weight:600;color:#333}
+#grid th.r{width:88px;text-align:left;padding-left:6px;position:sticky;left:0;background:#f1f3f5}
+#grid td.a{background:#dff5ec}#grid td.b{background:#fde8c8}#grid td.c{background:#e4e9ff}#grid td.d{background:#ffd9d9;color:#900}
+#grid td.x{color:#999}
+#grid tr.wk th{background:#dde3ea;height:16px;font-size:9px;letter-spacing:.3px;color:#555}
+</style></head><body><div id="wrap">
+<div id="tabs"><span>Roster master v17</span><span class="on">Oct–Nov FINAL (2)</span><span>Swaps</span><span>Leave</span><span>Nights</span><span>Payroll</span></div>
+<div id="bar"><span>A1</span><span>fx</span><span>Autosave off</span><span>Last edited 23:04</span></div>
+<table id="grid"></table></div>
+<script>
+// A fictional, unreadable roster grid: random initials and codes, hundreds of columns. Nothing here is a real person or a real roster.
+const INIT=["JL","WN","SP","AO","AC","MO","KN","RS","HS","DK","TA","LF","PB","RT","MG","ES","CV","NB","OQ","YT","ZK","IH","UJ","GD","FW","BX","VM","LC","DR","KP"];
+const CODES=["AM","PM","LD","N","ND","AL","CME","X","SSU","RES","FT","PD","AM*","PM*","—","","","", "","OFF","OFF"];
+const cls=["","","a","","b","","c","","","d","","","","x","x"];
+let seed=7; function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; }
+const COLS=320, ROWS=60; let h="";
+h+="<tr class=wk><th class=r></th>"; for(let c=0;c<COLS;c++){ h+="<th>"+(c%7===0?"wk "+(1+Math.floor(c/7)):"")+"</th>"; } h+="</tr>";
+h+="<tr><th class=r>Name</th>"; for(let c=0;c<COLS;c++){ h+="<th>"+["M","T","W","T","F","S","S"][c%7]+(1+(c%28))+"</th>"; } h+="</tr>";
+for(let r=0;r<ROWS;r++){ h+="<tr><th class=r>"+INIT[r%INIT.length]+" "+String.fromCharCode(65+(r*7)%26)+"."+"</th>"; for(let c=0;c<COLS;c++){ const i=Math.floor(rnd()*CODES.length), k=cls[Math.floor(rnd()*cls.length)]; h+="<td class='"+k+"'>"+CODES[i]+"</td>"; } h+="</tr>"; }
+document.getElementById("grid").innerHTML=h;
+// scrollBy(dx,dy) moves the grid; the film capture drives it slowly left and down
+window.gridScroll=function(x,y){ const g=document.getElementById("grid"); g.style.transform="translate("+(-x)+"px,"+(-y)+"px)"; };
+</script></body></html>

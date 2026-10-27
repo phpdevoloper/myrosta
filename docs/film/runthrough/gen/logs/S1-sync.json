@@ -1,0 +1,72 @@
+{
+ "take": "S1-sync",
+ "secs": 12.0,
+ "fps": 25,
+ "log": [
+  {
+   "t": 3.68,
+   "label": "1 · Choose Text me a code"
+  },
+  {
+   "t": 4.48,
+   "label": "2 · Enter your mobile"
+  },
+  {
+   "t": 5.96,
+   "label": "3 · Tap Send code"
+  },
+  {
+   "t": 8.96,
+   "label": "4 · Type the 6-digit code"
+  }
+ ],
+ "sync": {
+  "orig": "S1",
+  "pre": 2.4,
+  "anchors": [
+   "choose mobile",
+   null,
+   "ask for a code",
+   "the code is the password"
+  ],
+  "targets": [
+   3.66,
+   null,
+   5.9,
+   8.86
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.36,
+    1.0,
+    2.3
+   ],
+   [
+    1.36,
+    0.8,
+    1.0,
+    0.0
+   ],
+   [
+    2.16,
+    2.09,
+    1.4514,
+    0.0
+   ],
+   [
+    4.25,
+    1.5,
+    1.0,
+    1.46
+   ],
+   [
+    5.75,
+    3.05,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "55/56"
+ }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 120" width="860" height="120" role="img" aria-label="Myrosta">
+  <title>Myrosta logo</title>
+  <g transform="translate(8,12)">
+    <rect x="3" y="3" width="90" height="90" rx="22" fill="#0F243A"/>
+    <path d="M44 74 L44 28 L61 54 L78 28 L78 74" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M20 34 L34 34" fill="none" stroke="#E04B4B" stroke-width="5" stroke-linecap="round"/>
+    <path d="M20 52 L31 52" fill="none" stroke="#F2A638" stroke-width="5" stroke-linecap="round"/>
+    <path d="M20 70 L34 70" fill="none" stroke="#2FA86E" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(132,4)" fill="none" stroke="#0F243A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M65 86 L65 26 L83 54 L101 26 L101 86"/>
+    <path d="M151 26 L169 56 L187 26 M169 56 L169 86"/>
+    <path d="M236 86 L236 26 L260 26 A15 13.5 0 0 1 260 53 L236 53 M250 53 L272 86"/>
+    <ellipse cx="340" cy="56" rx="20" ry="30" stroke="#00A88E"/>
+    <path d="M444 34 Q444 26 426 26 Q408 26 408 41 Q408 55 426 56 Q444 57 444 71 Q444 86 426 86 Q408 86 408 78"/>
+    <path d="M493 26 L505 26 M517 26 L529 26 M511 26 L511 86"/>
+    <path d="M579 86 L597 26 L615 86"/>
+  </g>
+</svg>

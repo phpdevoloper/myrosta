@@ -1,0 +1,84 @@
+{
+ "take": "A4-sync",
+ "secs": 50.4,
+ "fps": 25,
+ "log": [
+  {
+   "t": 0.96,
+   "label": "1 · Requests: each one with what you need to decide"
+  },
+  {
+   "t": 3.36,
+   "label": "2 · A swap: the two shifts side by side"
+  },
+  {
+   "t": 18.28,
+   "label": "3 · An ask to come off: the notice left, the cover without them, who is free"
+  },
+  {
+   "t": 34.52,
+   "label": "4 · Leave: EFT, leave taken, this request, who else is away, the cap"
+  },
+  {
+   "t": 47.08,
+   "label": "5 · Approve: their shifts those days go to the group"
+  }
+ ],
+ "sync": {
+  "orig": "A4",
+  "pre": 5.4,
+  "anchors": [
+   "Requests is where",
+   "A swap arrives",
+   "An ask to come off",
+   "A leave request",
+   "Approve, decline"
+  ],
+  "targets": [
+   -3.2,
+   3.22,
+   18.16,
+   34.38,
+   46.92
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.4,
+    1.5,
+    0.0
+   ],
+   [
+    1.4,
+    3.5,
+    1.5,
+    0.0
+   ],
+   [
+    4.9,
+    2.09,
+    1.0,
+    12.803
+   ],
+   [
+    6.99,
+    5.89,
+    1.0,
+    10.33
+   ],
+   [
+    12.88,
+    6.02,
+    1.0,
+    6.52
+   ],
+   [
+    18.9,
+    3.34,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "129/131"
+ }
+}

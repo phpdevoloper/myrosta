@@ -1,0 +1,108 @@
+{
+ "take": "S5-sync",
+ "secs": 42.6,
+ "fps": 25,
+ "log": [
+  {
+   "t": 0.88,
+   "label": "1 · Book shifts, then tap the shift"
+  },
+  {
+   "t": 2.88,
+   "label": "2 · Outside the notice period: Remove this shift"
+  },
+  {
+   "t": 9.4,
+   "label": "3 · Inside it: three ways"
+  },
+  {
+   "t": 17.04,
+   "label": "4 · Offer it to the group"
+  },
+  {
+   "t": 21.6,
+   "label": "5 · Or ask to come off, with a reason"
+  },
+  {
+   "t": 33.28,
+   "label": "6 · A day you can't work at all"
+  },
+  {
+   "t": 39.72,
+   "label": "7 · Mark unavailable: not leave"
+  }
+ ],
+ "sync": {
+  "orig": "S5",
+  "pre": 2.4,
+  "anchors": [
+   "Further out",
+   "you can simply remove",
+   "Inside the notice period",
+   "offer it to the group",
+   "ask to come off",
+   "A day you can't work",
+   "That isn't leave"
+  ],
+  "targets": [
+   -0.2,
+   2.74,
+   9.22,
+   16.86,
+   21.36,
+   33.0,
+   39.4
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.22,
+    1.5,
+    0.0
+   ],
+   [
+    1.22,
+    2.41,
+    1.2509,
+    0.0
+   ],
+   [
+    3.63,
+    7.92,
+    1.2222,
+    0.0
+   ],
+   [
+    11.55,
+    4.21,
+    1.0,
+    3.43
+   ],
+   [
+    15.76,
+    2.93,
+    1.0,
+    1.57
+   ],
+   [
+    18.69,
+    5.77,
+    1.0,
+    5.87
+   ],
+   [
+    24.46,
+    3.43,
+    1.0,
+    2.97
+   ],
+   [
+    27.89,
+    2.91,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "114/116"
+ }
+}

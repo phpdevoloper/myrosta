@@ -1,0 +1,77 @@
+{
+ "style": " Cinematic and natural: real daylight or practical light, shallow depth of field, subtle handheld, true skin tones, calm pacing. No subtitles, no captions, no on-screen text, no logos, no readable writing anywhere.",
+ "clips": [
+  {
+   "n": 1,
+   "d": 6,
+   "p": "Sam Patel in a grey hoodie at a suburban kitchen table at 11 pm, laptop glow on his face, a cold mug beside him. He scrolls on the laptop, stops, rubs one eye; the phone on the table buzzes and lights up; he glances at it and sighs. He says quietly and flat: \"That's three swaps since dinner.\" The screens are only a soft glow, nothing readable. Ambience: a clock ticking, a fridge hum."
+  },
+  {
+   "n": 2,
+   "d": 6,
+   "p": "Emma Walsh in navy scrubs at a bright kitchen fridge in the morning. Her finger runs slowly along a row of an unreadable printed sheet held by a magnet; she turns her head toward the doorway and calls through, fond and unhurried: \"Saturday, love. It's on the fridge.\" Morning kitchen ambience, a kettle."
+  },
+  {
+   "n": 3,
+   "d": 6,
+   "p": "Morning handover at a nurses' station. A small group of clinicians in scrubs talk quietly; two of them glance at their phones and smile; Sam Patel, at the edge of the group, puts his phone in his pocket and turns back to the conversation. Gentle camera drift, soft department ambience."
+  },
+  {
+   "n": 4,
+   "d": 6,
+   "p": "One continuous shot, no cuts. Emma Walsh in a denim jacket over a white tee at a café window seat, a flat white beside her, thumb moving on her phone. She lifts her head from the phone and says the line out loud, clearly, her lips moving with every word, a small satisfied nod at the end: \"Resus Tuesday… and the Thursday evening. Done.\" Then she looks back down at the phone. Natural, unhurried movement; morning light.",
+   "p_take1_closed_lips": "Emma Walsh in a denim jacket at a café window seat with a flat white, thumb on her phone. Two thumb taps, a pause, a small satisfied nod; she picks up the coffee and says half to herself: \"Resus Tuesday… and the Thursday evening. Done.\" The phone screen is only a soft glow. Café ambience, an espresso machine in the background.",
+   "note": "take 2 (7 Oct): take 1 had her lips closed in a smile through the whole line; the voice of take 2 leads the lips by ~80 ms, so the timeline delays its audio 0.06 s"
+  },
+  {
+   "n": 5,
+   "d": 6,
+   "p": "Sam Patel in teal scrubs at the doctors' station, a laptop open with a softly glowing screen, coffee in one hand. He sips, watches the screen, raises an eyebrow and says, dry: \"Half full already.\" Quiet department ambience."
+  },
+  {
+   "n": 6,
+   "d": 6,
+   "p": "Emma Walsh in navy scrubs steps to the side of a quiet hospital corridor, phone to her ear, listening, one hand on the handrail. She listens, closes her eyes for a beat, exhales, and answers gently: \"I'll come and get her. Twenty minutes.\" Distant corridor ambience."
+  },
+  {
+   "n": 7,
+   "d": 4,
+   "p": "Close-up of a woman's hands with fair skin holding a phone in a pale corridor, the screen a soft white glow. Two deliberate thumb taps, a short pause, a third; the thumb lifts. Nothing readable on the screen. Quiet corridor ambience."
+  },
+  {
+   "n": 8,
+   "d": 6,
+   "p": "Alex Campbell beside a commuter bike in a staff car park, black cycling jacket half on over ceil-blue scrubs, reading his phone in bright afternoon light. He reads, grins, taps once, and swings the jacket on, saying to himself, amused: \"I'll take your Saturday.\" Outdoor ambience, birds, distant traffic."
+  },
+  {
+   "n": 9,
+   "d": 6,
+   "p": "Tracking shot alongside Sam Patel in teal scrubs walking a hospital corridor between two doors, phone raised in one hand, not breaking stride. One tap on the phone without slowing; he says matter-of-fact: \"Cover's fine. Approved.\" Corridor ambience, footsteps."
+  },
+  {
+   "n": 10,
+   "d": 8,
+   "p": "One continuous shot, no cuts. Morgan O'Brien, 52, reading glasses pushed up, navy blazer, reads a laptop in a small hospital office; Sam Patel in teal scrubs leans in at the door with two takeaway coffees and sets one down. Morgan, not looking up, says: \"So that's everyone.\" Sam answers, speaking clearly with his lips moving on each word, not grinning: \"Five rosters. One heading.\" Quiet office ambience.",
+   "p_take1_grin": "Morgan O'Brien, a man of 52 with short grey-flecked hair, reading glasses pushed up, a navy blazer over a white open-collar shirt, reading a laptop in a small hospital office with venetian blinds; Sam Patel leaning in at the door holding two takeaway coffees. Morgan scrolls and tilts her head; Sam steps in and sets a coffee down beside her. Morgan, not looking up: \"So that's everyone.\" Sam: \"Five rosters. One heading.\" Quiet office ambience.",
+   "note": "take 3 (7 Oct): take 1 had Sam grinning through his reply with almost no articulation; a longer two-line prompt failed on Veo (take 2), this shorter one passed; both voices lead the lips by 40-80 ms, so the timeline delays the clip's audio 0.05 s; a Kling take of the same prompt is kept as F10-takeK",
+   "p_cups": "One continuous shot, no cuts. Morgan O'Brien, 52, reading glasses pushed up, navy blazer, reads a laptop in a small hospital office; Sam Patel in teal scrubs leans in at the door holding two takeaway coffees, one in each hand, and keeps holding both the whole time; nothing is set down, and the desk holds only the laptop and a folder. Morgan, not looking up, says: \"So that's everyone.\" Sam answers, speaking clearly with his lips moving on each word, not grinning: \"Five rosters. One heading.\" Quiet office ambience. Cinematic and natural: real daylight or practical light, shallow depth of field, subtle handheld, true skin tones, calm pacing. No subtitles, no captions, no on-screen text, no logos, no readable writing anywhere.",
+   "note_cups": "take 4 (8 Oct): the shipped take ended with Sam back at the door holding two cups while one stayed on the desk (three cups). Two takes with the coffees kept in hand (p_cups): take 1 overlapped the two lines and barely articulated; take 2 (used) sets both cups down and leans in, Sam's line correlates 0.68 with the voice band, audio leads by ~80 ms, so the timeline delays the clip's audio 0.07 s."
+  },
+  {
+   "n": 11,
+   "d": 8,
+   "p": "One continuous shot, no cuts. A back garden at dusk. In the foreground a boy of about ten with his back to the camera holds a football under his arm. Beyond him Sam Patel, in a faded navy polo, sits at the timber outdoor table, looks up at the boy and says easily: \"No, I'm done. Round's closed.\" and stands up, smiling. Slow, natural movement. Warm low sun, evening garden ambience.",
+   "m": "kling3_0 --mode pro --sound on (Veo refused the scene; clips.py ignores this key)"
+  },
+  {
+   "n": 12,
+   "d": 8,
+   "p": "Slow tracking shot from behind as Emma Walsh and Sam Patel in scrubs walk side by side in through the staff entrance of a hospital at first light, phones in their pockets, mid-conversation, the glass doors sliding open ahead of them onto the light. Dawn ambience, the doors sliding, soft footsteps. No dialogue."
+  },
+  {
+   "n": 13,
+   "d": 8,
+   "p": "One continuous shot, no cuts. A bright small kitchen at 7 am. Emma Walsh, in plain navy hospital scrubs, slips her phone into her pocket and picks up her car keys from the bench. From the next room a child's voice calls, off camera: \"Mum, Saturday?\" Emma glances toward the doorway, smiles and answers warmly: \"It's in the calendar, love.\" then heads for the door. The fridge beside her stays bare except a child's drawing under a magnet. Natural, unhurried movement; morning light."
+  }
+ ]
+}

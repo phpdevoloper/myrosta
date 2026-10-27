@@ -1,0 +1,84 @@
+{
+ "take": "AM3-sync",
+ "secs": 24.64,
+ "fps": 25,
+ "log": [
+  {
+   "t": 1.04,
+   "label": "1 · Tags sit on people"
+  },
+  {
+   "t": 8.72,
+   "label": "2 · Show on the roster"
+  },
+  {
+   "t": 14.88,
+   "label": "3 · Rules sit on the cycle"
+  },
+  {
+   "t": 19.76,
+   "label": "4 · A slot that needs a tag; a minimum per half"
+  },
+  {
+   "t": 21.28,
+   "label": "5 · Save rules: booking, claims, swaps and your cell editor all judge by it"
+  }
+ ],
+ "sync": {
+  "orig": "AM3",
+  "pre": 2.4,
+  "anchors": [
+   "Tags sit",
+   null,
+   "Tick the tag a zone needs",
+   null,
+   "and the app enforces"
+  ],
+  "targets": [
+   -0.2,
+   null,
+   2.97,
+   null,
+   7.16
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.5,
+    1.5,
+    0.0
+   ],
+   [
+    1.5,
+    7.65,
+    1.0,
+    0.0
+   ],
+   [
+    9.15,
+    9.14,
+    1.5,
+    0.0
+   ],
+   [
+    18.29,
+    4.88,
+    1.0,
+    0.0
+   ],
+   [
+    23.17,
+    2.17,
+    1.5,
+    0.0
+   ],
+   [
+    25.34,
+    3.38,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "50/56"
+ }
+}

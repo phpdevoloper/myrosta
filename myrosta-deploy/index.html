@@ -1,0 +1,2195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F243A">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Myrosta">
+<title>Myrosta</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230F243A'/%3E%3Cpath d='M17 31 L17 11 L24.5 22 L32 11 L32 31' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 13 L14 13' fill='none' stroke='%23E04B4B' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M7 21 L12 21' fill='none' stroke='%23F2A638' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M7 29 L14 29' fill='none' stroke='%232FA86E' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#F6F7F9; --surface:#FFFFFF; --topbar:rgba(255,255,255,.82);
+    --line:rgba(11,18,32,.08); --line2:rgba(11,18,32,.16);
+    --text:#0B1220; --muted:#5A636E; --hint:#9AA3AD;
+    --accent:#00A88E; --accent-2:#0B8A75; --accent-bg:#E6F5F1;
+    --hover:#F1F3F5; --we:#E8ECF2;
+    --am:#E6EEFB; --am-t:#2D5BA6; --pm:#FBE9CE; --pm-t:#8A5A12;
+    --cst:#E4F2E8; --cst-t:#2F6B43; --leave:#ECEAFB; --leave-t:#5448A8;
+    --warn:#FBF0DA; --warn-t:#8A5A12; --ok:#E3F4EC; --ok-t:#1E6B45;
+    --danger-bg:#FCE7E7; --danger-t:#B23B3F;
+    --rag-g:#2BB673; --rag-a:#E8A33D; --rag-r:#E5575B;
+    --gap-bg:#FCE7E7; --gaphdr-bg:#FBF0DA;
+    --navy:#0F243A; --radius:12px; --radius-sm:9px;
+    --shadow:0 1px 2px rgba(11,18,32,.04), 0 14px 34px rgba(11,18,32,.08);
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  h1,h2,h3{font-weight:600;margin:0;letter-spacing:-.01em}
+  a{color:var(--accent)}
+  button{font-family:inherit;font-size:14px;cursor:pointer}
+  .btn{border:1px solid var(--line2);background:var(--surface);color:var(--text);border-radius:var(--radius-sm);padding:9px 15px;display:inline-flex;align-items:center;gap:7px;font-weight:500;transition:background .15s,transform .1s,border-color .15s}
+  .btn:hover{background:var(--hover)}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-2)}
+  .btn.sm{padding:6px 11px;font-size:13px}
+  .btn.danger{color:var(--danger-t);border-color:var(--line2)}
+  .btn.danger:hover{background:var(--danger-bg)}
+  input,select,textarea{font-family:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line2);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);transition:border-color .15s,box-shadow .15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+  label{font-size:13px;color:var(--muted)}
+  .topbar{background:var(--topbar);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:30;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:16px}
+  .brand .dot{width:24px;height:24px;border-radius:7px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .brand .logo{width:28px;height:28px;display:block;flex:none}
+  .brand .wordmark{font-weight:600;font-size:18px;color:var(--text);letter-spacing:-.3px}
+  .brand .wordmark .accent{color:var(--accent)}
+  .tabs{display:flex;gap:2px;flex:1;flex-wrap:wrap}
+  .tab{border:none;background:none;padding:8px 12px;border-radius:var(--radius-sm);color:var(--muted);font-weight:500;transition:color .15s,background .15s}
+  .tab:hover{background:var(--hover);color:var(--text)}
+  .tab.active{background:none;color:var(--accent);font-weight:600}
+  .viewas{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted)}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 18px 60px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px}
+  .card h2{font-size:17px;margin-bottom:3px;letter-spacing:-.01em}
+  .card .sub{color:var(--muted);font-size:13.5px;margin-bottom:16px;line-height:1.5}
+  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .grid-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+  .tile{background:var(--bg);border-radius:var(--radius-sm);padding:11px 13px}
+  .tile .k{font-size:12px;color:var(--muted)}
+  .tile .v{font-size:22px;font-weight:600;margin-top:2px}
+  table{border-collapse:collapse;width:100%}
+  .chip{display:inline-block;padding:4px 9px;border-radius:8px;font-size:12px;font-weight:600;white-space:nowrap}
+  .chip.am{background:var(--am);color:var(--am-t)} .chip.pm{background:var(--pm);color:var(--pm-t)}
+  .chip.cst{background:var(--cst);color:var(--cst-t)} .chip.leave{background:var(--leave);color:var(--leave-t)}
+  .maptbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  .maptbl th{text-align:left;color:var(--muted);font-weight:600;padding:5px 8px;border-bottom:1px solid var(--line)}
+  .maptbl td{padding:4px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .maptbl select{max-width:200px}
+  .maptbl th.num,.maptbl td.num{text-align:center}
+  .qt-cell{width:52px;text-align:center;padding:5px 4px;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+  .qt-cell::-webkit-outer-spin-button,.qt-cell::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .pill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+  .pill.ok{background:var(--ok);color:var(--ok-t)} .pill.warn{background:var(--warn);color:var(--warn-t)} .pill.danger{background:var(--danger-bg);color:var(--danger-t)}
+  .pill.muted{background:var(--hover);color:var(--muted)}
+  /* admin grid */
+  .gridscroll{overflow:auto;border:1px solid var(--line);border-radius:var(--radius);max-height:72vh}
+  table.roster{border-collapse:separate;border-spacing:0;font-size:12px}
+  table.roster th,table.roster td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;text-align:center}
+  table.roster thead th{position:sticky;top:0;background:var(--surface);z-index:5;min-width:62px;padding:5px 4px;font-weight:500}
+  table.roster thead th.we{background:var(--we)}
+  table.roster .namecol{position:sticky;left:0;background:var(--surface);z-index:6;text-align:left;padding:6px 10px;min-width:150px;font-weight:500;border-right:1px solid var(--line2)}
+  table.roster thead th.corner{z-index:7;left:0;position:sticky}
+  table.roster td.cell{cursor:pointer;height:30px}
+  table.roster td.cell:hover{outline:2px solid var(--accent);outline-offset:-2px}
+  table.roster td.we{background:var(--we)}
+  table.roster .dimcol{opacity:.3}
+  table.roster th.gaphdr{background:var(--gaphdr-bg)}
+  table.roster td.gapcell{background:var(--gap-bg);color:var(--danger-t)}
+  table.roster td.gapcell .cap b{color:var(--danger-t)}
+  table.roster td{position:relative}
+  .editdot{position:absolute;top:2px;right:2px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  table.roster td.pcell{cursor:pointer}
+  table.roster td.pcell:hover{outline:2px solid var(--accent);outline-offset:-2px}
+  .daynum{font-weight:600;font-size:13px} .dayname{font-size:10px;color:var(--hint);text-transform:uppercase}
+  .cap{font-size:10px;margin-top:2px}
+  .cap b{font-weight:600}
+  .full-cell{display:block;padding:3px 2px}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(20,24,30,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .modal{background:var(--surface);border-radius:var(--radius);max-width:420px;width:100%;padding:20px;max-height:90vh;overflow:auto}
+  .modal h3{font-size:16px;margin-bottom:4px}
+  .seg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .seg button{border:1px solid var(--line2);background:var(--surface);border-radius:20px;padding:6px 12px;font-size:13px}
+  .seg button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .seg button:disabled{opacity:.4;cursor:not-allowed}
+  .zonebtns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0}
+  .zonebtns button{border:1px solid var(--line2);background:var(--surface);border-radius:var(--radius-sm);padding:9px;font-size:13px;text-align:left}
+  .zonebtns button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .zonebtns button:disabled{opacity:.45;cursor:not-allowed;background:var(--hover)}
+  .taken{font-size:11px;color:var(--hint)}
+  .note{font-size:12px;color:var(--muted);background:var(--bg);border-radius:var(--radius-sm);padding:9px 11px;margin-top:8px}
+  .listrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .listrow:last-child{border-bottom:none}
+  .grow{flex:1}
+  .agday{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .agday .d{width:42px;text-align:center}
+  .agday .d .dn{font-size:12px;color:var(--muted)} .agday .d .dd{font-size:16px;font-weight:600}
+  .agday.we{background:var(--we);border-radius:8px;padding-left:8px;padding-right:8px;border-bottom-color:transparent}
+  .agday.we .d .dn{color:var(--accent)}
+  .mcell.we{background:var(--we)} .dow.we{color:var(--accent)}
+  .weekhdr{font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 4px}
+  .monthgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px}
+  .monthgrid .dow{font-size:11px;color:var(--muted);text-align:center;padding:3px 0}
+  .mcell{min-height:54px;border:1px solid var(--line);border-radius:6px;padding:4px;font-size:11px}
+  .mcell.out{background:var(--we);opacity:.5}
+  .mcell .mn{font-size:11px;color:var(--muted)}
+  .muted{color:var(--muted)} .small{font-size:13px}
+  .flexbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .badge-mode{font-size:11px;padding:2px 7px;border-radius:6px;background:var(--accent-bg);color:var(--accent)}
+  .bell{position:relative;border:1px solid var(--line2);background:var(--surface);border-radius:var(--radius-sm);padding:6px 9px;line-height:1;font-size:15px;cursor:pointer}
+  .bell:hover{background:#f0f2f5}
+  .bell .bi{font-style:normal}
+  .bell-badge{position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;padding:0 4px;background:#e23b3b;color:#fff;border-radius:9px;font-size:11px;display:none;align-items:center;justify-content:center;font-weight:600}
+  .msg{border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;background:var(--surface)}
+  .msg.mine{background:var(--accent-bg);border-color:#cfe0fb}
+  .msg .meta{font-size:12px;color:var(--muted);margin-bottom:3px;display:flex;gap:8px;flex-wrap:wrap}
+  .notif{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+  .notif .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:6px;flex:none}
+  .notif.read{color:var(--muted)}
+  .notif.read .dot{background:transparent;border:1px solid var(--line2)}
+  .hide{display:none}
+  .gridscroll{-webkit-overflow-scrolling:touch}
+  @media(max-width:640px){
+    body{font-size:15px}
+    .topbar{padding:8px 10px;gap:7px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+    .brand .logo{width:26px;height:26px} .brand .wordmark{font-size:17px}
+    .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;order:5;width:100%;margin-top:2px}
+    .tab{padding:8px 11px;white-space:nowrap}
+    .viewas{font-size:12px}
+    .wrap{padding:14px 12px 70px}
+    .card{padding:14px}
+    h2{font-size:18px}
+    .row{flex-direction:column;align-items:stretch}
+    .row .field{width:100%}
+    .field input,.field select,.field textarea{width:100%}
+    input,select,textarea{font-size:16px}   /* prevents iOS zoom-on-focus */
+    .btn{padding:10px 14px} .btn.sm{padding:8px 12px}
+    .seg button{padding:8px 14px}
+    .agday{padding:13px 0}
+    .grid-tiles{grid-template-columns:repeat(2,1fr)}
+    .zonebtns{grid-template-columns:1fr}
+    .overlay{padding:10px}
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#0F243A"/><path d="M17 31 L17 11 L24.5 22 L32 11 L32 31" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 13 L14 13" fill="none" stroke="#E04B4B" stroke-width="2.2" stroke-linecap="round"/><path d="M7 21 L12 21" fill="none" stroke="#F2A638" stroke-width="2.2" stroke-linecap="round"/><path d="M7 29 L14 29" fill="none" stroke="#2FA86E" stroke-width="2.2" stroke-linecap="round"/></svg><span class="wordmark">Myr<span class="accent">o</span>sta</span></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="viewas" id="cycleWrap">Cycle <select id="cycleSel"></select></div>
+  <span class="pill" id="statusPill"></span>
+  <span class="pill" id="cloudPill" style="display:none"></span>
+  <button class="bell" id="bell" aria-label="Notifications"><i class="bi">🔔</i><span class="bell-badge" id="bellBadge"></span></button>
+  <div class="viewas" id="viewAsWrap">View as
+    <select id="viewAs"></select>
+  </div>
+  <button class="btn sm" id="logoutBtn" style="display:none">Sign out</button>
+</div>
+<div class="wrap" id="app"></div>
+<div id="modalRoot"></div>
+
+<script>
+"use strict";
+
+/* ---------- defaults (clean — no demo data) ---------- */
+const LEAVE_CODES = ["AL","CME","UA","UPL","PH","LSL","Sab","PL","Other","Orientation","Vacant"];
+const LEAVE_LABEL = {AL:"Annual leave",CME:"CME leave",UA:"Unavailable",UPL:"Unplanned leave",PH:"Public holiday",LSL:"Long service leave",Sab:"Sabbatical",PL:"Private leave",Other:"Other",Orientation:"Orientation",Vacant:"Vacant"};
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");}
+function initialsFrom(name){
+  const p=name.split(",");
+  if(p.length>=2){return ((p[1].trim()[0]||"")+(p[0].trim()[0]||"")).toUpperCase();}
+  const w=name.trim().split(/\s+/);return w.map(x=>x[0]).join("").slice(0,2).toUpperCase();
+}
+function mondayOf(dt){const x=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x;}
+function defaultState(){
+  // Clean organisation — no demo data. Populate by importing your roster + leave planner.
+  return {
+    zones:[
+      {id:"roc", name:"ROC", am:true, pm:true, pmLabel:"ROC+OC"},
+      {id:"rap", name:"RAP", am:true, pm:true, pmLabel:""},
+      {id:"pft", name:"PFT", am:true, pm:true, pmLabel:""},
+      {id:"asap",name:"ASAP",am:true, pm:true, pmLabel:""}
+    ],
+    staffing:{amMin:3, amMax:4, pmMin:3, pmMax:4},
+    leaveCapEft:3,
+    fairness:"snake",
+    staff:[],
+    cycles:[{id:"cyc-1", cycle:{start:iso(mondayOf(new Date())), weeks:8}, assign:{}, status:"draft", archived:false}],
+    activeId:"cyc-1",
+    messages:[],
+    notifications:[],
+    requests:[],
+    leave:[],
+    audit:[],
+    viewAs:"admin",
+    tab:"setup"
+  };
+}
+
+/* ---------- persistence ---------- */
+const KEY="ed-roster-v1";
+let S;
+// ===== Cloud (Supabase) config — leave url/key EMPTY for local-only mode. =====
+// Fill these in (Supabase project URL + anon public key) to switch the whole app
+// to shared cloud storage. See SUPABASE.md for the 5-minute setup.
+const CLOUD={ url:"https://efkadypqecqtltjtfmtj.supabase.co", key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVma2FkeXBxZWNxdGx0anRmbXRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MjU0NzMsImV4cCI6MjA5NzEwMTQ3M30.daixXB61a4pJM2yz7F8Dq8EuPCjpc5_tUAc0AQPXMsI", org:"ed-default", adminEmails:["drranjith0713@gmail.com"], allowedDomains:[] };
+function cloudOn(){ return !!(CLOUD.url && CLOUD.key); }
+let authUser=null, authState="local", _subscribed=false, _members=[], _otpEmail="", _otpSent=false; // local | login | denied | in
+function resolveIdentity(email){ if(!email)return null; const e=String(email).toLowerCase();
+  if((CLOUD.adminEmails||[]).map(x=>String(x).toLowerCase()).includes(e))return "admin";
+  const s=S.staff.find(x=>(x.email||"").toLowerCase()===e); return s?s.id:null; }
+function normalize(){
+  if(!S.zones||!S.staff||!S.staffing)throw new Error("incomplete state");
+  if(!S.cycles){ // migrate old single-cycle shape -> multi-cycle
+    const first={id:"cyc-"+Date.now(),cycle:S.cycle||{start:"2026-06-08",weeks:8},assign:S.assign||{},status:S.status||"draft",archived:false};
+    const arch=(S.archive||[]).map(a=>({id:a.id,cycle:a.cycle,assign:a.assign||{},status:a.status||"published",archived:true}));
+    S.cycles=[first].concat(arch); S.activeId=first.id;
+    delete S.cycle; delete S.assign; delete S.status; delete S.archive;
+  }
+  if(!S.activeId||!S.cycles.find(c=>c.id===S.activeId))S.activeId=(S.cycles.find(c=>!c.archived)||S.cycles[0]).id;
+  if(!S.messages)S.messages=[]; if(!S.notifications)S.notifications=[];
+  if(!S.requests)S.requests=[]; if(!S.leave)S.leave=[]; if(!S.audit)S.audit=[];
+  if(S.leaveCapEft==null)S.leaveCapEft=3;
+  if(S.payrollDateFmt==null)S.payrollDateFmt="DD/MM/YYYY";
+  if(S.quotaPeriod==null)S.quotaPeriod="fortnight";   // cycle | week | fortnight | month — how clinical quota is counted/capped
+  if(S.quotaCapMode==null)S.quotaCapMode="hard";       // hard | soft | off — whether per-period target caps booking
+  if(S.waveCount==null)S.waveCount=3;                   // number of cohorts for "waves" fairness mode
+  if(S.guideDismissed==null)S.guideDismissed=false;     // setup wizard shown until dismissed
+  if(S.unlockOrder==null)S.unlockOrder="pmfirst";       // extra-slot unlock order: both | amfirst | pmfirst
+  S.staff.forEach(s=>{ if(s.eft==null)s.eft=1; if(s.hrsFortnight==null)s.hrsFortnight=76; if(s.email==null)s.email=""; if(s.payrollId==null)s.payrollId=""; if(!s.fixedPattern)s.fixedPattern={recurrence:"weekly",A:{},B:{},committed:false}; if(!s.periodTargets)s.periodTargets={}; });
+}
+function load(){ try{ S=JSON.parse(localStorage.getItem(KEY))||defaultState(); normalize(); }catch(e){ S=defaultState(); } }
+/* ----- cloud storage layer (only active when cloudOn()) ----- */
+let _sb=null, _cloudTimer=null, _applyingRemote=false, cloudState="local", _orgUpdated=null;
+function cloudInit(){ if(_sb)return; _sb=window.supabase.createClient(CLOUD.url,CLOUD.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}); }
+async function cloudLoad(){ const {data,error}=await _sb.from("org_state").select("data,updated").eq("org",CLOUD.org).maybeSingle(); if(error)throw error; if(data)_orgUpdated=data.updated; return data?data.data:null; }
+async function cloudSave(){ if(!_sb)return; try{ const ts=new Date().toISOString(); const {data,error}=await _sb.from("org_state").upsert({org:CLOUD.org,data:S,updated:ts}).select("updated").maybeSingle(); if(error)throw error; _orgUpdated=(data&&data.updated)||ts; }catch(e){ console.error("cloudSave",e); cloudState="error"; } }
+// Atomic compare-and-swap: applies `mutate` to the freshest state and writes only if the
+// record hasn't changed since we loaded it. On conflict it pulls the latest and re-runs
+// `mutate` (which re-validates capacity), so concurrent bookings merge instead of clobbering.
+async function cloudCommit(mutate){
+  for(let i=0;i<6;i++){
+    const res=mutate(); if(!res.ok)return res;
+    clearTimeout(_cloudTimer);
+    const ts=new Date().toISOString();
+    let r; try{ r=await _sb.from("org_state").update({data:S,updated:ts}).eq("org",CLOUD.org).eq("updated",_orgUpdated).select("updated").maybeSingle(); }
+    catch(e){ console.error("commit",e); try{localStorage.setItem(KEY,JSON.stringify(S));}catch(_){} return {ok:true}; }
+    if(r.error){ console.error(r.error); try{localStorage.setItem(KEY,JSON.stringify(S));}catch(_){} return {ok:true}; }
+    if(r.data){ _orgUpdated=r.data.updated; try{localStorage.setItem(KEY,JSON.stringify(S));}catch(_){} return {ok:true}; }
+    const f=await _sb.from("org_state").select("data,updated").eq("org",CLOUD.org).maybeSingle();   // CAS conflict -> reload + retry
+    if(f.data){ _applyingRemote=true; S=f.data.data; _orgUpdated=f.data.updated; try{normalize();}catch(e){} _applyingRemote=false; }
+  }
+  return {ok:false,reason:"Too many people booking at once — please try again."};
+}
+// Runs a validate+mutate atomically: synchronous in local mode, CAS-guarded in cloud mode.
+function commitGuarded(mutate){
+  if(!cloudOn()){ const res=mutate(); if(!res.ok){ if(res.reason)alert(res.reason); return false; } save(); render(); return true; }
+  cloudCommit(mutate).then(res=>{ if(!res.ok&&res.reason)alert(res.reason); render(); });
+  return true;
+}
+function cloudSubscribe(){ try{ _sb.channel("org-"+CLOUD.org).on("postgres_changes",{event:"*",schema:"public",table:"org_state",filter:"org=eq."+CLOUD.org},p=>{
+    if(p.new&&p.new.data){ _orgUpdated=p.new.updated; const incoming=JSON.stringify(p.new.data); if(incoming===JSON.stringify(S))return; _applyingRemote=true; S=p.new.data; try{normalize();}catch(e){} localStorage.setItem(KEY,incoming); _applyingRemote=false; render(); } }).subscribe(); }catch(e){ console.error("subscribe",e); } }
+/* ----- auth (cloud only) ----- */
+function domainOk(email){ const doms=(CLOUD.allowedDomains||[]).map(d=>String(d).toLowerCase()); if(!doms.length)return true; const dom=(String(email).split("@")[1]||"").toLowerCase(); return doms.includes(dom); }
+async function authSendCode(email){
+  if(!domainOk(email)){ return {error:"Sign-in is restricted to: "+CLOUD.allowedDomains.join(", ")}; }
+  try{ const {error}=await _sb.auth.signInWithOtp({email:email,options:{shouldCreateUser:true}}); if(error)throw error; _otpEmail=email; _otpSent=true; return true; }
+  catch(e){ return {error:(e&&e.message)||"Couldn't send the code."}; } }
+async function authVerifyCode(code){
+  try{ const {error}=await _sb.auth.verifyOtp({email:_otpEmail,token:String(code).replace(/\s/g,""),type:"email"}); if(error)throw error; return true; }
+  catch(e){ return {error:(e&&e.message)||"That code didn't work."}; } }
+async function cloudMembersLoad(){ try{ const {data,error}=await _sb.from("roster_members").select("email,role,name"); if(error)throw error; _members=data||[]; }catch(e){ console.error("membersLoad",e); _members=[]; } return _members; }
+async function cloudMemberAdd(email,role,name){ if(!domainOk(email)){alert("That email isn't an allowed domain.");return;} const {error}=await _sb.from("roster_members").upsert({email:String(email).toLowerCase(),role:role||"staff",name:name||""}); if(error){alert(error.message);return;} await cloudMembersLoad(); render(); }
+async function cloudMemberRemove(email){ const {error}=await _sb.from("roster_members").delete().eq("email",String(email).toLowerCase()); if(error){alert(error.message);return;} await cloudMembersLoad(); render(); }
+async function cloudMembersSync(){ const rows=[]; (CLOUD.adminEmails||[]).forEach(e=>rows.push({email:String(e).toLowerCase(),role:"admin",name:"Admin"})); S.staff.forEach(s=>{ if(s.email)rows.push({email:String(s.email).toLowerCase(),role:"staff",name:s.name}); }); if(!rows.length){alert("No emails to sync — add staff emails (Staff tab) and adminEmails (config) first.");return;} const {error}=await _sb.from("roster_members").upsert(rows); if(error){alert(error.message);return;} await cloudMembersLoad(); alert("Allow-list synced — "+rows.length+" people can access the database."); render(); }
+async function authSignOut(){ try{ await _sb.auth.signOut(); }catch(e){} authUser=null; authState="login"; _subscribed=false; _otpSent=false; _otpEmail=""; render(); }
+async function handleAuth(session){
+  if(!session){ authState="login"; authUser=null; render(); return; }
+  _otpSent=false; authUser=session.user&&session.user.email;
+  try{ const remote=await cloudLoad(); if(remote){ S=remote; try{normalize();}catch(e){ S=defaultState(); } } else { load(); await cloudSave(); } cloudState="connected"; try{localStorage.setItem(KEY,JSON.stringify(S));}catch(x){} }
+  catch(e){ console.error("cloudLoad after auth",e); cloudState="error"; }
+  await cloudMembersLoad();
+  const id=resolveIdentity(authUser);
+  if(!id){ authState="denied"; render(); return; }
+  S.viewAs=id; authState="in"; safeRenderInit(); if(!_subscribed){ cloudSubscribe(); _subscribed=true; } }
+function isAdmin(){return S.viewAs==="admin";}
+function nameOf(id){if(id==="admin")return "Admin";const s=S.staff.find(x=>x.id===id);return s?s.name:id;}
+function notify(to,text){S.notifications.unshift({id:"n"+Date.now()+Math.random().toString(36).slice(2,5),to,text,ts:Date.now(),readBy:[]});}
+function notifFor(who){return (S.notifications||[]).filter(n=>who==="admin"?n.to==="admin":(n.to==="all"||n.to===who));}
+function unreadCount(who){return notifFor(who).filter(n=>!(n.readBy||[]).includes(who)).length;}
+function markNotifsRead(who){notifFor(who).forEach(n=>{n.readBy=n.readBy||[];if(!n.readBy.includes(who))n.readBy.push(who);});save();}
+function msgsFor(who){return who==="admin"?S.messages.slice():S.messages.filter(m=>m.to==="all"||m.to===who||m.from===who);}
+function logAudit(action,detail,actor){S.audit.unshift({id:"a"+Date.now()+Math.random().toString(36).slice(2,5),ts:Date.now(),actor:actor||S.viewAs,action:action,detail:detail||""});}
+function leaveStyle(code){const c=(code||"").toUpperCase();
+  if(c==="AL")return{bg:"#ECEAFB",t:"#5448A8",name:"Annual"};
+  if(c==="CME")return{bg:"#CFE7D5",t:"#1C5733",name:"CME"};
+  if(c==="LSL"||c==="SAB")return{bg:"#E7E9F1",t:"#4C5474",name:"Long service / Sabbatical"};
+  if(c==="PL")return{bg:"#FBE6EE",t:"#9B3D63",name:"Mat/Pat/PL/BL"};
+  if(c==="UA")return{bg:"#F8E2DB",t:"#9E4A2E",name:"Unavailable"};
+  if(c==="UPL")return{bg:"#EFE6DD",t:"#6E5440",name:"Unplanned leave"};
+  if(c==="PH")return{bg:"#FBF4CF",t:"#7E6410",name:"Public holiday"};
+  return{bg:"#EEF0F2",t:"#5A636E",name:LEAVE_LABEL[code]||code};}
+function daysInRange(from,to){const out=[];let d=parseISO(from),e=parseISO(to);while(d<=e){out.push(iso(d));d=addDays(d,1);}return out;}
+function addLeave(o){o.id=o.id||("lv"+Date.now()+Math.random().toString(36).slice(2,5));S.leave.push(o);return o;}
+function leaveOn(staffId,isoD){return (S.leave||[]).find(L=>L.staffId===staffId&&L.status==="approved"&&L.from<=isoD&&L.to>=isoD)||null;}
+function clearLeaveDay(staffId,isoD){const out=[];(S.leave||[]).forEach(L=>{
+  if(L.staffId!==staffId||isoD<L.from||isoD>L.to){out.push(L);return;}
+  const prevTo=iso(addDays(parseISO(isoD),-1)),nextFrom=iso(addDays(parseISO(isoD),1));
+  if(L.from<=prevTo)out.push(Object.assign({},L,{id:L.id+"a"+Math.floor(Math.random()*9999),to:prevTo}));
+  if(nextFrom<=L.to)out.push(Object.assign({},L,{id:L.id+"b"+Math.floor(Math.random()*9999),from:nextFrom}));});
+  S.leave=out;}
+function plannerSetLeave(staffId,isoD,code){
+  S.cycles.forEach(c=>{delete c.assign[staffId+"|"+isoD];});
+  clearLeaveDay(staffId,isoD);
+  if(code)addLeave({staffId:staffId,from:isoD,to:isoD,code:code,status:"approved",requestId:"planner"});
+  logAudit("planner.edit",nameOf(staffId)+" "+isoD+" → "+(code||"cleared"),"admin");save();}
+function round2(n){n=+n||0;return +(Math.round(n+"e2")+"e-2");}
+function hoursPerDay(s){return Math.round((s.hrsFortnight||76)/10*10)/10;}
+function leaveDaysInRange(staffId,from,to){let n=0;for(const d of daysInRange(from,to)){if(getShift(staffId,d).kind==="leave")n++;}return n;}
+function plannerYear(){const y=parseISO(active().cycle.start).getFullYear();return {from:y+"-01-01",to:y+"-12-31"};}
+function eftOffOnDay(isoD){let e=0;for(const s of S.staff){if(getShift(s.id,isoD).kind==="leave")e+=(+s.eft||1);}return Math.round(e*100)/100;}
+function awayOverlap(from,to,excludeId){const dates=daysInRange(from,to);const perStaff=[];const perDate={};
+  for(const s of S.staff){if(s.id===excludeId)continue;let cnt=0;
+    for(const d of dates){if(getShift(s.id,d).kind==="leave"){cnt++;perDate[d]=(perDate[d]||0)+1;}}
+    if(cnt>0)perStaff.push({staff:s,days:cnt});}
+  let peak=0;for(const d in perDate)peak=Math.max(peak,perDate[d]);
+  return {perStaff:perStaff.sort((a,b)=>b.days-a.days),peak:peak};}
+const STATUS={draft:{label:"Draft",cls:"muted"},open:{label:"Open for self-roster",cls:"warn"},closed:{label:"Closed",cls:"muted"},published:{label:"Published (live)",cls:"ok"}};
+function active(){return S.cycles.find(c=>c.id===S.activeId)||S.cycles[0];}
+function CTX(){return active();}
+function canEdit(){const a=active();return S.viewAs==="admin" && !a.archived;}
+function needsComment(){return active().status==="published";}
+function cyLabel(c){const d=datesOf(c.cycle);return fmt(d[0],{day:"numeric",month:"short",year:"numeric"})+" – "+fmt(d[d.length-1],{day:"numeric",month:"short",year:"numeric"});}
+function cyEnd(c){const d=datesOf(c.cycle);return d[d.length-1];}
+let gapsOn=false, dailyMode="day", dailyDate=null, myPerson=null, replyTo=null, _srSid=null, _srPick=[], _srPickSid=null;
+function archiveBanner(){ const a=active(); if(!a.archived)return ""; return `<div class="note" style="background:var(--accent-bg);color:var(--accent);margin-bottom:10px"><b>Archived cycle — read only.</b> Switch cycle from the header selector to edit a live one.</div>`; }
+function lockNote(){ const a=active(); return `<div class="note">🔒 ${a.archived?"Archived cycle — read only.":"View only — switch to Admin to edit."}</div>`; }
+function prepareNext(){
+  let latest=null; S.cycles.forEach(c=>{const e=cyEnd(c); if(!latest||e>latest)latest=e;});
+  const weeks=active().cycle.weeks||8; const newStart=addDays(latest,1);
+  if(!confirm("Prepare a new "+weeks+"-week cycle starting "+fmt(newStart,{day:"numeric",month:"short",year:"numeric"})+"?\n\nThe current cycle stays live — nothing is archived.")) return;
+  const c={id:"cyc-"+Date.now(),cycle:{start:iso(newStart),weeks:weeks},assign:{},status:"draft",archived:false};
+  S.cycles.push(c); S.activeId=c.id; dailyDate=null; logAudit("cycle.prepare",cyLabel(c),"admin"); save(); render();
+}
+function archiveCycle(id){ const c=S.cycles.find(x=>x.id===id); if(!c)return;
+  if(S.cycles.filter(x=>!x.archived).length<=1){ alert("This is the only live cycle — prepare a next cycle before archiving this one."); return; }
+  if(!confirm("Archive cycle "+cyLabel(c)+"? It moves to Previous cycles (read-only) and can be restored anytime.")) return;
+  c.archived=true; logAudit("cycle.archive",cyLabel(c),"admin"); if(S.activeId===id)S.activeId=(S.cycles.find(x=>!x.archived)||S.cycles[0]).id; save(); render();
+}
+function staffInZone(isoD,period,zoneId){for(const s of S.staff){const sh=getShift(s.id,isoD);if(sh.kind==="clinical"&&sh.period===period&&sh.zone===zoneId)return s;}return null;}
+function staffByKind(isoD,kind){return S.staff.filter(s=>getShift(s.id,isoD).kind===kind);}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){ console.warn("save failed",e); }
+  if(cloudOn()&&!_applyingRemote){ clearTimeout(_cloudTimer); _cloudTimer=setTimeout(cloudSave,600); } }
+function reset(){ if(confirm("Start a NEW ORGANISATION?\n\nThis permanently clears ALL data — staff, shifts, leave, requests, messages, notifications, audit and cycles — back to an empty app, ready for you to import your roster + leave planner.\n\nThis cannot be undone.")){ S=defaultState(); gapsOn=false;dailyDate=null;plannerMonth=null;myPerson=null;replyTo=null;swapPeer=null;lastEmail=null; save(); render(); } }
+
+/* ---------- date helpers ---------- */
+function pad(n){return String(n).padStart(2,"0");}
+function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function parseISO(s){const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c);}
+function addDays(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);}
+function fmt(d,o){return d.toLocaleDateString("en-GB",o||{day:"numeric",month:"short"});}
+function datesOf(c){const out=[];let s=parseISO(c.start);for(let i=0;i<c.weeks*7;i++)out.push(addDays(s,i));return out;}
+function cycleDates(){return datesOf(CTX().cycle);}
+function inCycle(d){const ds=cycleDates();return d>=ds[0]&&d<=ds[ds.length-1];}
+
+/* ---------- shift model ---------- */
+function zoneById(id){return S.zones.find(z=>z.id===id);}
+function zonesFor(period){return S.zones.filter(z=>period==="AM"?z.am:z.pm);}
+function zoneLabel(z,period){return period==="PM"&&z.pmLabel?z.pmLabel:z.name;}
+function periodTime(p){return p==="AM"?"08:00–16:00":"15:30–23:30";}
+function getShift(staffId,isoD){const a=CTX().assign[staffId+"|"+isoD];if(a)return a;const lv=leaveOn(staffId,isoD);if(lv)return {kind:"leave",code:lv.code};return {kind:"off"};}
+function setShift(staffId,isoD,sh){const a=CTX().assign;const k=staffId+"|"+isoD; if(!sh||sh.kind==="off")delete a[k]; else a[k]=sh; save();}
+function clinicalCounts(isoD,excludeId){
+  let am=0,pm=0;
+  for(const s of S.staff){ if(s.id===excludeId)continue; const sh=getShift(s.id,isoD); if(sh.kind==="clinical"){sh.period==="AM"?am++:pm++;} }
+  return {am,pm};
+}
+function zoneTaken(isoD,period,zoneId,excludeId){
+  for(const s of S.staff){ if(s.id===excludeId)continue; const sh=getShift(s.id,isoD);
+    if(sh.kind==="clinical"&&sh.period===period&&sh.zone===zoneId)return s; }
+  return null;
+}
+// progressive unlock, parameterised by configurable staffing
+function periodUnlocked(isoD,period,excludeId){
+  const {am,pm}=clinicalCounts(isoD,excludeId);
+  const cur=period==="AM"?am:pm;
+  const reqT=period==="AM"?S.staffing.amMin:S.staffing.pmMin;
+  const maxT=period==="AM"?S.staffing.amMax:S.staffing.pmMax;
+  const zmax=zonesFor(period).length;
+  const cap=Math.min(maxT,zmax);
+  if(cur>=cap)return {ok:false,reason:`${period} is full (${cur}/${cap})`};
+  if(cur<reqT)return {ok:true};                         // still filling this period's minimum
+  if(am<S.staffing.amMin||pm<S.staffing.pmMin)
+    return {ok:false,reason:`Fill the minimum first (${S.staffing.amMin} AM + ${S.staffing.pmMin} PM)`};
+  const order=S.unlockOrder||"pmfirst";
+  if(order==="both")return {ok:true};                   // extras open together — no AM/PM ordering
+  const firstP=order==="amfirst"?"AM":"PM";             // ordered: "first" period's extras fill before the other's open
+  if(period===firstP)return {ok:true};
+  const otherCap=Math.min(firstP==="AM"?S.staffing.amMax:S.staffing.pmMax, zonesFor(firstP).length);
+  const otherCur=firstP==="AM"?am:pm;
+  if(otherCur>=otherCap)return {ok:true};
+  return {ok:false,reason:`Extra ${firstP} opens before extra ${period} — fill ${firstP} first`};
+}
+function unlockOrderLabel(){return {both:"AM & PM open together",amfirst:"AM before PM",pmfirst:"PM before AM"}[S.unlockOrder||"pmfirst"];}
+
+/* ---------- self-roster + auto-draft engine ---------- */
+function clinicalCountFor(staffId){let n=0;const a=active().assign;cycleDates().forEach(d=>{const sh=a[staffId+"|"+iso(d)];if(sh&&sh.kind==="clinical")n++;});return n;}
+/* ---------- quota periods + per-period targets ---------- */
+function periodWeeks(){return {cycle:999,week:1,fortnight:2,month:4}[S.quotaPeriod||"fortnight"];}
+function periodTag(){return {cycle:"Cycle",week:"Wk",fortnight:"Fn",month:"Mo"}[S.quotaPeriod||"fortnight"];}
+function cyclePeriods(){ const ds=cycleDates(), per=periodWeeks()*7, out=[];
+  for(let st=0; st<ds.length; st+=per){ const slice=ds.slice(st,st+per); if(!slice.length)break;
+    out.push({index:out.length, dates:slice, from:iso(slice[0]), to:iso(slice[slice.length-1]),
+      label:(S.quotaPeriod==="cycle"?"Cycle":periodTag()+" "+(out.length+1))}); }
+  return out; }
+function lrRound(weights,total){ const n=weights.length; total=Math.max(0,Math.round(total||0)); if(!n)return [];
+  const sum=weights.reduce((a,b)=>a+b,0);
+  if(sum<=0){ const base=Math.floor(total/n), r=total-base*n; return weights.map((_,i)=>base+(i<r?1:0)); }
+  const raw=weights.map(w=>total*w/sum), floors=raw.map(Math.floor);
+  let rem=total-floors.reduce((a,b)=>a+b,0);
+  const order=raw.map((v,i)=>({i,frac:v-Math.floor(v)})).sort((a,b)=>b.frac-a.frac);
+  const res=floors.slice(); for(let k=0;k<rem;k++)res[order[k].i]++; return res; }
+function autoPeriodTargets(s){ const periods=cyclePeriods();
+  const weights=periods.map(p=>p.dates.filter(d=>getShift(s.id,iso(d)).kind!=="leave").length); // pro-rata to available (non-leave) days
+  return lrRound(weights, s.quota||0); }
+function periodTarget(s,i){ const ov=s.periodTargets&&s.periodTargets[i]; return (ov!=null&&ov!=="")?(+ov):autoPeriodTargets(s)[i]; }
+function periodTargetsOf(s){ const auto=autoPeriodTargets(s); return cyclePeriods().map((p,i)=>{ const ov=s.periodTargets&&s.periodTargets[i]; return (ov!=null&&ov!=="")?(+ov):auto[i]; }); }
+function bookedInPeriod(staffId,p){ return p.dates.filter(d=>getShift(staffId,iso(d)).kind==="clinical").length; }
+function periodOfDate(isoD){ return cyclePeriods().find(p=>isoD>=p.from&&isoD<=p.to)||null; }
+function staffBusyOn(staffId,isoD){return getShift(staffId,isoD).kind!=="off";}
+function freeZones(isoD,period){return zonesFor(period).filter(z=>!zoneTaken(isoD,period,z.id,null));}
+function eligibleStaff(isoD){return S.staff.filter(s=>!staffBusyOn(s.id,isoD));}
+function fillPeriodTo(isoD,period,target){let filled=0;
+  while(true){const cnt=clinicalCounts(isoD,null)[period==="AM"?"am":"pm"];
+    if(cnt>=target)break;
+    if(!periodUnlocked(isoD,period,null).ok)break;
+    const z=freeZones(isoD,period)[0];if(!z)break;
+    let pool=eligibleStaff(isoD).filter(s=>clinicalCountFor(s.id)<(s.quota||999));
+    if(!pool.length)pool=eligibleStaff(isoD);
+    if(!pool.length)break;
+    pool.sort((a,b)=>clinicalCountFor(a.id)-clinicalCountFor(b.id));
+    active().assign[pool[0].id+"|"+isoD]={kind:"clinical",period:period,zone:z.id};filled++;}
+  return filled;}
+function autoDraft(toMax){
+  const ds=cycleDates();let filled=0;
+  filled+=applyFixedPatterns(); // lock in fixed/preference patterns before fair-filling the rest
+  ds.forEach(d=>{const i=iso(d);filled+=fillPeriodTo(i,"AM",S.staffing.amMin);filled+=fillPeriodTo(i,"PM",S.staffing.pmMin);});
+  if(toMax){ds.forEach(d=>{const i=iso(d);filled+=fillPeriodTo(i,"PM",Math.min(S.staffing.pmMax,zonesFor("PM").length));filled+=fillPeriodTo(i,"AM",Math.min(S.staffing.amMax,zonesFor("AM").length));});}
+  let gaps=0;ds.forEach(d=>{const g=dayGap(iso(d));gaps+=g.am+g.pm;});
+  logAudit("selfroster.autodraft",(toMax?"fill-to-max":"minimum")+" · placed "+filled+" · gaps left "+gaps,"admin");save();
+  return {filled:filled,gaps:gaps};}
+function clearShifts(){const a=active().assign;Object.keys(a).forEach(k=>{const v=a[k];if((v.kind==="clinical"&&!v.fixed)||v.kind==="cst")delete a[k];});logAudit("selfroster.clear","cleared shifts (kept fixed) in "+cyLabel(active()),"admin");save();}
+function canBook(sid,isoD,p,zoneId){
+  const sh=getShift(sid,isoD);
+  if(sh.kind==="leave")return {ok:false,reason:"on leave that day"};
+  if(sh.kind!=="off")return {ok:false,reason:"already has a shift that day"};
+  if(zoneTaken(isoD,p,zoneId,sid))return {ok:false,reason:"zone already taken"};
+  const u=periodUnlocked(isoD,p,sid);if(!u.ok)return u;
+  if(S.fairness==="snake"&&active().draft&&whoseTurn()!==sid)return {ok:false,reason:"not your turn"};
+  if(S.fairness==="waves"&&active().waveState&&!currentCohort().includes(sid))return {ok:false,reason:"your wave hasn't opened yet"};
+  if((S.quotaCapMode||"hard")==="hard"){ const per=periodOfDate(isoD), st=S.staff.find(x=>x.id===sid);
+    if(per&&st){ const tgt=periodTarget(st,per.index); if(tgt>0&&bookedInPeriod(sid,per)>=tgt)
+      return {ok:false,reason:per.label+" quota reached ("+tgt+") — book in a "+(S.quotaPeriod||"fortnight")+" that still needs shifts."}; } }
+  return {ok:true};}
+function bookShift(sid,isoD,p,zoneId){
+  return commitGuarded(()=>{ const c=canBook(sid,isoD,p,zoneId); if(!c.ok)return {ok:false,reason:c.reason};
+    active().assign[sid+"|"+isoD]={kind:"clinical",period:p,zone:zoneId};
+    logAudit("selfroster.book",nameOf(sid)+" "+isoD+" "+p+" "+(zoneById(zoneId)?zoneById(zoneId).name:""),sid);
+    if(S.fairness==="snake"&&active().draft)advanceTurn(); return {ok:true}; });
+}
+function unbookShift(sid,isoD){
+  return commitGuarded(()=>{ const a=active().assign; const cur=a[sid+"|"+isoD];
+    if(cur){ if(cur.fixed&&!isAdmin())return {ok:false,reason:"Fixed shift — ask your admin to change it."};
+      delete a[sid+"|"+isoD]; logAudit("selfroster.unbook",nameOf(sid)+" "+isoD,sid); } return {ok:true}; });
+}
+function srBatchBook(){ const picks=_srPick.slice(); if(!picks.length)return; const sid=_srSid;
+  const mutate=()=>{ const fail=[]; picks.forEach(key=>{const a=key.split("|"); const c=canBook(sid,a[0],a[1],a[2]);
+    if(c.ok){ active().assign[sid+"|"+a[0]]={kind:"clinical",period:a[1],zone:a[2]}; logAudit("selfroster.book",nameOf(sid)+" "+a[0]+" "+a[1]+" "+(zoneById(a[2])?zoneById(a[2]).name:""),sid); }
+    else fail.push(a[0]+" "+a[1]+": "+c.reason); }); window._srBatchFail=fail; return {ok:true}; };
+  const after=res=>{ _srPick=[]; render(); const f=window._srBatchFail||[]; if(res&&res.ok===false&&res.reason)alert(res.reason); else if(f.length)alert("Booked the rest; these couldn't go in:\n• "+f.join("\n• ")); };
+  if(!cloudOn()){ mutate(); save(); after({ok:true}); } else { cloudCommit(mutate).then(after); } }
+function draftBaseOrder(){return S.staff.slice().sort((a,b)=>clinicalCountFor(a.id)-clinicalCountFor(b.id)).map(s=>s.id);}
+function startRounds(){active().draft={round:1,turnIdx:0,base:draftBaseOrder()};logAudit("selfroster.rounds","snake rounds started","admin");save();}
+function draftOrder(){const d=active().draft;if(!d)return [];const o=d.base.slice();return (d.round%2===0)?o.reverse():o;}
+function whoseTurn(){const d=active().draft;if(!d)return null;return draftOrder()[d.turnIdx]||null;}
+function advanceTurn(){const d=active().draft;if(!d)return;d.turnIdx++;if(d.turnIdx>=d.base.length){d.round++;d.turnIdx=0;}save();}
+function stopRounds(){active().draft=null;save();}
+
+/* ---------- cohort waves ---------- */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startWaves(){ const ids=shuffle(S.staff.map(s=>s.id)); const n=Math.max(2,Math.min(4,S.waveCount||3));
+  const cohorts=Array.from({length:n},()=>[]); ids.forEach((id,i)=>cohorts[i%n].push(id));
+  active().waveState={cohorts:cohorts, order:shuffle(cohorts.map((_,i)=>i)), current:0, done:{}};
+  notify("all","Self-roster has opened in waves. Wave 1 is picking now."); logAudit("selfroster.waves","started "+n+" random waves","admin"); save(); }
+function stopWaves(){active().waveState=null;logAudit("selfroster.waves","stopped","admin");save();}
+function waveCohortAt(pos){const w=active().waveState;return (w&&w.cohorts[w.order[pos]])||[];}
+function currentCohort(){const w=active().waveState;return w?waveCohortAt(w.current):[];}
+function wavePosOf(sid){const w=active().waveState;if(!w)return -1;for(let p=0;p<w.order.length;p++){if((w.cohorts[w.order[p]]||[]).includes(sid))return p;}return -1;}
+function isWaveOpen(sid){const w=active().waveState;return !!w&&currentCohort().includes(sid);}
+function quotaMet(sid){const s=S.staff.find(x=>x.id===sid);if(!s)return false;return cyclePeriods().every(p=>bookedInPeriod(sid,p)>=periodTarget(s,p.index));}
+function waveAllSettled(){const w=active().waveState;if(!w)return false;return currentCohort().every(sid=>(w.done&&w.done[sid])||quotaMet(sid));}
+function advanceWave(){const w=active().waveState;if(!w)return;if(w.current<w.order.length-1){w.current++;notify("all","Self-roster wave "+(w.current+1)+" is now open.");logAudit("selfroster.wave.advance","wave "+(w.current+1)+" opened","admin");}else{logAudit("selfroster.wave.advance","all waves complete","admin");}save();}
+function setWaveDone(sid,v){const w=active().waveState;if(!w)return;w.done=w.done||{};if(v)w.done[sid]=true;else delete w.done[sid];logAudit("selfroster.wave.done",nameOf(sid)+(v?" done":" reopened"),sid);save();}
+function fairnessLabel(f){f=f||S.fairness;return {snake:"Snake-draft rounds",guarded:"Guarded free-for-all",waves:"Cohort waves",adjust:"Auto-draft + adjust"}[f]||f;}
+function waveControlHTML(cyc){ const w=cyc.waveState;
+  if(!w)return `<div class="flexbtns" style="margin-top:8px"><button class="btn primary" id="wvStart">Assign &amp; start waves (${S.waveCount||3} random groups)</button></div>`;
+  const chips=w.order.map((ci,pos)=>{const mem=w.cohorts[ci]||[];const settled=mem.filter(id=>(w.done&&w.done[id])||quotaMet(id)).length;
+    return `<span class="pill ${pos===w.current?"warn":"muted"}" title="${mem.map(nameOf).join(", ")}">Wave ${pos+1}${pos===w.current?" · open":""} · ${mem.length} ppl · ${settled}/${mem.length} settled</span>`;}).join(" ");
+  const last=w.current>=w.order.length-1;
+  return `<div style="margin-top:8px">${chips}</div>
+    <div class="flexbtns" style="margin-top:8px">
+      ${last?'<span class="pill ok">final wave open</span>':`<button class="btn primary" id="wvNext">Open next wave${waveAllSettled()?" — all settled ✓":""}</button>`}
+      <button class="btn sm" id="wvReassign">Re-shuffle</button>
+      <button class="btn danger sm" id="wvStop">Stop waves</button>
+    </div>`; }
+function waveScheduleHTML(sid){ const w=active().waveState; if(!w)return ""; const mine=wavePosOf(sid);
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${w.order.map((ci,pos)=>`<span class="pill ${pos===w.current?"warn":(pos===mine?"ok":"muted")}">Wave ${pos+1}${pos===w.current?" · open":""}${pos===mine?" · you":""}</span>`).join("")}</div>`; }
+
+/* ---------- fixed patterns (weekly + fortnightly A/B) ---------- */
+let _fpDraft={};            // sid -> in-progress edit copy (survives re-render)
+let _fpOpen=new Set();      // which staff editors are expanded on the Staff tab
+const WD_ORDER=[1,2,3,4,5,6,0]; // Mon..Sun (getDay() indices)
+function emptyPattern(){return {recurrence:"weekly",A:{},B:{},committed:false};}
+function cycleWeekAB(isoD){const ds=cycleDates();const wk=Math.floor((parseISO(isoD)-ds[0])/(7*864e5));return wk%2===0?"A":"B";}
+function fixedSlotFor(s,isoD){ if(!s||(s.mode!=="fixed"&&s.mode!=="preference"))return null; const fp=s.fixedPattern; if(!fp)return null;
+  const wd=String(parseISO(isoD).getDay()); const wk=(fp.recurrence==="fortnightly")?cycleWeekAB(isoD):"A";
+  const slot=(fp[wk]||{})[wd]; if(!slot||!slot.period||!slot.zone)return null; return {period:slot.period,zone:slot.zone}; }
+function applyFixedPatterns(){ // seed fixed (locked) + preference (soft) shifts where the day is free
+  let placed=0; const a=active().assign;
+  S.staff.forEach(s=>{ if(s.mode!=="fixed"&&s.mode!=="preference")return;
+    cycleDates().forEach(d=>{ const isoD=iso(d), slot=fixedSlotFor(s,isoD); if(!slot)return;
+      const cur=getShift(s.id,isoD); if(cur.kind!=="off")return;                 // leave / existing shift wins
+      if(zoneTaken(isoD,slot.period,slot.zone,s.id))return;                       // zone clash -> skip
+      a[s.id+"|"+isoD]={kind:"clinical",period:slot.period,zone:slot.zone,fixed:(s.mode==="fixed")}; placed++; }); });
+  return placed; }
+function fixedPatternSummary(fp){ if(!fp)return "—"; const out=[];
+  ["A","B"].forEach(wk=>{ if(wk==="B"&&fp.recurrence!=="fortnightly")return; const o=fp[wk]||{};
+    const days=WD_ORDER.filter(wd=>o[String(wd)]&&o[String(wd)].period&&o[String(wd)].zone)
+      .map(wd=>DOW[wd]+" "+o[String(wd)].period+"·"+(zoneById(o[String(wd)].zone)?zoneById(o[String(wd)].zone).name:"?"));
+    if(days.length)out.push((fp.recurrence==="fortnightly"?("Wk "+wk+": "):"")+days.join(", ")); });
+  return out.length?out.join(" · "):"no shifts set"; }
+function fpDraft(s){ if(!_fpDraft[s.id]){ const src=s.fixedPattern||emptyPattern(); _fpDraft[s.id]=JSON.parse(JSON.stringify(src));
+  const d=_fpDraft[s.id]; if(!d.A)d.A={}; if(!d.B)d.B={}; if(!d.recurrence)d.recurrence="weekly"; } return _fpDraft[s.id]; }
+function setFpSlot(sid,wk,wd,key,val){ const s=S.staff.find(x=>x.id===sid); const d=fpDraft(s); d[wk]=d[wk]||{}; const k=String(wd);
+  d[wk][k]=d[wk][k]||{}; d[wk][k][key]=val; if(key==="period"&&!val)delete d[wk][k]; }
+function fpWeekTable(s,wk,canEdit){ const o=fpDraft(s)[wk]||{};
+  return `<table class="maptbl"><tr><th>Day</th><th>Period</th><th>Zone</th></tr>`+WD_ORDER.map(wd=>{ const slot=o[String(wd)]||{};
+    return `<tr><td>${DOW[wd]}</td>
+      <td><select class="fp-p" data-sid="${s.id}" data-wk="${wk}" data-wd="${wd}" ${canEdit?"":"disabled"}><option value="">Off</option><option value="AM" ${slot.period==="AM"?"selected":""}>AM</option><option value="PM" ${slot.period==="PM"?"selected":""}>PM</option></select></td>
+      <td><select class="fp-z" data-sid="${s.id}" data-wk="${wk}" data-wd="${wd}" ${canEdit?"":"disabled"}><option value="">—</option>${S.zones.map(z=>`<option value="${z.id}" ${slot.zone===z.id?"selected":""}>${escapeHTML(z.name)}</option>`).join("")}</select></td></tr>`;
+  }).join("")+`</table>`; }
+function fixedPatternEditorHTML(s,canEdit,asStaff){ const d=fpDraft(s); const committed=!!(s.fixedPattern&&s.fixedPattern.committed);
+  const pending=S.requests.find(r=>r.type==="fixed"&&r.from===s.id&&r.status==="pending");
+  if(s.mode==="self") return `<div class="card" style="margin-top:8px;background:var(--hover)"><b>Fixed pattern — ${escapeHTML(s.name)}</b> <span class="badge-mode">self</span><div class="muted small" style="margin-top:6px">On <b>Self-roster</b> — no fixed pattern. Switch mode to “Fixed pattern” or “Pref + auto-draft” to set one.</div></div>`;
+  return `<div class="card" style="margin-top:8px;background:var(--hover)">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <b>Fixed pattern — ${escapeHTML(s.name)}</b> <span class="badge-mode">${s.mode==="fixed"?"fixed":"pref"}</span>
+      ${committed?'<span class="pill ok">committed 🔒</span>':'<span class="pill muted">draft</span>'}
+      ${pending?'<span class="pill warn">⚑ change pending</span>':""}</div>
+    <div class="seg" style="margin-top:8px"><button class="fp-rec ${d.recurrence==="weekly"?"on":""}" data-sid="${s.id}" data-rec="weekly" ${canEdit?"":"disabled"}>Weekly</button><button class="fp-rec ${d.recurrence==="fortnightly"?"on":""}" data-sid="${s.id}" data-rec="fortnightly" ${canEdit?"":"disabled"}>Fortnightly A/B</button></div>
+    ${d.recurrence==="fortnightly"?`<div class="sub" style="margin-top:8px">Week A — cycle weeks 1,3,5,7</div>${fpWeekTable(s,"A",canEdit)}<div class="sub" style="margin-top:8px">Week B — cycle weeks 2,4,6,8</div>${fpWeekTable(s,"B",canEdit)}`:fpWeekTable(s,"A",canEdit)}
+    ${canEdit?`<div class="flexbtns" style="margin-top:10px">
+      <button class="btn primary fp-save" data-sid="${s.id}" data-asstaff="${asStaff?1:0}">${(asStaff&&committed)?"Submit change for approval":"Save pattern"}</button>
+      ${asStaff?"":`<button class="btn fp-commit" data-sid="${s.id}">${committed?"Un-commit":"Commit (lock)"}</button>`}
+      <button class="btn fp-cancel" data-sid="${s.id}">Discard</button></div>
+      ${(asStaff&&committed)?'<div class="muted small" style="margin-top:6px">⚑ This pattern is committed — your edits go to admin for approval, so committed fixed shifts stay fair.</div>':""}`:'<div class="muted small" style="margin-top:6px">Read-only.</div>'}
+  </div>`; }
+function saveFixedPattern(sid,asStaff){ const s=S.staff.find(x=>x.id===sid); const d=fpDraft(s);
+  const committed=!!(s.fixedPattern&&s.fixedPattern.committed);
+  const clean={recurrence:d.recurrence||"weekly",A:d.A||{},B:d.B||{},committed:committed};
+  if(asStaff&&committed){
+    S.requests.unshift({id:"r"+Date.now(),type:"fixed",from:sid,pattern:clean,status:"pending",createdTs:Date.now()});
+    notify("admin",nameOf(sid)+" requested a change to their committed fixed pattern.");
+    logAudit("fixed.change-request",nameOf(sid)+" · "+fixedPatternSummary(clean),sid); alert("Sent to admin for approval.");
+  } else { s.fixedPattern=clean; logAudit("fixed.save",nameOf(sid)+(isAdmin()?" (admin)":"")+" · "+fixedPatternSummary(clean),S.viewAs);
+    if(isAdmin()&&sid!==S.viewAs)notify(sid,"Your fixed pattern was updated by admin."); }
+  delete _fpDraft[sid]; save(); render(); }
+function toggleFixedCommit(sid){ const s=S.staff.find(x=>x.id===sid); s.fixedPattern=s.fixedPattern||emptyPattern();
+  s.fixedPattern.committed=!s.fixedPattern.committed; logAudit("fixed.commit",nameOf(sid)+" → "+(s.fixedPattern.committed?"committed (locked)":"unlocked"),"admin");
+  notify(sid,"Your fixed pattern was "+(s.fixedPattern.committed?"committed (locked)":"unlocked")+" by admin."); delete _fpDraft[sid]; save(); render(); }
+function wireFixedEditors(){
+  document.querySelectorAll(".fp-p,.fp-z").forEach(sel=>sel.onchange=e=>{const t=e.target;setFpSlot(t.dataset.sid,t.dataset.wk,+t.dataset.wd,t.classList.contains("fp-p")?"period":"zone",t.value);});
+  document.querySelectorAll(".fp-rec").forEach(b=>b.onclick=()=>{const s=S.staff.find(x=>x.id===b.dataset.sid);fpDraft(s).recurrence=b.dataset.rec;render();});
+  document.querySelectorAll(".fp-save").forEach(b=>b.onclick=()=>saveFixedPattern(b.dataset.sid,b.dataset.asstaff==="1"));
+  document.querySelectorAll(".fp-commit").forEach(b=>b.onclick=()=>toggleFixedCommit(b.dataset.sid));
+  document.querySelectorAll(".fp-cancel").forEach(b=>b.onclick=()=>{delete _fpDraft[b.dataset.sid];render();});
+}
+function fixedAdminCard(r){ return `<div class="card"><div class="row" style="align-items:flex-end">
+  <span class="grow"><b>${nameOf(r.from)}</b> · fixed-pattern change <span class="pill warn">approval needed</span>
+  <div class="muted small" style="margin-top:4px">${escapeHTML(fixedPatternSummary(r.pattern))}</div></span>
+  <div class="field" style="flex:1;min-width:140px"><input id="cmt-${r.id}" placeholder="Comment (optional)"></div>
+  <button class="btn sm" data-decline="${r.id}">Decline</button><button class="btn primary sm" data-approve="${r.id}">Approve</button></div></div>`; }
+
+/* ---------- rendering ---------- */
+const TABS=[["setup","Admin settings","admin"],["staff","Staff","admin"],["roster","Roster","all"],["selfroster","Self-roster","all"],["daily","Daily","all"],["planner","Leave planner","all"],["requests","Requests","all"],["my","My shifts","all"],["messages","Messages","all"],["audit","Audit","admin"]];
+function authScreen(){
+  if(authState==="checking")return `<div class="card" style="max-width:420px;margin:24px auto"><h2>Connecting…</h2><div class="sub">Reaching the roster server.</div></div>`;
+  if(authState==="denied")return `<div class="card" style="max-width:440px;margin:24px auto"><h2>No access yet</h2><div class="sub">You're signed in as <b>${escapeHTML(authUser||"")}</b>, but that email isn't on the roster. Ask the admin to add your email to your Staff record (or to the admin list), then sign in again.</div><div class="flexbtns"><button class="btn" id="authOut">Sign out</button></div></div>`;
+  if(_otpSent)return `<div class="card" style="max-width:420px;margin:24px auto"><h2>Enter your code</h2><div class="sub">We emailed a 6-digit code to <b>${escapeHTML(_otpEmail)}</b>. Type it below — no need to leave this page, and you'll stay signed in on this device.</div>
+    <div class="row" style="margin-top:6px"><div class="field" style="flex:1"><label>6-digit code</label><input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" id="authCode" placeholder="123456"></div><button class="btn primary" id="authVerify">Verify</button></div>
+    <div class="flexbtns" style="margin-top:8px"><button class="btn sm" id="authResend">Resend code</button><button class="btn sm" id="authBack">Use a different email</button></div>
+    <div id="authMsg" class="muted small" style="margin-top:10px"></div></div>`;
+  return `<div class="card" style="max-width:420px;margin:24px auto"><h2>Myrosta — sign in</h2><div class="sub">Enter your work email and we'll send a 6-digit code. You stay signed in on this device, so it's a one-time thing.</div>
+    <div class="row" style="margin-top:6px"><div class="field" style="flex:1"><label>Email</label><input type="email" id="authEmail" placeholder="you@hospital..."></div><button class="btn primary" id="authSend">Send code</button></div>
+    <div id="authMsg" class="muted small" style="margin-top:10px"></div></div>`;
+}
+function wireAuth(){
+  const out=document.getElementById("authOut"); if(out)out.onclick=authSignOut;
+  const setMsg=t=>{const m=document.getElementById("authMsg"); if(m)m.textContent=t;};
+  const send=document.getElementById("authSend");
+  if(send)send.onclick=async()=>{ const em=(document.getElementById("authEmail").value||"").trim(); if(!em)return; send.disabled=true; setMsg("Sending your code…");
+    const r=await authSendCode(em); send.disabled=false;
+    if(r===true)render(); else setMsg((r&&r.error)||"Couldn't send — check the email and try again."); };
+  const verify=document.getElementById("authVerify");
+  if(verify)verify.onclick=async()=>{ const c=(document.getElementById("authCode").value||"").trim(); if(!c)return; verify.disabled=true; setMsg("Checking…");
+    const r=await authVerifyCode(c); verify.disabled=false;
+    if(r!==true)setMsg((r&&r.error)||"That code didn't work — check it, or resend a new one."); };
+  const cin=document.getElementById("authCode"); if(cin){cin.focus(); cin.onkeydown=e=>{ if(e.key==="Enter"){const v=document.getElementById("authVerify"); if(v)v.click();} };}
+  const resend=document.getElementById("authResend");
+  if(resend)resend.onclick=async()=>{ resend.disabled=true; setMsg("Resending…"); const r=await authSendCode(_otpEmail); resend.disabled=false; setMsg(r===true?("New code sent to "+_otpEmail+"."):((r&&r.error)||"Couldn't resend just yet — wait a moment and try again.")); };
+  const back=document.getElementById("authBack");
+  if(back)back.onclick=()=>{ _otpSent=false; _otpEmail=""; render(); };
+}
+function render(){
+  const cp=document.getElementById("cloudPill");
+  if(cloudOn()){const cm={checking:["warn","Cloud …"],connecting:["warn","Cloud …"],connected:["ok","Cloud ●"],error:["danger","Cloud ✕"],local:["muted","Cloud"]}[cloudState]||["muted","Cloud"];cp.style.display="";cp.className="pill "+cm[0];cp.textContent=cm[1];}
+  else cp.style.display="none";
+  const authMode=cloudOn()&&authState!=="in";
+  document.getElementById("cycleWrap").style.display=authMode?"none":"";
+  document.getElementById("statusPill").style.display=authMode?"none":"";
+  document.getElementById("bell").style.display=authMode?"none":"";
+  document.getElementById("viewAsWrap").style.display=authMode?"none":"";
+  document.getElementById("logoutBtn").style.display=(cloudOn()&&authState==="in")?"":"none";
+  if(authMode){ document.getElementById("tabs").innerHTML=""; document.getElementById("app").innerHTML=authScreen(); wireAuth(); return; }
+  if(!isAdmin() && ["setup","staff","audit"].includes(S.tab))S.tab="my";
+  document.getElementById("tabs").innerHTML=TABS.filter(t=>t[2]==="all"||isAdmin())
+    .map(([id,l])=>`<button class="tab ${S.tab===id?"active":""}" data-tab="${id}">${l}</button>`).join("");
+  const uc=unreadCount(S.viewAs);
+  const bb=document.getElementById("bellBadge");
+  bb.textContent=uc?uc:""; bb.style.display=uc?"flex":"none";
+  const a=active();
+  const cs=document.getElementById("cycleSel");
+  const ordered=S.cycles.slice().sort((x,y)=>x.cycle.start<y.cycle.start?-1:1);
+  cs.innerHTML=ordered.map(c=>`<option value="${c.id}" ${c.id===S.activeId?"selected":""}>${cyLabel(c)} · ${STATUS[c.status]?STATUS[c.status].label:c.status}${c.archived?" · archived":""}</option>`).join("");
+  const st=STATUS[a.status]||STATUS.draft;
+  document.getElementById("statusPill").className="pill "+st.cls;
+  document.getElementById("statusPill").textContent=st.label;
+  const vw=document.getElementById("viewAsWrap");
+  if(cloudOn()&&!isAdmin()){ vw.innerHTML='<span class="muted" style="font-size:13px">Signed in: <b>'+escapeHTML(nameOf(S.viewAs))+'</b></span>'; }
+  else{ vw.innerHTML='View as <select id="viewAs"></select>'; const va=document.getElementById("viewAs"); va.innerHTML='<option value="admin">Admin</option>'+S.staff.map(s=>`<option value="${s.id}">${s.name}</option>`).join(""); va.value=S.viewAs; }
+  const app=document.getElementById("app");
+  try{
+    if(S.tab==="setup")app.innerHTML=viewSetup();
+    else if(S.tab==="staff")app.innerHTML=viewStaff();
+    else if(S.tab==="roster")app.innerHTML=viewRoster();
+    else if(S.tab==="selfroster")app.innerHTML=viewSelfRoster();
+    else if(S.tab==="daily")app.innerHTML=viewDaily();
+    else if(S.tab==="planner")app.innerHTML=viewPlanner();
+    else if(S.tab==="requests")app.innerHTML=viewRequests();
+    else if(S.tab==="audit")app.innerHTML=viewAudit();
+    else if(S.tab==="messages")app.innerHTML=viewMessages();
+    else if(S.tab==="notifs")app.innerHTML=viewNotifs();
+    else app.innerHTML=viewMy();
+  }catch(e){
+    console.error("view render error",e);
+    app.innerHTML=`<div class="card"><h2>Couldn't open this tab</h2><pre style="white-space:pre-wrap;font-size:12px;color:var(--danger-t)">${escapeHTML(String(e&&e.stack||e))}</pre><button class="btn" id="hardReset">Reset all data &amp; reload</button></div>`;
+  }
+  try{ wire(); }catch(e){ console.error("wire error",e); }
+}
+
+function statusActions(){
+  const map={
+    draft:[["open","Release for self-roster","primary"],["published","Publish (go live)",""]],
+    open:[["closed","Close roster","primary"],["draft","Back to draft",""]],
+    closed:[["published","Publish (go live)","primary"],["open","Reopen",""],["draft","Back to draft",""]],
+    published:[["draft","Unpublish / edit",""]]
+  };
+  return (map[active().status]||[]).map(([to,l,c])=>`<button class="btn ${c} sm" data-status="${to}">${l}</button>`).join("");
+}
+function viewSetup(){
+  const a=active();
+  const ds=datesOf(a.cycle);
+  const st=STATUS[a.status];
+  const live=S.cycles.filter(c=>!c.archived).sort((x,y)=>x.cycle.start<y.cycle.start?-1:1);
+  const archived=S.cycles.filter(c=>c.archived).sort((x,y)=>x.cycle.start<y.cycle.start?1:-1);
+  return `
+  ${S.guideDismissed?'<div style="margin-bottom:8px"><button class="btn sm" id="guideShow">▸ Setup guide</button></div>':setupGuideHTML()}
+  <div class="card">
+    <h2>Roster status — ${cyLabel(a)}</h2>
+    <div class="sub">Applies to the cycle selected in the header. Each cycle has its own status.</div>
+    <div class="row" style="align-items:center">
+      <span class="pill ${st.cls}" style="font-size:13px">${st.label}</span>
+      <span class="grow"></span>
+      ${a.archived?'<span class="muted small">Archived — restore below to edit.</span>':statusActions()}
+    </div>
+    <div class="note">Draft → build &amp; pre-fill · Open → staff self-roster · Closed → locked for review · Published → live for everyone.${a.archived?"":" Once your next cycle is published you can <b>archive</b> this one — optional, never automatic."}</div>
+    ${a.archived?`<div class="flexbtns"><button class="btn sm" data-restore="${a.id}">Restore to live</button></div>`:`<div class="flexbtns"><button class="btn sm" data-archive="${a.id}">Archive this cycle</button></div>`}
+  </div>
+
+  <div class="card">
+    <h2>Roster cycle</h2>
+    <div class="sub">Dates for the selected cycle. Use “Prepare next cycle” to start the upcoming one while this stays live.</div>
+    <div class="row">
+      <div class="field"><label>Start date</label><input type="date" id="cycStart" value="${a.cycle.start}" ${canEdit()?"":"disabled"}></div>
+      <div class="field"><label>Length (weeks)</label><input type="number" id="cycWeeks" min="1" max="26" value="${a.cycle.weeks}" style="width:90px" ${canEdit()?"":"disabled"}></div>
+      <button class="btn primary" id="saveCycle" ${canEdit()?"":"disabled"}>Apply</button>
+    </div>
+    <div class="note">Selected cycle: <b>${fmt(ds[0],{day:"numeric",month:"short",year:"numeric"})}</b> → <b>${fmt(ds[ds.length-1],{day:"numeric",month:"short",year:"numeric"})}</b> · ${ds.length} days</div>
+    <div class="flexbtns"><button class="btn sm" id="prepNext">→ Prepare next cycle</button></div>
+    <div class="muted small" style="margin-top:6px">Creates a fresh draft starting the day after your latest cycle ends. Current cycle stays live; staff, zones &amp; settings carry over.</div>
+    ${live.length>1?`<h3 style="font-size:14px;margin:16px 0 6px">Live cycles (${live.length})</h3>`+live.map(c=>`
+      <div class="listrow"><span class="grow">${cyLabel(c)} <span class="pill ${STATUS[c.status].cls}" style="font-size:11px">${STATUS[c.status].label}</span>${c.id===S.activeId?' <span class="badge-mode">selected</span>':""}</span>
+        ${c.id===S.activeId?"":`<button class="btn sm" data-select="${c.id}">Open</button>`}</div>`).join(""):""}
+    ${archived.length?`<h3 style="font-size:14px;margin:16px 0 6px">Previous cycles (${archived.length})</h3>`+archived.map(c=>`
+      <div class="listrow"><span class="grow">${cyLabel(c)} <span class="pill muted" style="font-size:11px">archived</span></span>
+        <button class="btn sm" data-select="${c.id}">View</button>
+        <button class="btn sm" data-restore="${c.id}">Restore</button>
+        <button class="btn danger sm" data-del="${c.id}">Delete</button></div>`).join(""):""}
+  </div>
+
+  <div class="card">
+    <h2>Import data</h2>
+    <div class="sub">Upload your organisation's Excel templates — the app reads them as-is and normalises codes. Roster → adds a new cycle. Leave planner → merges leave + EFT/hours. EFT tracker → sets EFT, hours and employee numbers (which feed the payroll export).</div>
+    <div class="row">
+      <div class="field"><label>Staff list (.xlsx)</label><input type="file" id="impStaff" accept=".xlsx,.xls"></div>
+      <div class="field"><label>Roster template (.xlsx)</label><input type="file" id="impRoster" accept=".xlsx,.xls"></div>
+      <div class="field"><label>Leave planner (.xlsx)</label><input type="file" id="impLeave" accept=".xlsx,.xls"></div>
+      <div class="field"><label>EFT tracker (.xlsx)</label><input type="file" id="impEft" accept=".xlsx,.xls"></div>
+    </div>
+    <div class="flexbtns" style="margin-top:8px"><button class="btn sm" id="dlStaffTpl">⬇ Staff template</button><button class="btn sm" id="expEft">⬇ Export EFT tracker</button></div>
+    <div class="muted small" style="margin-top:6px">EFT tracker auto-detects the unit (EFT fraction or hours/week), uses the week matching this cycle, and matches consultants by employee # or surname. Tip: import the cleaned copy for best results. Needs internet (loads the spreadsheet reader).</div>
+  </div>
+
+  <div class="card">
+    <h2>Payroll export (RosterOn)</h2>
+    <div class="sub">The Roster tab's <b>⬇ Payroll (RosterOn)</b> button builds a one-row-per-shift file. Upload RosterOn's import template here and the app exports in <b>its exact columns</b>. No template = a standard layout.</div>
+    <div class="row">
+      <div class="field"><label>RosterOn template (.csv / .xlsx)</label><input type="file" id="payTpl" accept=".csv,.xlsx,.xls"></div>
+      <div class="field"><label>Date format</label><select id="payDateFmt">${DATE_FORMATS.map(f=>`<option value="${f[0]}" ${(S.payrollDateFmt||"DD/MM/YYYY")===f[0]?"selected":""}>${f[0]} — ${f[1]}</option>`).join("")}</select></div>
+    </div>
+    ${S.payrollTemplate&&S.payrollTemplate.headers&&S.payrollTemplate.headers.length?`
+    <div class="note" style="margin-top:10px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <b>Using template:</b> ${escapeHTML(S.payrollTemplate.filename||"uploaded")} <span class="pill ok">${S.payrollTemplate.headers.length} columns</span>
+        <span class="grow"></span>
+        <button class="btn sm" id="payTplClear">Clear template</button>
+      </div>
+      <div class="sub" style="margin:10px 0 0">Map each RosterOn column to the roster data that fills it — auto-detected, adjust any that are wrong.</div>
+      <table class="maptbl"><tr><th>RosterOn column</th><th>Filled with</th></tr>
+      ${S.payrollTemplate.headers.map((h,i)=>`<tr><td>${escapeHTML(h||"(blank)")}</td><td>
+        <select class="payMap" data-col="${i}"><option value="">— leave blank —</option>${PAYROLL_FIELDS.map(f=>`<option value="${f[0]}" ${((S.payrollTemplate.map||[])[i]===f[0])?"selected":""}>${f[1]}</option>`).join("")}</select>
+      </td></tr>`).join("")}
+      </table>
+    </div>`:`<div class="muted small" style="margin-top:6px">No template uploaded — export uses standard columns: Employee No, Surname, Given Name, Date, Shift Code, Start, End, Hours, Unit, Notes.</div>`}
+    <div class="muted small" style="margin-top:8px">Shift times: AM 08:00–16:00 · PM 15:30–23:30 · On-call 23:30–08:00 (8.5h, auto-added for ROC+OC) · CST 08:00–16:00 · Leave = 8h × EFT. Date format is set above.</div>
+  </div>
+
+  <div class="card">
+    <h2>Backup &amp; sharing</h2>
+    <div class="sub">Download the entire app's data as a file — to back it up, move it to another device, or share the exact dataset with a colleague. Restore loads a backup back in.</div>
+    <div class="flexbtns">
+      <button class="btn" id="bkpDl">⬇ Download backup (.json)</button>
+      <label class="btn" style="cursor:pointer">Restore from backup<input type="file" id="bkpUp" accept=".json" style="display:none"></label>
+    </div>
+    <div class="muted small" style="margin-top:6px">For real multi-user access (staff on their own devices, shared live data), see the deployment guide — that step needs a host + backend account.</div>
+  </div>
+  ${cloudOn()?`<div class="card">
+    <h2>Access control (cloud)</h2>
+    <div class="sub">Who is allowed to sign in and reach the database. Allowed email domains: <b>${(CLOUD.allowedDomains||[]).join(", ")||"any (set CLOUD.allowedDomains)"}</b>.</div>
+    <div class="flexbtns"><button class="btn" id="memSync">Sync allow-list from staff + admins</button></div>
+    <h3 style="font-size:14px;margin:14px 0 6px">Allow-list members (${_members.length})</h3>
+    ${_members.length?_members.map(m=>`<div class="listrow"><span class="grow">${escapeHTML(m.email)} <span class="pill ${m.role==="admin"?"ok":"muted"}">${escapeHTML(m.role||"staff")}</span></span><button class="btn danger sm" data-memrm="${escapeHTML(m.email)}">Remove</button></div>`).join(""):'<div class="muted">No members yet — click Sync to add your staff + admins, then only they can access the data.</div>'}
+    <div class="row" style="align-items:flex-end;margin-top:10px">
+      <div class="field" style="flex:1;min-width:180px"><label>Email</label><input id="memEmail" placeholder="person@hospital..."></div>
+      <div class="field"><label>Role</label><select id="memRole"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
+      <button class="btn primary" id="memAdd">Add</button>
+    </div>
+    <div class="muted small" style="margin-top:6px">Run the SQL in SUPABASE.md first to create the table + database rules. The database then blocks anyone not on this list — even if they have a login.</div>
+  </div>`:""}
+
+  <div class="card">
+    <h2>Zones</h2>
+    <div class="sub">Each zone is one slot per period per day. Add or remove to match your department. Tick which periods it runs in; PM label is optional (e.g. ROC → ROC+OC).</div>
+    <div id="zoneList"></div>
+    <div class="flexbtns"><button class="btn sm" id="addZone">+ Add zone</button></div>
+  </div>
+
+  <div class="card">
+    <h2>Staff required per shift</h2>
+    <div class="sub">Minimums fill first; extra slots (up to max) unlock only after both minimums are met. You choose the order extras open — currently <b>${unlockOrderLabel()}</b>.</div>
+    <div class="row">
+      <div class="field"><label>AM minimum</label><input type="number" min="0" id="amMin" value="${S.staffing.amMin}" style="width:80px"></div>
+      <div class="field"><label>AM maximum</label><input type="number" min="0" id="amMax" value="${S.staffing.amMax}" style="width:80px"></div>
+      <div class="field"><label>PM minimum</label><input type="number" min="0" id="pmMin" value="${S.staffing.pmMin}" style="width:80px"></div>
+      <div class="field"><label>PM maximum</label><input type="number" min="0" id="pmMax" value="${S.staffing.pmMax}" style="width:80px"></div>
+      <button class="btn primary" id="saveStaffing">Save</button>
+    </div>
+    <div class="row" style="margin-top:4px">
+      <div class="field"><label>Extra slots open</label>
+        <div class="seg" id="uoSeg">
+          <button data-uo="both" class="${S.unlockOrder==="both"?"on":""}">AM &amp; PM together</button>
+          <button data-uo="amfirst" class="${S.unlockOrder==="amfirst"?"on":""}">AM before PM</button>
+          <button data-uo="pmfirst" class="${(S.unlockOrder||"pmfirst")==="pmfirst"?"on":""}">PM before AM</button>
+        </div></div>
+    </div>
+    <div class="note">Min/max set how many can work each period; "Extra slots open" sets whether AM or PM extras (above the minimum) unlock first — different departments prefer different orders. Max can't exceed zones for that period (AM zones: ${zonesFor("AM").length}, PM zones: ${zonesFor("PM").length}).</div>
+  </div>
+
+  <div class="card">
+    <h2>Leave capacity</h2>
+    <div class="sub">Maximum total EFT allowed on leave on any single day. The leave planner flags days over this, and approvals warn when exceeded.</div>
+    <div class="row">
+      <div class="field"><label>Max EFT on leave / day</label><input type="number" step="0.1" min="0" id="leaveCap" value="${S.leaveCapEft}" style="width:90px"></div>
+      <button class="btn primary" id="saveLeaveCap">Save</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Quota &amp; fairness</h2>
+    <div class="sub">Clinical-shift quota is counted and capped per this period (default <b>fortnight</b> — matches pay). Targets auto-split from each consultant's cycle quota, pro-rata to non-leave days. <b>Edit any cell to override; clear it to revert to auto.</b></div>
+    <div class="row">
+      <div class="field"><label>Count quota per</label>
+        <div class="seg" id="qpSeg">
+          <button data-qp="cycle" class="${S.quotaPeriod==="cycle"?"on":""}">Cycle</button>
+          <button data-qp="week" class="${S.quotaPeriod==="week"?"on":""}">Week</button>
+          <button data-qp="fortnight" class="${S.quotaPeriod==="fortnight"?"on":""}">Fortnight</button>
+          <button data-qp="month" class="${S.quotaPeriod==="month"?"on":""}">Month</button>
+        </div></div>
+      <div class="field"><label>Per-period cap</label>
+        <div class="seg" id="qcSeg">
+          <button data-qc="hard" class="${S.quotaCapMode==="hard"?"on":""}">Hard (block)</button>
+          <button data-qc="soft" class="${S.quotaCapMode==="soft"?"on":""}">Soft (flag)</button>
+          <button data-qc="off" class="${S.quotaCapMode==="off"?"on":""}">Off</button>
+        </div></div>
+    </div>
+    ${S.staff.length?`<div style="overflow-x:auto;margin-top:6px"><table class="maptbl"><tr><th>Consultant</th>${cyclePeriods().map(p=>`<th class="num">${p.label}</th>`).join("")}<th class="num">Cycle</th></tr>
+      ${S.staff.map(s=>{const t=periodTargetsOf(s);const tot=t.reduce((a,b)=>a+b,0);return `<tr><td class="namecol">${escapeHTML(s.name)}</td>${t.map((v,i)=>{const ov=s.periodTargets&&s.periodTargets[i]!=null&&s.periodTargets[i]!=="";return `<td class="num"><input type="number" min="0" class="qt-cell" data-sid="${s.id}" data-pi="${i}" value="${v}" style="${ov?"font-weight:600;color:var(--accent)":""}"></td>`;}).join("")}<td class="num"><b class="qt-total">${tot}</b></td></tr>`;}).join("")}
+      </table></div>
+      <div class="flexbtns" style="margin-top:8px"><button class="btn sm" id="qtReset">Reset all to auto</button></div>`:'<div class="muted small" style="margin-top:6px">Add staff to set per-period targets.</div>'}
+  </div>
+
+  <div class="card">
+    <h2>Self-roster method</h2>
+    <div class="sub">How shifts are claimed during self-rostering. All methods keep the guards: taken slots disappear, the 4th shift opens only after minimums (${unlockOrderLabel()}), and bookings respect each consultant's per-${S.quotaPeriod||"fortnight"} quota.</div>
+    <div class="seg" id="fairSeg">
+      <button data-f="waves" class="${S.fairness==="waves"?"on":""}">Cohort waves</button>
+      <button data-f="adjust" class="${S.fairness==="adjust"?"on":""}">Auto-draft + adjust</button>
+      <button data-f="snake" class="${S.fairness==="snake"?"on":""}">Snake-draft rounds</button>
+      <button data-f="guarded" class="${S.fairness==="guarded"?"on":""}">Guarded free-for-all</button>
+    </div>
+    <div class="sub" style="margin-top:8px">
+      ${S.fairness==="waves"?"<b>Cohort waves:</b> staff are split into random groups; one wave picks in parallel, then the next. Order is re-randomised each cycle so it rotates. Fast and fair.":
+        S.fairness==="adjust"?"<b>Auto-draft + adjust:</b> you auto-draft a fair, covered baseline, then open it so staff freely drop / claim / swap within their quota. Smoothest.":
+        S.fairness==="snake"?"<b>Snake-draft rounds:</b> staff take strict turns; order reverses each round so no one is always last. Most ceremony.":
+        "<b>Guarded free-for-all:</b> everyone picks at once, first-come, within the guards. Simple."}
+    </div>
+    ${S.fairness==="waves"?`<div class="row" style="margin-top:8px"><div class="field"><label>Number of waves</label>
+      <div class="seg" id="wcSeg">${[2,3,4].map(n=>`<button data-wc="${n}" class="${(S.waveCount||3)===n?"on":""}">${n}</button>`).join("")}</div></div></div>`:""}
+    <div class="flexbtns"><button class="btn danger sm" id="resetAll">New organisation — clear all data</button></div>
+  </div>`;
+}
+function renderZoneList(){
+  const el=document.getElementById("zoneList");if(!el)return;
+  el.innerHTML=S.zones.map(z=>`
+    <div class="listrow" data-z="${z.id}">
+      <input class="z-name" value="${z.name}" style="width:120px" placeholder="Name">
+      <label><input type="checkbox" class="z-am" ${z.am?"checked":""}> AM</label>
+      <label><input type="checkbox" class="z-pm" ${z.pm?"checked":""}> PM</label>
+      <input class="z-pml" value="${z.pmLabel||""}" placeholder="PM label (opt)" style="width:130px">
+      <span class="grow"></span>
+      <button class="btn danger sm z-del">Remove</button>
+    </div>`).join("");
+  el.querySelectorAll("[data-z]").forEach(rowEl=>{
+    const id=rowEl.dataset.z; const z=zoneById(id);
+    rowEl.querySelector(".z-name").onchange=e=>{z.name=e.target.value;save();};
+    rowEl.querySelector(".z-am").onchange=e=>{z.am=e.target.checked;save();};
+    rowEl.querySelector(".z-pm").onchange=e=>{z.pm=e.target.checked;save();};
+    rowEl.querySelector(".z-pml").onchange=e=>{z.pmLabel=e.target.value;save();};
+    rowEl.querySelector(".z-del").onclick=()=>{S.zones=S.zones.filter(x=>x.id!==id);save();render();};
+  });
+}
+
+function viewStaff(){
+  const rows=S.staff.map(s=>`
+    <div class="listrow" data-s="${s.id}">
+      <input class="s-name" value="${s.name}" style="width:160px">
+      <input class="s-init" value="${s.initials}" style="width:52px" title="Initials">
+      <input class="s-mob" value="${s.mobile||""}" placeholder="Mobile" style="width:110px">
+      <input class="s-email" value="${s.email||""}" placeholder="Email" style="width:150px">
+      <select class="s-mode" title="Rostering mode">
+        <option value="self" ${s.mode==="self"?"selected":""}>Self-roster</option>
+        <option value="fixed" ${s.mode==="fixed"?"selected":""}>Fixed pattern</option>
+        <option value="preference" ${s.mode==="preference"?"selected":""}>Pref + auto-draft</option>
+      </select>
+      <label title="Clinical shifts per cycle">Quota <input type="number" class="s-quota" value="${s.quota}" style="width:58px"></label>
+      <label title="Full-time equivalent">EFT <input type="number" step="0.01" class="s-eft" value="${round2(s.eft)}" style="width:58px"></label>
+      <label title="Hours per fortnight">Hrs <input type="number" step="0.01" class="s-hrs" value="${round2(s.hrsFortnight)}" style="width:58px"></label>
+      <label title="RosterOn / payroll employee number — used in the payroll export">Payroll# <input type="text" class="s-pay" value="${s.payrollId||''}" placeholder="—" style="width:80px"></label>
+      <span class="grow"></span>
+      <button class="btn sm s-fp" data-sid="${s.id}">Pattern${s.fixedPattern&&s.fixedPattern.committed?" 🔒":""}${S.requests.find(r=>r.type==="fixed"&&r.from===s.id&&r.status==="pending")?" ⚑":""}</button>
+      <button class="btn danger sm s-del">Remove</button>
+    </div>${_fpOpen.has(s.id)?fixedPatternEditorHTML(s,true,false):""}`).join("");
+  const junk=S.staff.filter(s=>!isNameCell(s.name));
+  return `<div class="card">
+    <h2>Staff <span class="muted small">(${S.staff.length})</span></h2>
+    <div class="sub">Add / remove staff, set rostering mode and clinical-shift quota (from EFT). Import from your template lands here next.</div>
+    ${junk.length?`<div class="note" style="border-left:4px solid var(--danger);margin-bottom:8px">⚠ ${junk.length} row${junk.length>1?"s":""} look like spreadsheet labels, not people: <b>${junk.map(s=>escapeHTML(s.name)).join(", ")}</b>. <button class="btn sm" id="tidyStaff" style="margin-left:6px">🧹 Remove ${junk.length>1?"them":"it"}</button></div>`:""}
+    ${rows}
+    <div class="flexbtns"><button class="btn sm" id="addStaff">+ Add staff</button></div>
+  </div>`;
+}
+
+function dayGap(isoD){const {am,pm}=clinicalCounts(isoD,null);return {am:Math.max(0,S.staffing.amMin-am),pm:Math.max(0,S.staffing.pmMin-pm)};}
+function ragFor(isoD){const {am,pm}=clinicalCounts(isoD,null);const aM=S.staffing.amMin,pM=S.staffing.pmMin;if(am<aM||pm<pM)return"r";if(am===aM||pm===pM)return"a";return"g";}
+function ragColor(x){return x==="r"?"var(--rag-r)":x==="a"?"var(--rag-a)":"var(--rag-g)";}
+function viewRoster(){
+  const ds=cycleDates();
+  let totalGap=0;
+  const head=`<tr><th class="corner namecol">Consultant</th>`+ds.map(d=>{
+    const we=[0,6].includes(d.getDay());const g=dayGap(iso(d));const isGap=g.am>0||g.pm>0;
+    const gc=gapsOn?(isGap?"gaphdr":"dimcol"):(we?"we":"");
+    return `<th class="${gc}"><div class="dayname">${DOW[d.getDay()]}</div><div class="daynum">${d.getDate()}</div><div class="muted" style="font-size:9px">${fmt(d,{month:"short"})}</div></th>`;
+  }).join("")+`</tr>`;
+  const caprow=`<tr><th class="namecol" style="font-weight:500;color:var(--muted);font-size:11px">Cover · AM / PM</th>`+ds.map(d=>{
+    const isoD=iso(d);const {am,pm}=clinicalCounts(isoD,null);const we=[0,6].includes(d.getDay());
+    const g=dayGap(isoD);const isGap=g.am>0||g.pm>0;totalGap+=g.am+g.pm;
+    const amok=am>=S.staffing.amMin, pmok=pm>=S.staffing.pmMin;
+    const cls=gapsOn?(isGap?"gapcell":"dimcol"):(we?"we":"");
+    const bar=`<div style="height:3px;border-radius:2px;background:${ragColor(ragFor(isoD))};margin:1px 5px 3px"></div>`;
+    const inner=(gapsOn&&isGap)
+      ? bar+`<div class="cap"><b>need ${[g.am?"AM "+g.am:"",g.pm?"PM "+g.pm:""].filter(Boolean).join(", ")}</b></div>`
+      : bar+`<div class="cap"><span style="color:${amok?"var(--am-t)":"var(--rag-r)"}"><b>${am}</b></span> / <span style="color:${pmok?"var(--pm-t)":"var(--rag-r)"}"><b>${pm}</b></span></div>`;
+    return `<td class="${cls}">${inner}</td>`;
+  }).join("")+`</tr>`;
+  let redD=0,ambD=0; ds.forEach(d=>{const r=ragFor(iso(d));if(r==="r")redD++;else if(r==="a")ambD++;});
+  const statusPill=!S.staff.length?"":(redD?`<span class="pill danger">● ${redD} day${redD>1?"s":""} need cover</span>`:(ambD?`<span class="pill warn">● ${ambD} at minimum</span>`:`<span class="pill ok">● Fully covered</span>`));
+  const editable=canEdit();
+  const body=S.staff.map(s=>{
+    return `<tr><td class="namecol">${s.name} <span class="badge-mode">${({self:"self",fixed:"fix",preference:"pref"})[s.mode]}</span></td>`+ds.map(d=>{
+      const isoD=iso(d);const sh=getShift(s.id,isoD);const we=[0,6].includes(d.getDay());
+      const g=dayGap(isoD);const isGap=g.am>0||g.pm>0;
+      const gc=gapsOn?(isGap?(we?"we":""):"dimcol"):(we?"we":"");
+      const note=sh.note?`title="✎ ${escapeHTML(sh.note)} — ${escapeHTML(sh.noteBy||"admin")}"`:"";
+      return `<td class="${editable?"cell":""} ${gc}" data-s="${s.id}" data-d="${isoD}" ${note}>${cellChip(sh)}${sh.note?'<span class="editdot"></span>':""}</td>`;
+    }).join("")+`</tr>`;
+  }).join("");
+  return `<div class="card" style="padding:14px 14px 10px">
+    ${archiveBanner()}
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <h2>Roster grid</h2>${statusPill}<span class="grow"></span>
+      <button class="btn sm ${gapsOn?"primary":""}" id="gapsToggle">${gapsOn?"✓ Gaps ("+totalGap+" short)":"Show gaps"}</button>
+      <button class="btn sm" id="rosXls">⬇ Excel</button><button class="btn sm" id="rosCsv">⬇ CSV</button>
+      <button class="btn sm" id="rosPay" title="RosterOn payroll import — one row per shift, with times &amp; hours">⬇ Payroll (RosterOn)</button>
+    </div>
+    <div class="sub">${editable?"Click any cell to assign. ":"Read-only. "}Capacity-aware: a zone taken by one person is disabled for everyone else; the 4th+ slot stays locked until minimums are met (${unlockOrderLabel()}).</div>
+    ${editable?"":lockNote()}
+    ${S.staff.length?"":`<div class="note">No staff yet. Import your roster in <b>Admin settings → Import data</b>, or add staff in the <b>Staff</b> tab.</div>`}
+    ${editable&&needsComment()?`<div class="note">✎ This roster is <b>Published</b> — edits are allowed but need a comment, are logged, and show on hover (cells with a change have a dot).</div>`:""}
+    <div class="gridscroll"><table class="roster"><thead>${head}${caprow}</thead><tbody>${body}</tbody></table></div>
+    <div class="flexbtns" style="margin-top:12px;align-items:center">${legend()}<span style="width:1px;height:14px;background:var(--line2);margin:0 4px"></span><span class="muted small" style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:var(--rag-g)"></span>covered</span><span class="muted small" style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:var(--rag-a)"></span>at minimum</span><span class="muted small" style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:var(--rag-r)"></span>under‑staffed</span></div>
+  </div>`;
+}
+function viewDaily(){
+  const ds=cycleDates();
+  if(!dailyDate||!ds.some(d=>iso(d)===dailyDate))dailyDate=iso(ds[0]);
+  const nav=`<div class="row" style="align-items:center;margin-top:4px">
+    <button class="btn sm" id="dPrev">‹</button>
+    <input type="date" id="dDate" value="${dailyDate}" min="${iso(ds[0])}" max="${iso(ds[ds.length-1])}">
+    <button class="btn sm" id="dNext">›</button><span class="grow"></span>
+    <div class="seg"><button class="${dailyMode==="day"?"on":""}" data-dm="day">Day</button><button class="${dailyMode==="week"?"on":""}" data-dm="week">Week</button></div>
+  </div>`;
+  if(dailyMode==="week"){
+    const idx=ds.findIndex(x=>iso(x)===dailyDate);const wk=Math.floor(idx/7);const wd=ds.slice(wk*7,wk*7+7);
+    const hdr=`<tr><th class="namecol">Zone</th>`+wd.map(d=>`<th>${DOW[d.getDay()]}<div class="muted" style="font-size:9px">${d.getDate()}/${d.getMonth()+1}</div></th>`).join("")+`</tr>`;
+    const rows=p=>zonesFor(p).map(z=>`<tr><td class="namecol"><span class="chip ${p==="AM"?"am":"pm"}">${zoneLabel(z,p)}</span></td>`+wd.map(d=>{const s=staffInZone(iso(d),p,z.id);return `<td>${s?s.initials:'<span class="muted">·</span>'}</td>`;}).join("")+`</tr>`).join("");
+    return `<div class="card">${archiveBanner()}<h2>Daily roster — week ${wk+1}</h2>
+      <div class="sub">Who's on each zone, ${fmt(wd[0])} – ${fmt(wd[6])}.</div>${nav}
+      <div class="gridscroll" style="margin-top:12px"><table class="roster"><thead>${hdr}</thead><tbody>${rows("AM")}${rows("PM")}</tbody></table></div>
+      <div class="flexbtns" style="margin-top:12px">${legend()}</div></div>`;
+  }
+  const d=parseISO(dailyDate);const {am,pm}=clinicalCounts(dailyDate,null);
+  const cst=staffByKind(dailyDate,"cst"),leave=staffByKind(dailyDate,"leave");
+  const board=p=>zonesFor(p).map(z=>{const s=staffInZone(dailyDate,p,z.id);
+    return `<div class="listrow"><span class="chip ${p==="AM"?"am":"pm"}" style="min-width:62px;text-align:center">${zoneLabel(z,p)}</span><span class="grow">${s?s.name+(s.mobile?` <span class="muted small">· ${s.mobile}</span>`:""):'<span class="muted">— vacant</span>'}</span></div>`;}).join("");
+  return `<div class="card">${archiveBanner()}<h2>Daily roster</h2>
+    <div class="sub">${d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</div>${nav}
+    <h3 style="margin:16px 0 4px;font-size:14px">AM 08:00–16:00 <span class="pill ${am>=S.staffing.amMin?"ok":"warn"}">${am} on · min ${S.staffing.amMin}</span></h3>${board("AM")}
+    <h3 style="margin:16px 0 4px;font-size:14px">PM 15:30–23:30 <span class="pill ${pm>=S.staffing.pmMin?"ok":"warn"}">${pm} on · min ${S.staffing.pmMin}</span></h3>${board("PM")}
+    ${cst.length?`<h3 style="margin:16px 0 4px;font-size:14px">CST</h3><div>${cst.map(s=>`<span class="chip cst" style="margin:2px 4px 2px 0;display:inline-block">${s.name}</span>`).join("")}</div>`:""}
+    ${leave.length?`<h3 style="margin:16px 0 4px;font-size:14px">Leave</h3><div>${leave.map(s=>`<span class="chip leave" style="margin:2px 4px 2px 0;display:inline-block">${s.name} · ${getShift(s.id,dailyDate).code}</span>`).join("")}</div>`:""}
+  </div>`;
+}
+function shiftLabel(sh){if(!sh)return"Off";if(sh.kind==="clinical"){const z=zoneById(sh.zone);return (z?zoneLabel(z,sh.period):"?")+" "+sh.period;}if(sh.kind==="cst")return"CST";if(sh.kind==="leave")return sh.code;return"Off";}
+function cellChip(sh){
+  if(sh.kind==="clinical"){const z=zoneById(sh.zone);const lbl=z?zoneLabel(z,sh.period):"?";return `<span class="full-cell"><span class="chip ${sh.period==="AM"?"am":"pm"}">${lbl}</span></span>`;}
+  if(sh.kind==="cst")return `<span class="full-cell"><span class="chip cst">CST</span></span>`;
+  if(sh.kind==="leave"){const ls=leaveStyle(sh.code);return `<span class="full-cell"><span class="chip" style="background:${ls.bg};color:${ls.t}">${sh.code}</span></span>`;}
+  return "";
+}
+function legend(){
+  return `<span class="chip am">AM 08:00–16:00</span><span class="chip pm">PM 15:30–23:30</span><span class="chip cst">CST</span><span class="chip leave">Leave</span>`;
+}
+function escapeHTML(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function viewSelfRoster(){
+  const cyc=active(), adm=isAdmin(), ds=cycleDates(), open=cyc.status==="open";
+  let gaps=0; ds.forEach(d=>{const g=dayGap(iso(d));gaps+=g.am+g.pm;});
+  let head="";
+  if(adm){
+    head=`<div class="card"><h2>Self-roster control</h2>
+      <div class="sub">Status: <b>${STATUS[cyc.status].label}</b> (Open it in Admin settings to let staff book). Method: <b>${fairnessLabel(S.fairness)}</b>. Quota: <b>per ${S.quotaPeriod||"fortnight"}</b>.</div>
+      <div class="sub" style="margin-top:2px"><b>Workflow:</b> ① lay down fixed shifts → ② release for self-roster (Admin settings → Roster status) → ${S.fairness==="waves"?"③ assign &amp; run waves below":S.fairness==="adjust"?"③ auto-draft a baseline, then staff adjust":"staff fill the rest"} within their ${S.quotaPeriod||"fortnight"} quota.</div>
+      <div class="flexbtns">
+        <button class="btn primary" id="adFixed">① Auto-draft fixed shifts</button>
+        <button class="btn" id="adMin">Auto-draft → minimum cover</button>
+        <button class="btn" id="adMax">Auto-draft → fill to max</button>
+        <button class="btn danger" id="adClear">Clear all shifts</button>
+      </div>
+      ${S.fairness==="snake"?`<div class="flexbtns" style="margin-top:8px">${cyc.draft?`<span class="pill warn">Round ${cyc.draft.round} · turn: ${nameOf(whoseTurn())}</span><button class="btn sm" id="snAdvance">Skip turn</button><button class="btn danger sm" id="snStop">Stop rounds</button>`:`<button class="btn primary" id="snStart">Start snake rounds</button>`}</div>`:""}
+      ${S.fairness==="waves"?waveControlHTML(cyc):""}
+    </div>`;
+  }
+  const summary=`<div class="card" style="padding:12px 16px"><div class="grid-tiles">
+    <div class="tile"><div class="k">Cycle</div><div class="v" style="font-size:14px">${cyLabel(cyc)}</div></div>
+    <div class="tile"><div class="k">Status</div><div class="v" style="font-size:14px">${STATUS[cyc.status].label}</div></div>
+    <div class="tile"><div class="k">Coverage gaps</div><div class="v" style="${gaps?"color:var(--rag-r)":""}">${gaps}</div></div>
+  </div></div>`;
+  if(!S.staff.length)return head+summary+'<div class="card muted">No staff yet — import your roster first.</div>';
+  const snakeDraft=S.fairness==="snake"&&!!cyc.draft;
+  const wavesOn=S.fairness==="waves"&&!!cyc.waveState;
+  let sid;
+  if(!adm) sid=S.viewAs;
+  else if(snakeDraft&&whoseTurn()) sid=whoseTurn();
+  else if(wavesOn){ const cc=currentCohort(); sid=(myPerson&&cc.includes(myPerson))?myPerson:(cc.find(id=>!(cyc.waveState.done&&cyc.waveState.done[id]))||cc[0]||S.staff[0].id); }
+  else sid=(myPerson&&S.staff.find(x=>x.id===myPerson))?myPerson:S.staff[0].id;
+  _srSid=sid;
+  const s=S.staff.find(x=>x.id===sid);
+  const myTurn=(S.fairness!=="snake"||!cyc.draft||whoseTurn()===sid)&&(!wavesOn||currentCohort().includes(sid));
+  let booking="";
+  if(!open&&!adm){booking=`<div class="card"><h2>Self-roster</h2><div class="sub">Not open yet — your admin will release it. You can view the planned roster in the Roster tab.</div></div>`;}
+  else{
+    const canPick=(open||adm)&&myTurn;
+    const batch=!snakeDraft;  // non-snake methods select-then-confirm (batch); snake books one per turn
+    if(_srPickSid!==sid){_srPick=[];_srPickSid=sid;}
+    const personSel=adm?(snakeDraft
+      ? `<div class="sub" style="margin-bottom:8px">Booking as <b>${escapeHTML(s.name)}</b> — the current snake turn. Each pick passes to the next person automatically; use <b>Skip turn</b> above to advance manually.</div>`
+      : wavesOn
+      ? `<div class="row" style="margin-bottom:8px"><div class="field"><label>Booking as (Wave ${cyc.waveState.current+1})</label><select id="srWho">${currentCohort().map(id=>{const st=S.staff.find(x=>x.id===id);return `<option value="${id}" ${id===sid?"selected":""}>${st?escapeHTML(st.name):id}</option>`;}).join("")}</select></div></div>`
+      : `<div class="row" style="margin-bottom:8px"><div class="field"><label>Booking as</label><select id="srWho">${S.staff.map(x=>`<option value="${x.id}" ${x.id===sid?"selected":""}>${x.name}</option>`).join("")}</select></div></div>`):"";
+    let rows="";
+    ds.forEach(d=>{const isoD=iso(d), sh=getShift(sid,isoD);
+      let cell;
+      if(sh.kind==="leave")cell=shiftLine(sh);
+      else if(sh.kind==="clinical"||sh.kind==="cst")cell=`${shiftLine(sh)} ${canPick?`<button class="btn sm" data-unbook="${isoD}">Remove</button>`:""}`;
+      else{const opts=[];["AM","PM"].forEach(p=>{if(!periodUnlocked(isoD,p,sid).ok)return;zonesFor(p).forEach(z=>{if(zoneTaken(isoD,p,z.id,sid))return;const key=isoD+"|"+p+"|"+z.id;const sel=batch&&_srPick.includes(key);opts.push(`<button class="btn sm ${sel?"primary":""}" data-${batch?"pick":"book"}="${key}" ${canPick?"":"disabled"}>${sel?"✓ ":""}${p} · ${zoneLabel(z,p)}</button>`);});});
+        cell=opts.length?opts.join(" "):'<span class="muted small">no slots open</span>';}
+      rows+=`<div class="agday${[0,6].includes(d.getDay())?" we":""}"><div class="d"><div class="dn">${DOW[d.getDay()]}</div><div class="dd">${d.getDate()}</div></div><div class="grow">${cell}</div></div>`;});
+    const turnMsg=snakeDraft?(myTurn?"<b>It's your turn</b> — pick one shift.":"Waiting — it's <b>"+nameOf(whoseTurn())+"</b>'s turn."):
+      wavesOn?(currentCohort().includes(sid)?"<b>Your wave is open</b> — pick freely up to your "+(S.quotaPeriod||"fortnight")+" quota.":"Waiting — Wave "+(cyc.waveState.current+1)+" is picking now; you're in Wave "+(wavePosOf(sid)+1)+"."):
+      "Pick available shifts. Taken slots disappear; the 4th opens only after minimums ("+unlockOrderLabel()+").";
+    const w=cyc.waveState;
+    const confirmBar=(batch&&_srPick.length)?`<div class="flexbtns" style="margin:8px 0"><button class="btn primary srConfirm">Confirm ${_srPick.length} pick${_srPick.length>1?"s":""}</button><button class="btn sm srClear">Clear selection</button></div>`:"";
+    let bottomBtns="";
+    if(snakeDraft&&canPick)bottomBtns=`<div class="flexbtns" style="margin-top:8px"><button class="btn sm" id="snPass">Pass my turn</button></div>`;
+    else if(wavesOn&&currentCohort().includes(sid))bottomBtns=`<div class="flexbtns" style="margin-top:8px"><button class="btn sm" id="wvDone">${(w.done&&w.done[sid])?"↩ Reopen — I have more to pick":"✓ I'm done — pass my remaining picks"}</button></div>`;
+    booking=`<div class="card"><h2>Self-roster${adm?"":" — "+s.name}</h2>
+      <div class="sub">Booked <b>${clinicalCountFor(sid)}</b> / quota ${s.quota}. ${turnMsg}</div>
+      ${wavesOn?waveScheduleHTML(sid):""}
+      ${personSel}${confirmBar}${rows}${confirmBar}${bottomBtns}</div>`;
+  }
+  return head+summary+booking;
+}
+function tsFmt(ts){return new Date(ts).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});}
+function viewMessages(){
+  const me=S.viewAs, adm=isAdmin(), list=msgsFor(me);
+  const sel=(v,cur)=>v===cur?"selected":"";
+  const composer=adm
+    ? `<div class="row" style="align-items:flex-end">
+        <div class="field" style="flex:1;min-width:220px"><label>Message</label><textarea id="msgText" rows="3" style="width:100%;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line2);border-radius:var(--radius-sm)"></textarea></div>
+        <div class="field"><label>Audience</label><select id="msgTo"><option value="all" ${sel("all",replyTo)}>All staff</option>${S.staff.map(s=>`<option value="${s.id}" ${sel(s.id,replyTo)}>${s.name}</option>`).join("")}</select></div>
+        <button class="btn primary" id="msgSend">Broadcast</button></div>`
+    : `<div class="row" style="align-items:flex-end">
+        <div class="field"><label>To</label><select id="msgTo"><option value="admin" ${sel("admin",replyTo)}>Admin</option>${S.staff.filter(x=>x.id!==me).map(s=>`<option value="${s.id}" ${sel(s.id,replyTo)}>${s.name}</option>`).join("")}</select></div>
+        <div class="field" style="flex:1;min-width:200px"><label>Message</label><textarea id="msgText" rows="3" style="width:100%;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line2);border-radius:var(--radius-sm)"></textarea></div>
+        <button class="btn primary" id="msgSend">Send</button></div>`;
+  const items=list.length?list.map(m=>{
+    const mine=m.from===me, toLabel=m.to==="all"?"All staff":(m.to==="admin"?"Admin":nameOf(m.to));
+    const replyId=m.from==="admin"?"admin":m.from;
+    return `<div class="msg ${mine?"mine":""}"><div class="meta"><span><b>${nameOf(m.from)}</b> → ${toLabel}</span><span style="margin-left:auto">${tsFmt(m.ts)}</span></div><div>${escapeHTML(m.text)}</div>${mine?"":`<div style="margin-top:6px"><button class="btn sm" data-reply="${replyId}">Reply</button></div>`}</div>`;
+  }).join(""):'<div class="muted">No messages yet.</div>';
+  return `<div class="card">
+    <h2>${adm?"Messages & broadcasts":"Messages"}</h2>
+    <div class="sub">${adm?"Broadcast to all staff or message one person. Staff replies appear here too.":"Message admin, or a colleague directly — handy to agree a swap before sending a formal request."}</div>
+    ${composer}
+    <div style="margin-top:16px">${items}</div>
+  </div>`;
+}
+function viewNotifs(){
+  const me=S.viewAs, list=notifFor(me);
+  const items=list.length?list.map(n=>{
+    const read=(n.readBy||[]).includes(me);
+    return `<div class="notif ${read?"read":""}"><span class="dot"></span><div class="grow"><div>${escapeHTML(n.text)}</div><div class="muted small">${tsFmt(n.ts)}</div></div></div>`;
+  }).join(""):'<div class="muted">No notifications.</div>';
+  return `<div class="card"><h2>Notifications</h2><div class="sub">${isAdmin()?"Alerts for you as admin.":"Your roster alerts."}</div><div style="margin-top:12px">${items}</div></div>`;
+}
+
+/* ---------- requests, leave planner, audit, email, export ---------- */
+let lastEmail=null, plannerMonth=null;
+function requestHoursDays(r){const days=daysInRange(r.dateFrom,r.dateTo).length;const s=S.staff.find(x=>x.id===r.from)||{hrsFortnight:76};return {days:days,hrs:Math.round(days*hoursPerDay(s))};}
+function submitLeaveRequest(staffId,from,to,code,reason){
+  S.requests.unshift({id:"r"+Date.now(),type:"leave",from:staffId,dateFrom:from,dateTo:to,code:code,reason:reason||"",status:"pending",createdTs:Date.now()});
+  notify("admin",nameOf(staffId)+" requested "+(LEAVE_LABEL[code]||code)+" "+from+"→"+to);
+  logAudit("leave.request",(LEAVE_LABEL[code]||code)+" "+from+"→"+to+(reason?(" · "+reason):""),staffId);
+  save();
+}
+function approveRequest(id,comment){
+  const r=S.requests.find(x=>x.id===id);if(!r)return;
+  r.status="approved";r.decidedTs=Date.now();r.adminComment=comment||"";
+  if(r.type==="fixed"){ const s=S.staff.find(x=>x.id===r.from); if(s){ r.pattern.committed=true; s.fixedPattern=r.pattern; }
+    notify(r.from,"Your fixed-pattern change was approved."+(comment?(" "+comment):""));
+    logAudit("fixed.approve",nameOf(r.from)+" · "+fixedPatternSummary(r.pattern)+(comment?(" · "+comment):""),"admin"); save(); return; }
+  if(r.type==="leave"){
+    const dates=daysInRange(r.dateFrom,r.dateTo);
+    S.cycles.forEach(c=>dates.forEach(d=>{delete c.assign[r.from+"|"+d];}));
+    addLeave({staffId:r.from,from:r.dateFrom,to:r.dateTo,code:r.code,status:"approved",requestId:id});
+  }
+  notify(r.from,"Your "+(LEAVE_LABEL[r.code]||r.code)+" leave "+r.dateFrom+"→"+r.dateTo+" was approved."+(comment?(" "+comment):""));
+  logAudit("leave.approve",nameOf(r.from)+" "+r.code+" "+r.dateFrom+"→"+r.dateTo+(comment?(" · "+comment):""),"admin");
+  prepEmail(r,"approved",comment);save();
+}
+function declineRequest(id,comment){
+  const r=S.requests.find(x=>x.id===id);if(!r)return;
+  r.status="declined";r.decidedTs=Date.now();r.adminComment=comment||"";
+  if(r.type==="fixed"){ notify(r.from,"Your fixed-pattern change was declined."+(comment?(" "+comment):""));
+    logAudit("fixed.decline",nameOf(r.from)+(comment?(" · "+comment):""),"admin"); save(); return; }
+  notify(r.from,"Your "+(LEAVE_LABEL[r.code]||r.code)+" leave "+r.dateFrom+"→"+r.dateTo+" was declined."+(comment?(" "+comment):""));
+  logAudit("leave.decline",nameOf(r.from)+" "+r.code+" "+r.dateFrom+"→"+r.dateTo+(comment?(" · "+comment):""),"admin");
+  prepEmail(r,"declined",comment);save();
+}
+function prepEmail(r,decision,comment){
+  const s=S.staff.find(x=>x.id===r.from)||{name:nameOf(r.from),email:""};
+  lastEmail={to:s.email||"",subject:"Leave request "+decision+": "+r.dateFrom+" to "+r.dateTo,
+    body:"Dear "+s.name+",\n\nYour request for "+(LEAVE_LABEL[r.code]||r.code)+" leave from "+r.dateFrom+" to "+r.dateTo+" has been "+decision+"."+(comment?("\n\nComment: "+comment):"")+"\n\nKind regards,\nMyrosta — Roster Admin"};
+}
+function openEmailModal(){
+  if(!lastEmail)return;const e=lastEmail;
+  const root=document.getElementById("modalRoot");
+  root.innerHTML=`<div class="overlay" id="ovlE"><div class="modal" style="max-width:540px">
+    <h3>Notification email</h3>
+    <div class="muted small" style="margin-bottom:10px">Editable draft. In production this is sent automatically via the hospital mail service / Microsoft 365.</div>
+    <div class="field" style="margin-bottom:8px"><label>To</label><input id="emTo" value="${escapeHTML(e.to)}" placeholder="staff email"></div>
+    <div class="field" style="margin-bottom:8px"><label>Subject</label><input id="emSub" value="${escapeHTML(e.subject)}" style="width:100%"></div>
+    <div class="field"><label>Body</label><textarea id="emBody" rows="9" style="width:100%;font-family:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line2);border-radius:var(--radius-sm)">${escapeHTML(e.body)}</textarea></div>
+    <div class="flexbtns" style="margin-top:14px"><button class="btn" id="emCopy">Copy</button><span class="grow"></span><button class="btn" id="emClose">Close</button><button class="btn primary" id="emOpen">Open in email app</button></div>
+  </div></div>`;
+  const close=()=>{lastEmail=null;document.getElementById("modalRoot").innerHTML="";};
+  document.getElementById("ovlE").onclick=ev=>{if(ev.target.id==="ovlE")close();};
+  document.getElementById("emClose").onclick=close;
+  document.getElementById("emCopy").onclick=()=>{try{navigator.clipboard.writeText(document.getElementById("emBody").value);}catch(x){}};
+  document.getElementById("emOpen").onclick=()=>{
+    const to=document.getElementById("emTo").value,su=document.getElementById("emSub").value,bo=document.getElementById("emBody").value;
+    logAudit("email.sent","To "+(to||"(no address)")+" · "+su,"admin");save();
+    window.location.href="mailto:"+encodeURIComponent(to)+"?subject="+encodeURIComponent(su)+"&body="+encodeURIComponent(bo);
+    close();render();
+  };
+}
+let swapPeer=null;
+function staffAssignments(staffId){const a=active().assign;const out=[];cycleDates().forEach(d=>{const sh=a[staffId+"|"+iso(d)];if(sh&&(sh.kind==="clinical"||sh.kind==="cst"))out.push({date:iso(d),label:shiftLabel(sh)});});return out;}
+function viewRequests(){
+  if(isAdmin()){
+    const pending=S.requests.filter(r=>r.status==="pending");
+    const cancelReqs=S.requests.filter(r=>r.status==="approved"&&r.cancelState==="requested");
+    const decided=S.requests.filter(r=>["approved","declined","cancelled","withdrawn"].includes(r.status)&&r.cancelState!=="requested");
+    const cards=pending.length?pending.map(r=>r.type==="swap"?swapAdminCard(r):r.type==="fixed"?fixedAdminCard(r):requestAdminCard(r)).join(""):'<div class="card muted">No pending requests.</div>';
+    const cancelCard=cancelReqs.length?('<h3 style="font-size:14px;margin:18px 0 6px">Cancellation requests</h3>'+cancelReqs.map(r=>`<div class="card" style="border-left:4px solid var(--leave-t)"><div class="row" style="align-items:flex-end"><span class="grow">${r.type==="swap"?("Swap "+nameOf(r.from)+" ↔ "+nameOf(r.peerId)+" · "+r.dateA+"↔"+r.dateB):(nameOf(r.from)+" · "+(LEAVE_LABEL[r.code]||r.code)+" · "+r.dateFrom+"→"+r.dateTo)} <span class="pill warn">cancel requested</span></span><div class="field" style="flex:1;min-width:140px"><input id="cmt-${r.id}" placeholder="Comment (optional)"></div><button class="btn sm" data-cancelkeep="${r.id}">Keep</button><button class="btn danger sm" data-cancelapprove="${r.id}">Approve cancellation</button></div></div>`).join("")):"";
+    const hist=decided.length?('<h3 style="font-size:14px;margin:18px 0 6px">Decided</h3><div class="card">'+decided.map(r=>`<div class="listrow"><span class="grow">${r.type==="swap"?("Swap "+nameOf(r.from)+" ↔ "+nameOf(r.peerId)):r.type==="fixed"?(nameOf(r.from)+" · fixed-pattern change"):(nameOf(r.from)+" · "+r.code+" · "+r.dateFrom+"→"+r.dateTo)} <span class="pill ${r.status==="approved"?"ok":(r.status==="declined"?"warn":"muted")}">${r.status}</span>${r.adminComment?` · <span class="muted small">${escapeHTML(r.adminComment)}</span>`:""}</span>${r.status==="approved"?`<button class="btn danger sm" data-cancel="${r.id}">Cancel</button>`:""}</div>`).join("")+'</div>'):"";
+    return `<div style="margin-bottom:8px"><h2>Requests</h2><div class="sub">${pending.length} pending${cancelReqs.length?(" · "+cancelReqs.length+" cancellation request(s)"):""}. Approvals update the roster automatically; cancelling an approved item reverses it.</div></div>${cards}${cancelCard}${hist}`;
+  }
+  const me=S.viewAs, mine=S.requests.filter(r=>r.from===me), ds=cycleDates();
+  const leaveForm=`<div class="card"><h2>Request leave</h2><div class="sub">Sent to admin for approval. You'll get a notification on the decision.</div>
+    <div class="row">
+      <div class="field"><label>From</label><input type="date" id="lvFrom" value="${iso(ds[0])}"></div>
+      <div class="field"><label>To</label><input type="date" id="lvTo" value="${iso(ds[0])}"></div>
+      <div class="field"><label>Type</label><select id="lvCode">${["AL","CME","LSL","Sab","PL","UA","PH","Other"].map(c=>`<option value="${c}">${c} — ${LEAVE_LABEL[c]||c}</option>`).join("")}</select></div>
+      <div class="field" style="flex:1;min-width:160px"><label>Reason</label><input id="lvReason" placeholder="Optional"></div>
+      <button class="btn primary" id="lvSubmit">Submit</button>
+    </div></div>`;
+  const myShifts=staffAssignments(me), others=S.staff.filter(x=>x.id!==me);
+  if(swapPeer&&!others.find(o=>o.id===swapPeer))swapPeer=null;
+  const peerShifts=swapPeer?staffAssignments(swapPeer):[];
+  const swapForm=`<div class="card"><h2>Request a swap</h2><div class="sub">You give one of your shifts and take a colleague's. They agree first, then admin approves. Tip: agree it informally in Messages first.</div>
+    <div class="row">
+      <div class="field"><label>My shift</label><select id="swMine">${myShifts.length?myShifts.map(x=>`<option value="${x.date}">${x.date} · ${x.label}</option>`).join(""):'<option value="">— you have no shifts —</option>'}</select></div>
+      <div class="field"><label>Colleague</label><select id="swPeer"><option value="">Select…</option>${others.map(o=>`<option value="${o.id}" ${o.id===swapPeer?"selected":""}>${o.name}</option>`).join("")}</select></div>
+      <div class="field"><label>Their shift</label><select id="swTheirs" ${swapPeer?"":"disabled"}>${peerShifts.length?peerShifts.map(x=>`<option value="${x.date}">${x.date} · ${x.label}</option>`).join(""):`<option value="">${swapPeer?"— none —":"pick colleague first"}</option>`}</select></div>
+      <div class="field" style="flex:1;min-width:140px"><label>Reason</label><input id="swReason" placeholder="Optional"></div>
+      <button class="btn primary" id="swSubmit">Request</button>
+    </div></div>`;
+  const peerReqs=S.requests.filter(r=>r.type==="swap"&&r.peerId===me&&r.status==="awaiting-peer");
+  const peerCard=peerReqs.length?`<div class="card"><h2>Swap requests for you</h2>${peerReqs.map(r=>`<div class="listrow"><span class="grow">${nameOf(r.from)} offers their <b>${shiftLabel(getShift(r.from,r.dateA))}</b> on ${r.dateA} for your <b>${shiftLabel(getShift(r.peerId,r.dateB))}</b> on ${r.dateB}${r.reason?` · ${escapeHTML(r.reason)}`:""}</span><button class="btn danger sm" data-peerdecline="${r.id}">Decline</button><button class="btn primary sm" data-peeragree="${r.id}">Agree</button></div>`).join("")}</div>`:"";
+  const list=`<div class="card"><h2>My requests</h2>${mine.length?mine.map(myReqRow).join(""):'<div class="muted">No requests yet.</div>'}</div>`;
+  return leaveForm+swapForm+peerCard+list;
+}
+function swapAdminCard(r){
+  const aSh=getShift(r.from,r.dateA), bSh=getShift(r.peerId,r.dateB);
+  return `<div class="card" style="border-left:4px solid var(--accent)">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="font-size:15px">Swap · ${nameOf(r.from)} ↔ ${nameOf(r.peerId)}</h3><span class="grow"></span><span class="pill ok">both agreed</span></div>
+    <div class="small" style="margin:8px 0">
+      <div>${nameOf(r.from)} gives <b>${shiftLabel(aSh)}</b> on ${r.dateA} → ${nameOf(r.peerId)}</div>
+      <div>${nameOf(r.peerId)} gives <b>${shiftLabel(bSh)}</b> on ${r.dateB} → ${nameOf(r.from)}</div>
+    </div>
+    ${r.reason?`<div class="small muted">Reason: ${escapeHTML(r.reason)}</div>`:""}
+    <div class="row" style="align-items:flex-end;margin-top:6px">
+      <div class="field" style="flex:1;min-width:180px"><label>Comment (optional)</label><input id="cmt-${r.id}" placeholder="Note"></div>
+      <button class="btn danger" data-declineswap="${r.id}">Decline</button>
+      <button class="btn primary" data-approveswap="${r.id}">Approve swap</button>
+    </div></div>`;
+}
+function submitSwapRequest(from,dateA,peerId,dateB,reason){
+  if(!dateA||!peerId||!dateB){alert("Pick your shift, a colleague, and their shift.");return false;}
+  S.requests.unshift({id:"r"+Date.now(),type:"swap",from:from,dateA:dateA,peerId:peerId,dateB:dateB,reason:reason||"",status:"awaiting-peer",createdTs:Date.now()});
+  notify(peerId,nameOf(from)+" requested a shift swap with you.");
+  logAudit("swap.request","with "+nameOf(peerId)+" "+dateA+" ↔ "+dateB,from);
+  swapPeer=null;save();return true;
+}
+function agreeSwap(id){const r=S.requests.find(x=>x.id===id);if(!r)return;r.peerAgreed=true;r.status="pending";
+  notify("admin",nameOf(r.peerId)+" agreed to swap with "+nameOf(r.from)+" — awaiting approval.");
+  notify(r.from,nameOf(r.peerId)+" agreed to your swap. Sent to admin.");
+  logAudit("swap.agree","with "+nameOf(r.from),r.peerId);save();}
+function declineSwapPeer(id){const r=S.requests.find(x=>x.id===id);if(!r)return;r.status="declined";r.decidedTs=Date.now();
+  notify(r.from,nameOf(r.peerId)+" declined your swap request.");
+  logAudit("swap.peer-decline","with "+nameOf(r.from),r.peerId);save();}
+function executeSwap(r){const a=active().assign;const sA=a[r.from+"|"+r.dateA],sB=a[r.peerId+"|"+r.dateB];
+  delete a[r.from+"|"+r.dateA];delete a[r.peerId+"|"+r.dateB];
+  if(sA)a[r.peerId+"|"+r.dateA]=sA; if(sB)a[r.from+"|"+r.dateB]=sB;}
+function approveSwap(id,comment){const r=S.requests.find(x=>x.id===id);if(!r)return;executeSwap(r);r.status="approved";r.decidedTs=Date.now();r.adminComment=comment||"";
+  notify(r.from,"Your swap with "+nameOf(r.peerId)+" was approved."+(comment?(" "+comment):""));
+  notify(r.peerId,"Your swap with "+nameOf(r.from)+" was approved."+(comment?(" "+comment):""));
+  logAudit("swap.approve",nameOf(r.from)+" "+r.dateA+" ↔ "+nameOf(r.peerId)+" "+r.dateB+(comment?(" · "+comment):""),"admin");save();}
+function declineSwap(id,comment){const r=S.requests.find(x=>x.id===id);if(!r)return;r.status="declined";r.decidedTs=Date.now();r.adminComment=comment||"";
+  notify(r.from,"Your swap was declined."+(comment?(" "+comment):""));notify(r.peerId,"A swap involving you was declined.");
+  logAudit("swap.decline",nameOf(r.from)+" ↔ "+nameOf(r.peerId)+(comment?(" · "+comment):""),"admin");save();}
+/* withdraw (pending) + cancel (approved) */
+function withdrawRequest(id){const r=S.requests.find(x=>x.id===id);if(!r||!["pending","awaiting-peer"].includes(r.status))return;
+  r.status="withdrawn";r.decidedTs=Date.now();
+  if(isAdmin())notify(r.from,"Admin removed your "+(r.type==="swap"?"swap":"leave")+" request.");
+  else{notify("admin",nameOf(r.from)+" withdrew their "+(r.type==="swap"?"swap":"leave")+" request.");if(r.type==="swap"&&r.peerId)notify(r.peerId,nameOf(r.from)+" withdrew the swap request.");}
+  logAudit(r.type+".withdraw",(r.type==="swap"?("swap with "+nameOf(r.peerId)):(r.code+" "+r.dateFrom+"→"+r.dateTo)),S.viewAs);save();}
+function reverseSwap(r){const a=active().assign;const sOnA=a[r.peerId+"|"+r.dateA],sOnB=a[r.from+"|"+r.dateB];
+  delete a[r.peerId+"|"+r.dateA];delete a[r.from+"|"+r.dateB];
+  if(sOnA)a[r.from+"|"+r.dateA]=sOnA;if(sOnB)a[r.peerId+"|"+r.dateB]=sOnB;}
+function cancelApproved(id,comment){const r=S.requests.find(x=>x.id===id);if(!r||r.status!=="approved")return;
+  if(r.type==="leave")S.leave=S.leave.filter(L=>L.requestId!==id);
+  else if(r.type==="swap")reverseSwap(r);
+  r.status="cancelled";r.cancelState=null;r.decidedTs=Date.now();if(comment)r.adminComment=comment;
+  if(r.type==="swap"){notify(r.from,"Your approved swap with "+nameOf(r.peerId)+" was cancelled."+(comment?(" "+comment):""));notify(r.peerId,"An approved swap with "+nameOf(r.from)+" was cancelled.");}
+  else notify(r.from,"Your approved "+(LEAVE_LABEL[r.code]||r.code)+" leave was cancelled."+(comment?(" "+comment):""));
+  logAudit(r.type+".cancel",(r.type==="swap"?("swap "+nameOf(r.from)+" ↔ "+nameOf(r.peerId)):(nameOf(r.from)+" "+r.code+" "+r.dateFrom+"→"+r.dateTo))+(comment?(" · "+comment):""),"admin");save();}
+function requestCancellation(id){const r=S.requests.find(x=>x.id===id);if(!r||r.status!=="approved")return;
+  r.cancelState="requested";notify("admin",nameOf(r.from)+" requested to cancel their approved "+(r.type==="swap"?"swap":(LEAVE_LABEL[r.code]||r.code)+" leave")+".");
+  logAudit(r.type+".cancel-request",(r.type==="swap"?("swap with "+nameOf(r.peerId)):(r.code+" "+r.dateFrom+"→"+r.dateTo)),r.from);save();}
+function keepApproval(id){const r=S.requests.find(x=>x.id===id);if(!r)return;r.cancelState=null;notify(r.from,"Your cancellation request was declined — the approval stands.");logAudit(r.type+".cancel-declined","kept "+nameOf(r.from),"admin");save();}
+function reqActions(r){
+  if(["pending","awaiting-peer"].includes(r.status))return `<button class="btn sm" data-withdraw="${r.id}">Withdraw</button>`;
+  if(r.status==="approved")return r.cancelState==="requested"?'<span class="pill warn">cancellation requested</span>':`<button class="btn sm" data-reqcancel="${r.id}">Request cancellation</button>`;
+  return "";}
+function myReqRow(r){
+  const label=r.type==="swap"?("Swap with "+nameOf(r.peerId)+" · "+r.dateA+"↔"+r.dateB):(r.code+" · "+r.dateFrom+"→"+r.dateTo+(r.reason?(" · "+escapeHTML(r.reason)):""));
+  const pill=`<span class="pill ${r.status==="approved"?"ok":(r.status==="declined"?"warn":"muted")}">${r.status}</span>`;
+  return `<div class="listrow"><span class="grow">${label} ${pill}${r.adminComment?` · <span class="muted small">${escapeHTML(r.adminComment)}</span>`:""}</span>${reqActions(r)}</div>`;}
+function requestAdminCard(r){
+  const s=S.staff.find(x=>x.id===r.from)||{name:nameOf(r.from),eft:1,hrsFortnight:76};
+  const {days,hrs}=requestHoursDays(r);
+  const py=plannerYear(), conf=leaveDaysInRange(r.from,py.from,py.to), confHrs=Math.round(conf*hoursPerDay(s));
+  const ov=awayOverlap(r.dateFrom,r.dateTo,r.from), ls=leaveStyle(r.code);
+  let peakEft=0; daysInRange(r.dateFrom,r.dateTo).forEach(d=>{peakEft=Math.max(peakEft,eftOffOnDay(d)+(+s.eft||1));}); peakEft=Math.round(peakEft*100)/100;
+  const overCap=peakEft>S.leaveCapEft;
+  const away=ov.perStaff.length?ov.perStaff.map(o=>`<span class="chip cst" style="margin:2px 4px 2px 0;display:inline-block">${o.staff.name} (${o.days}d)</span>`).join(""):'<span class="muted small">No one else away</span>';
+  return `<div class="card" style="border-left:4px solid ${ls.t}">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="font-size:15px">${s.name} — <span style="color:${ls.t}">${LEAVE_LABEL[r.code]||r.code}</span></h3><span class="grow"></span><span class="muted small">${r.dateFrom} → ${r.dateTo} · ${days} day${days>1?"s":""}</span></div>
+    ${r.reason?`<div class="small" style="margin:4px 0">Reason: ${escapeHTML(r.reason)}</div>`:""}
+    <div class="grid-tiles" style="margin:10px 0">
+      <div class="tile"><div class="k">EFT</div><div class="v">${round2(s.eft)}</div></div>
+      <div class="tile"><div class="k">Hrs / fortnight</div><div class="v">${round2(s.hrsFortnight)}</div></div>
+      <div class="tile"><div class="k">Confirmed leave (yr)</div><div class="v">${conf}d</div><div class="k">${confHrs} hrs</div></div>
+      <div class="tile"><div class="k">This request</div><div class="v">${days}d</div><div class="k">${hrs} hrs</div></div>
+      <div class="tile"><div class="k">Peak overlap</div><div class="v">${ov.peak}</div><div class="k">away same day</div></div>
+      <div class="tile" ${overCap?'style="background:var(--gap-bg)"':""}><div class="k">EFT off peak (incl.)</div><div class="v" ${overCap?'style="color:var(--danger-t)"':""}>${peakEft}</div><div class="k">cap ${S.leaveCapEft}</div></div>
+    </div>
+    ${overCap?`<div class="note" style="background:var(--gap-bg);color:var(--danger-t)">⚠ Approving this would put a day over the leave cap (${peakEft} > ${S.leaveCapEft} EFT).</div>`:""}
+    <div class="small" style="margin-bottom:8px"><b>Who else is away these dates:</b> ${away}</div>
+    <div class="row" style="align-items:flex-end">
+      <div class="field" style="flex:1;min-width:180px"><label>Comment (optional)</label><input id="cmt-${r.id}" placeholder="Reason / note"></div>
+      <button class="btn danger" data-decline="${r.id}">Decline</button>
+      <button class="btn primary" data-approve="${r.id}">Approve</button>
+    </div>
+  </div>`;
+}
+function viewPlanner(){
+  const cs=parseISO(active().cycle.start);
+  if(!plannerMonth)plannerMonth=new Date(cs.getFullYear(),cs.getMonth(),1);
+  const y=plannerMonth.getFullYear(), m=plannerMonth.getMonth(), total=new Date(y,m+1,0).getDate();
+  const days=[];for(let d=1;d<=total;d++)days.push(new Date(y,m,d));
+  const py=plannerYear();
+  const hdr=`<tr><th class="corner namecol">Consultant</th><th>EFT</th><th>Hrs</th><th>Conf</th>`+days.map(d=>`<th class="${[0,6].includes(d.getDay())?"we":""}">${d.getDate()}</th>`).join("")+`</tr>`;
+  const eftRow=`<tr><td class="namecol" style="font-size:11px;color:var(--muted)">EFT off / day · cap ${S.leaveCapEft}</td><td></td><td></td><td></td>`+days.map(d=>{const e=eftOffOnDay(iso(d));return `<td style="font-size:10px;${e>S.leaveCapEft?"background:var(--gap-bg);color:var(--danger-t);font-weight:600":(e?"color:var(--muted)":"")}">${e||""}</td>`;}).join("")+`</tr>`;
+  const edit=canEdit();
+  const rows=S.staff.map(s=>{
+    const conf=leaveDaysInRange(s.id,py.from,py.to);
+    return `<tr><td class="namecol">${s.name}</td><td>${round2(s.eft)}</td><td>${round2(s.hrsFortnight)}</td><td>${conf}</td>`+days.map(d=>{
+      const isoD=iso(d), we=[0,6].includes(d.getDay()), sh=getShift(s.id,isoD);
+      const attrs=edit?` class="pcell ${we?"we":""}" data-ps="${s.id}" data-pd="${isoD}"`:` class="${we?"we":""}"`;
+      if(sh.kind==="leave"){const l=leaveStyle(sh.code);return `<td${attrs} style="background:${l.bg};color:${l.t};font-size:10px">${sh.code}</td>`;}
+      return `<td${attrs}></td>`;
+    }).join("")+`</tr>`;
+  }).join("");
+  const legendHtml=["AL","CME","LSL","PL","UA","PH"].map(c=>{const l=leaveStyle(c);return `<span class="chip" style="background:${l.bg};color:${l.t}">${l.name}</span>`;}).join(" ");
+  return `<div class="card">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h2>Leave planner</h2><span class="grow"></span>
+      <button class="btn sm" id="plPrev">‹</button><span style="min-width:130px;text-align:center;font-weight:500">${plannerMonth.toLocaleDateString("en-GB",{month:"long",year:"numeric"})}</span><button class="btn sm" id="plNext">›</button>
+      <button class="btn sm" id="plXls">⬇ Excel</button><button class="btn sm" id="plCsv">⬇ CSV</button></div>
+    <div class="sub">${isAdmin()?"Click any day to set or clear leave. ":"Plan around colleagues. "}Conf = confirmed leave days this year. Red = day over the leave cap (${S.leaveCapEft} EFT). Export covers the full year and mirrors your template.</div>
+    <div style="margin:4px 0 10px;display:flex;gap:6px;flex-wrap:wrap">${legendHtml}</div>
+    <div class="gridscroll"><table class="roster"><thead>${hdr}${eftRow}</thead><tbody>${rows}</tbody></table></div>
+  </div>`;
+}
+function viewAudit(){
+  const groups={};S.audit.forEach(a=>{(groups[a.actor]=groups[a.actor]||[]).push(a);});
+  const order=Object.keys(groups).sort((a,b)=>a==="admin"?-1:b==="admin"?1:nameOf(a).localeCompare(nameOf(b)));
+  const blocks=order.map(actor=>`<div class="card"><h3 style="font-size:14px;margin-bottom:6px">${nameOf(actor)} <span class="muted small">(${groups[actor].length})</span></h3>${groups[actor].map(a=>`<div class="listrow"><span class="muted small" style="min-width:120px">${tsFmt(a.ts)}</span><span style="min-width:120px"><span class="badge-mode">${a.action}</span></span><span class="grow small">${escapeHTML(a.detail)}</span></div>`).join("")}</div>`).join("");
+  return `<div style="margin-bottom:8px"><h2>Audit log</h2><div class="sub">Activity grouped by user · ${S.audit.length} entries.</div></div>`+(blocks||'<div class="card muted">No activity yet.</div>');
+}
+function download(content,filename,mime){const blob=new Blob([content],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
+function exportState(){download(JSON.stringify(S,null,2),"ed-roster-backup-"+iso(new Date())+".json","application/json");logAudit("backup.export","downloaded full app data","admin");save();}
+function importState(file){const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);
+  if(!obj||!obj.cycles||!obj.staff)throw new Error("not a valid roster backup file");
+  if(!confirm("Restore this backup? It REPLACES all current data in this browser."))return;
+  localStorage.setItem(KEY,JSON.stringify(obj));load();
+  gapsOn=false;dailyDate=null;plannerMonth=null;myPerson=null;replyTo=null;swapPeer=null;lastEmail=null;
+  logAudit("backup.restore","restored app data","admin");save();render();
+ }catch(x){alert("Couldn't restore: "+x.message);}};r.readAsText(file);}
+function rosterColor(sh){if(sh.kind==="clinical")return sh.period==="AM"?{bg:"#E6EEFB",t:"#2D5BA6"}:{bg:"#FBE9CE",t:"#8A5A12"};if(sh.kind==="cst")return{bg:"#E4F2E8",t:"#2F6B43"};if(sh.kind==="leave")return leaveStyle(sh.code);return null;}
+
+/* ---------- import (SheetJS) ---------- */
+const LEAVE_SET={AL:"AL",CME:"CME",UA:"UA",UPL:"UPL",PH:"PH",LSL:"LSL",SAB:"Sab",PL:"PL",O:"LSL",OTHER:"Other",ORIENTATION:"Orientation",VACANT:"Vacant",CONF:"Conf"};
+function normCode(s){if(s==null)return null;const u=String(s).trim().toUpperCase();return LEAVE_SET[u]||null;}
+function cellISO(v){if(v instanceof Date&&!isNaN(v))return iso(v);if(typeof v==="string"&&/^\d{4}-\d{2}-\d{2}/.test(v))return v.slice(0,10);return null;}
+function parseShiftStr(v){
+  if(v==null)return null;const s=String(v).trim();if(!s||s==="0")return null;
+  const m=s.match(/(\d{3,4})\s*-\s*(\d{3,4})\s*(.*)/);
+  if(m){const start=parseInt(m[1],10);const role=(m[3]||"").trim();return {kind:"clinical",period:(Math.floor(start/100)<12?"AM":"PM"),role:role||"?"};}
+  if(s.toUpperCase()==="CST")return {kind:"cst"};
+  const c=normCode(s);if(c)return {kind:"leave",code:c};
+  return {kind:"leave",code:s};
+}
+function findHeaderRow(aoa){let best=-1,bestN=0;for(let r=0;r<Math.min(aoa.length,15);r++){let n=0;(aoa[r]||[]).forEach(v=>{if(cellISO(v))n++;});if(n>bestN){bestN=n;best=r;}}return bestN>5?best:-1;}
+function isNameCell(name){ if(!name||!/[A-Za-z]/.test(name))return false;
+  // reject spreadsheet labels / section headers that aren't real people
+  if(/^(date|total|annual|cme|long service|mat\b|unavail|public hol|no of staff|eft off|term\b|school hol|conf\b|conference|resign|vacant|locum|gap\b|cover\b|notes?\b|comments?\b|roster\b|staff\b|name\b|consultant|registrar|tba\b|tbd\b|n\/?a\b)/i.test(name))return false;
+  if(/(rotation|holiday)/i.test(name))return false;
+  return true; }
+function parseRosterAOA(aoa){
+  const hr=findHeaderRow(aoa);if(hr<0)return {error:"No date header row found"};
+  const dcols=[];(aoa[hr]||[]).forEach((v,c)=>{const di=cellISO(v);if(di)dcols.push({c:c,iso:di});});
+  const staff=[],assigns={};
+  for(let r=hr+1;r<aoa.length;r++){const row=aoa[r]||[];const name=row[0]==null?"":String(row[0]).trim();
+    if(!isNameCell(name))continue;staff.push(name);
+    dcols.forEach(dc=>{const sh=parseShiftStr(row[dc.c]);if(sh)assigns[name+"|"+dc.iso]=sh;});}
+  return {dates:dcols.map(d=>d.iso),staff:staff,assigns:assigns};
+}
+function parseLeaveAOA(aoa){
+  const hr=findHeaderRow(aoa);if(hr<0)return {error:"No date header row found"};
+  const dcols=[];(aoa[hr]||[]).forEach((v,c)=>{const di=cellISO(v);if(di)dcols.push({c:c,iso:di});});
+  const staff=[],leave=[];
+  for(let r=hr+1;r<aoa.length;r++){const row=aoa[r]||[];const name=row[0]==null?"":String(row[0]).trim();
+    if(!isNameCell(name))continue;
+    staff.push({name:name,eft:(typeof row[1]==="number"?row[1]:null),hrs:(typeof row[2]==="number"?row[2]:null)});
+    let run=null;
+    dcols.forEach(dc=>{const code=normCode(row[dc.c]);
+      if(code){if(run&&run.code===code&&iso(addDays(parseISO(run.to),1))===dc.iso){run.to=dc.iso;}else{if(run)leave.push({name:name,from:run.from,to:run.to,code:run.code});run={code:code,from:dc.iso,to:dc.iso};}}
+      else{if(run){leave.push({name:name,from:run.from,to:run.to,code:run.code});run=null;}}});
+    if(run)leave.push({name:name,from:run.from,to:run.to,code:run.code});}
+  return {staff:staff,leave:leave};
+}
+function ensureZoneForRole(role){const base=role.replace(/\s*\+\s*OC$/i,"").trim();
+  let z=S.zones.find(zz=>zz.name.toUpperCase()===base.toUpperCase());
+  if(!z){z={id:slug(base)+"-"+Date.now()+Math.floor(Math.random()*999),name:base.toUpperCase(),am:true,pm:true,pmLabel:/\+\s*OC/i.test(role)?role.toUpperCase():""};S.zones.push(z);}
+  else if(/\+\s*OC/i.test(role)&&!z.pmLabel){z.pmLabel=role.toUpperCase();}
+  return z.id;}
+function ensureStaff(name){let s=S.staff.find(x=>x.name.toLowerCase()===name.toLowerCase());
+  if(!s){s={id:slug(name)+"-"+Date.now()+Math.floor(Math.random()*999),name:name,initials:initialsFrom(name),mobile:"",email:"",mode:"self",quota:20,eft:1,hrsFortnight:76};S.staff.push(s);}
+  return s;}
+function applyRosterImport(p){
+  const cyc={id:"cyc-"+Date.now(),cycle:{start:p.dates[0],weeks:Math.max(1,Math.round(p.dates.length/7))},assign:{},status:"draft",archived:false};
+  Object.keys(p.assigns).forEach(k=>{const i=k.indexOf("|");const name=k.slice(0,i),isoD=k.slice(i+1),sh=p.assigns[k];const s=ensureStaff(name);
+    cyc.assign[s.id+"|"+isoD]=(sh.kind==="clinical")?{kind:"clinical",period:sh.period,zone:ensureZoneForRole(sh.role)}:sh;});
+  if(S.cycles.length===1 && Object.keys(S.cycles[0].assign).length===0){cyc.id=S.cycles[0].id;S.cycles[0]=cyc;} // replace empty starter cycle
+  else S.cycles.push(cyc);
+  S.activeId=cyc.id;
+  logAudit("import.roster",p.staff.length+" staff · "+p.dates.length+" days · "+cyLabel(cyc),"admin");save();return cyc;
+}
+function applyLeaveImport(p){let added=0;
+  p.staff.forEach(st=>{const s=ensureStaff(st.name);if(st.eft!=null)s.eft=round2(st.eft);if(st.hrs!=null)s.hrsFortnight=round2(st.hrs);});
+  p.leave.forEach(L=>{const s=S.staff.find(x=>x.name.toLowerCase()===L.name.toLowerCase());if(!s)return;addLeave({staffId:s.id,from:L.from,to:L.to,code:L.code,status:"approved",requestId:"import"});added++;});
+  logAudit("import.leave",p.staff.length+" staff · "+added+" leave blocks","admin");save();return added;
+}
+function normName(n){return String(n||"").toLowerCase().replace(/[^a-z]/g,"");}   // for fuzzy name matching across sheets
+function numFrom(v){if(v==null)return null;const m=String(v).match(/\d+(\.\d+)?/);return m?+m[0]:null;}   // "5*" -> 5
+function parseEftSheet(aoa){
+  let hr=-1; for(let r=0;r<Math.min(aoa.length,20);r++){const row=(aoa[r]||[]).map(c=>String(c==null?"":c).toLowerCase()); if(row.some(c=>/clinical shift/.test(c))){hr=r;break;}}
+  if(hr<0)return null;
+  const hdr=(aoa[hr]||[]).map(c=>String(c==null?"":c).toLowerCase());
+  let nameCol=hdr.findIndex(c=>/name/.test(c)); if(nameCol<0)nameCol=0;
+  const hoursCol=hdr.findIndex(c=>/hour/.test(c)), shiftCol=hdr.findIndex(c=>/clinical shift/.test(c));
+  const out=[]; for(let r=hr+1;r<aoa.length;r++){const row=aoa[r]||[];const nm=String(row[nameCol]==null?"":row[nameCol]).trim();
+    if(!isNameCell(nm))continue; out.push({name:nm, hrs:hoursCol>=0?numFrom(row[hoursCol]):null, shifts:shiftCol>=0?numFrom(row[shiftCol]):null}); }
+  return out;
+}
+function applyEftData(rows,cyc){
+  const fns=Math.max(1,Math.round((cyc.cycle.weeks||8)/2)); const byNorm={}; S.staff.forEach(s=>byNorm[normName(s.name)]=s); let n=0;
+  rows.forEach(rw=>{const s=byNorm[normName(rw.name)]; if(!s)return;
+    if(rw.shifts!=null){s.quota=Math.round(rw.shifts*fns); s.perFortnight=rw.shifts;}
+    if(rw.hrs!=null){s.hrsFortnight=round2(rw.hrs); if(s.eft==null||s.eft===1)s.eft=round2(rw.hrs/76);} n++;});
+  logAudit("import.eftdata",n+" consultants · per-fortnight quota+hours · "+fns+" fortnights/cycle","admin");save();return n;
+}
+/* ---------- EFT tracker (org template: weekly EFT grid, keyed by Employee #) ---------- */
+const FT_HRS_WEEK=38; // full-time hours/week (76/fortnight) — used to convert hours/week back to EFT fraction
+function parseEftTracker(wb, cycleStartISO){
+  let chosen=null, latest=null;
+  wb.SheetNames.forEach(name=>{
+    let aoa; try{aoa=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:null});}catch(e){return;}
+    let hr=-1; for(let r=0;r<Math.min(aoa.length,14);r++){ if((aoa[r]||[]).some(c=>/employee\s*#|emp\s*no|payroll/i.test(String(c==null?"":c)))){hr=r;break;} }
+    if(hr<0)return;
+    const dcols=[]; (aoa[hr]||[]).forEach((v,c)=>{const di=cellISO(v); if(di)dcols.push({c:c,iso:di});});
+    if(!dcols.length)return;
+    const cand={name:name,aoa:aoa,hr:hr,dcols:dcols,first:dcols[0].iso,last:dcols[dcols.length-1].iso};
+    if(!latest||cand.first>latest.first)latest=cand;
+    if(cycleStartISO>=cand.first && cycleStartISO<=iso(addDays(parseISO(cand.last),6)))chosen=cand;
+  });
+  const c=chosen||latest;
+  if(!c)return {error:"No tracker sheet found (need an 'Employee #' header row with weekly date columns)."};
+  let tc=null; c.dcols.forEach(d=>{ if(d.iso<=cycleStartISO && (!tc||d.iso>=tc.iso))tc=d; }); if(!tc)tc=c.dcols[0];
+  const rows=[];
+  for(let r=c.hr+1;r<c.aoa.length;r++){ const row=c.aoa[r]||[];
+    const last=String(row[1]==null?"":row[1]).trim(), first=String(row[2]==null?"":row[2]).trim();
+    if(!last||!/[A-Za-z]/.test(last))continue;
+    let val=(typeof row[tc.c]==="number")?row[tc.c]:numFrom(row[tc.c]);
+    if(val==null){ for(let k=c.dcols.length-1;k>=0;k--){const dv=row[c.dcols[k].c]; if(typeof dv==="number"){val=dv;break;}} }
+    if(val==null)continue;
+    const eft = val>1.5 ? round2(val/FT_HRS_WEEK) : round2(val);   // auto-detect: >1.5 = hours/week, else EFT fraction
+    const emp=row[0]; rows.push({empNo: emp==null?"":String(emp).replace(/\.0+$/,"").trim(), sur:last, giv:first, eft:eft});
+  }
+  return {sheet:c.name, week:tc.iso, rows:rows};
+}
+function applyEftTracker(p){
+  const byEmp={}, bySur={};
+  S.staff.forEach(s=>{ if(s.payrollId)byEmp[String(s.payrollId)]=s; const sur=splitName(s.name).sur; (bySur[normName(sur)]=bySur[normName(sur)]||[]).push(s); });
+  let n=0; const unmatched=[];
+  p.rows.forEach(rw=>{
+    let s=(rw.empNo&&byEmp[rw.empNo])||null;
+    if(!s){ const cands=bySur[normName(rw.sur)]||[];
+      if(cands.length===1)s=cands[0];
+      else if(cands.length>1)s=cands.find(c=>normName(splitName(c.name).giv).charAt(0)===normName(rw.giv).charAt(0))||cands[0]; }
+    if(!s){ unmatched.push(rw.sur+(rw.giv?", "+rw.giv:"")); return; }
+    if(rw.eft!=null){ s.eft=rw.eft; s.hrsFortnight=round2(rw.eft*76); }
+    if(rw.empNo && !s.payrollId)s.payrollId=rw.empNo;   // link Employee # → payroll export
+    n++;
+  });
+  logAudit("import.efttracker",n+" consultants from "+p.sheet+" (week "+p.week+")","admin"); save();
+  return {n:n, unmatched:unmatched};
+}
+function importEftTracker(file){
+  if(typeof XLSX==="undefined"){alert("Spreadsheet reader not loaded — check your connection and retry.");return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{ let wb; try{wb=XLSX.read(ev.target.result,{type:"array",cellDates:true});}catch(x){alert("Couldn't read file: "+x.message);return;}
+    const p=parseEftTracker(wb, active().cycle.start);
+    if(p.error){alert("EFT tracker import: "+p.error);return;}
+    if(!confirm("Import EFT tracker?\n\nSheet: "+p.sheet+"\nWeek used: "+p.week+"\nConsultants found: "+p.rows.length+"\n\nSets each matched consultant's EFT + hours, and fills their employee number (used by the payroll export). Matches by employee # or surname."))return;
+    const res=applyEftTracker(p);
+    let msg="EFT tracker imported — updated "+res.n+" consultants (EFT, hours, employee #).";
+    if(res.unmatched.length)msg+="\n\nNo matching consultant for "+res.unmatched.length+": "+res.unmatched.slice(0,8).join("; ")+(res.unmatched.length>8?" …":"");
+    alert(msg); render();
+  };
+  reader.readAsArrayBuffer(file);
+}
+function exportEftTracker(){
+  if(!S.staff.length){alert("No staff to export yet.");return;}
+  if(typeof XLSX==="undefined"){alert("Spreadsheet reader not loaded — check your connection and retry.");return;}
+  const ds=cycleDates(); const weeks=[]; for(let i=0;i<ds.length;i+=7)weeks.push(ds[i]);
+  const totalEft=round2(S.staff.reduce((a,s)=>a+(+s.eft||0),0));
+  const aoa=[];
+  aoa.push(["Period",cyLabel(active())]);
+  aoa.push([]);
+  aoa.push(["Budgeted EFT","","Current EFT"].concat(weeks.map(()=>totalEft)));
+  aoa.push([]);
+  aoa.push(["Employee #","Last Name","First Name"].concat(weeks.map(d=>iso(d))));
+  S.staff.forEach(s=>{const nm=splitName(s.name); aoa.push([s.payrollId||"",nm.sur,nm.giv].concat(weeks.map(()=>round2(s.eft||0))));});
+  const ws=XLSX.utils.aoa_to_sheet(aoa), wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"SMS EFT");
+  XLSX.writeFile(wb,"eft-tracker-"+active().cycle.start+".xlsx");
+  logAudit("export.efttracker",S.staff.length+" consultants","admin");save();
+}
+/* ---------- staff list template + bulk import (onboarding for orgs with no roster yet) ---------- */
+function downloadStaffTemplate(){
+  if(typeof XLSX==="undefined"){alert("Spreadsheet reader not loaded — check your connection and retry.");return;}
+  const head=["Surname","Given name","EFT (0-1)","Hours per fortnight","Clinical shifts per fortnight","Email","Mobile","Payroll #","Mode (self/fixed/preference)"];
+  const ws=XLSX.utils.aoa_to_sheet([head]);
+  ws["!cols"]=head.map((h,i)=>({wch:(i<2?16:(i>=5?20:16))}));
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Staff");
+  XLSX.writeFile(wb,"myrosta-staff-template.xlsx");
+}
+function parseStaffList(aoa){
+  let hr=-1;
+  for(let r=0;r<Math.min(aoa.length,8);r++){ const row=(aoa[r]||[]).map(c=>String(c==null?"":c).toLowerCase());
+    if((row.some(c=>/surname|last name/.test(c))&&row.some(c=>/given|first name/.test(c)))||row.some(c=>/^name$|consultant/.test(c))){hr=r;break;} }
+  if(hr<0)return {error:"No header row found — needs 'Surname' + 'Given name' (or a single 'Name' column)."};
+  const hdr=(aoa[hr]||[]).map(c=>String(c==null?"":c).toLowerCase());
+  const find=(...keys)=>{for(let i=0;i<hdr.length;i++){if(keys.some(k=>hdr[i].indexOf(k)>=0))return i;}return -1;};
+  const ci={sur:find("surname","last name"), giv:find("given","first name"), name:find("name"), eft:find("eft"), hrs:find("hour"), shifts:find("clinical shift","shifts per"), email:find("email"), mobile:find("mobile","phone"), pay:find("payroll","employee"), mode:find("mode")};
+  const out=[];
+  for(let r=hr+1;r<aoa.length;r++){ const row=aoa[r]||[]; let sur="",giv="";
+    if(ci.sur>=0){ sur=String(row[ci.sur]==null?"":row[ci.sur]).trim(); giv=ci.giv>=0?String(row[ci.giv]==null?"":row[ci.giv]).trim():""; }
+    else if(ci.name>=0){ const nm=splitName(String(row[ci.name]==null?"":row[ci.name]).trim()); sur=nm.sur; giv=nm.giv; }
+    if(!sur||!/[A-Za-z]/.test(sur)||!isNameCell(sur))continue;
+    out.push({sur:sur, giv:giv,
+      eft:ci.eft>=0?numFrom(row[ci.eft]):null, hrs:ci.hrs>=0?numFrom(row[ci.hrs]):null, shifts:ci.shifts>=0?numFrom(row[ci.shifts]):null,
+      email:ci.email>=0?String(row[ci.email]==null?"":row[ci.email]).trim():"", mobile:ci.mobile>=0?String(row[ci.mobile]==null?"":row[ci.mobile]).trim():"",
+      pay:ci.pay>=0?String(row[ci.pay]==null?"":row[ci.pay]).replace(/\.0+$/,"").trim():"", mode:ci.mode>=0?String(row[ci.mode]==null?"":row[ci.mode]).trim().toLowerCase():""});
+  }
+  return {rows:out};
+}
+function applyStaffList(rows){
+  const fns=Math.max(1,Math.round((active().cycle.weeks||8)/2));
+  const byNorm={}, byPay={}; S.staff.forEach(s=>{ byNorm[normName(s.name)]=s; if(s.payrollId)byPay[String(s.payrollId)]=s; });
+  let created=0, updated=0;
+  rows.forEach(rw=>{ const fullName=rw.giv?(rw.sur+", "+rw.giv):rw.sur;
+    let s=(rw.pay&&byPay[rw.pay])||byNorm[normName(fullName)]||null;
+    if(!s){ s={id:slug(fullName)+"-"+Date.now()+Math.floor(Math.random()*999),name:fullName,initials:initialsFrom(fullName),mobile:"",email:"",mode:"self",quota:20,eft:1,hrsFortnight:76,payrollId:"",fixedPattern:{recurrence:"weekly",A:{},B:{},committed:false},periodTargets:{}}; S.staff.push(s); byNorm[normName(fullName)]=s; created++; }
+    else updated++;
+    if(rw.eft!=null)s.eft=round2(rw.eft);
+    if(rw.hrs!=null){ s.hrsFortnight=round2(rw.hrs); if(rw.eft==null)s.eft=round2(rw.hrs/76); }
+    else if(rw.eft!=null)s.hrsFortnight=round2(rw.eft*76);
+    if(rw.shifts!=null){ s.quota=Math.round(rw.shifts*fns); s.perFortnight=rw.shifts; }
+    if(rw.email)s.email=rw.email; if(rw.mobile)s.mobile=rw.mobile; if(rw.pay)s.payrollId=rw.pay;
+    if(rw.mode&&["self","fixed","preference"].indexOf(rw.mode)>=0)s.mode=rw.mode;
+  });
+  logAudit("import.stafflist",created+" added, "+updated+" updated","admin"); save();
+  return {created:created, updated:updated};
+}
+function importStaffList(file){
+  if(typeof XLSX==="undefined"){alert("Spreadsheet reader not loaded — check your connection and retry.");return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{ let wb; try{wb=XLSX.read(ev.target.result,{type:"array"});}catch(x){alert("Couldn't read file: "+x.message);return;}
+    const name=wb.SheetNames.find(n=>/staff/i.test(n))||wb.SheetNames[0];
+    const p=parseStaffList(XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:null}));
+    if(p.error){alert("Staff list import: "+p.error);return;}
+    if(!p.rows.length){alert("No staff rows found under the header.");return;}
+    if(!confirm("Import staff list?\n\n"+p.rows.length+" consultant(s) found:\n"+p.rows.slice(0,8).map(r=>"• "+r.sur+(r.giv?", "+r.giv:"")).join("\n")+(p.rows.length>8?"\n…":"")+"\n\nNew names are added; existing ones (matched by payroll # or name) are updated."))return;
+    const res=applyStaffList(p.rows);
+    alert("Staff imported — "+res.created+" added, "+res.updated+" updated."); render();
+  };
+  reader.readAsArrayBuffer(file);
+}
+function setupGuideHTML(){
+  const z=S.zones.length, st=S.staff.length, cyc=active();
+  const s1=z>0, s2=st>0, s3=cyc.status!=="draft", done=[s1,s2,s3].filter(Boolean).length;
+  const step=(ok,n,title,body)=>`<div style="display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--line)"><span class="pill ${ok?"ok":"muted"}" style="min-width:22px;text-align:center">${ok?"✓":n}</span><div class="grow"><b>${title}</b><div class="muted small" style="margin-top:3px">${body}</div></div></div>`;
+  return `<div class="card" style="border-left:4px solid var(--accent)">
+    <div style="display:flex;align-items:center;gap:10px"><h2 style="margin:0">Get started with Myrosta</h2><span class="pill ${done===3?"ok":"warn"}">${done}/3</span><span class="grow"></span><button class="btn sm" id="guideHide">Hide guide</button></div>
+    <div class="sub" style="margin-top:4px">Three steps to a live roster. Already have spreadsheets (roster / leave / EFT)? Use <b>Import data</b> below instead.</div>
+    ${step(s1,"1","Set up your department", z?`✓ ${z} zones · cover AM ${S.staffing.amMin}–${S.staffing.amMax}, PM ${S.staffing.pmMin}–${S.staffing.pmMax}. Fine-tune in the cards below.`:"Add your zones (ROC, RAP, PFT, ASAP…) and minimum/maximum cover in the cards below.")}
+    ${step(s2,"2","Add your consultants", `${st?("<b>"+st+"</b> added so far. "):""}Bulk-add with a template, or add them one at a time in the Staff tab.<div class="flexbtns" style="margin-top:8px"><button class="btn sm primary" id="wizTpl">⬇ Download staff template</button><label class="btn sm" style="cursor:pointer">⬆ Upload staff list<input type="file" id="wizStaff" accept=".xlsx,.xls" style="display:none"></label></div>`)}
+    ${step(s3,"3","Create your first cycle &amp; release", `Current cycle: <b>${cyLabel(cyc)}</b> — <b>${STATUS[cyc.status].label}</b>. Set the start date + length in <b>Roster cycle</b> below; on the <b>Self-roster</b> tab use <b>① Auto-draft fixed shifts</b>; then <b>Roster status → Release for self-roster</b>.`)}
+  </div>`;
+}
+function importFile(file,kind){
+  if(typeof XLSX==="undefined"){alert("Spreadsheet library not loaded — check your internet connection, then retry.");return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{let wb;try{wb=XLSX.read(ev.target.result,{type:"array",cellDates:true});}catch(x){alert("Couldn't read file: "+x.message);return;}
+    if(kind==="roster"){
+      const ws=wb.Sheets["Roster"]||wb.Sheets[wb.SheetNames[0]];
+      const p=parseRosterAOA(XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null}));
+      if(p.error){alert("Roster import: "+p.error);return;}
+      const eftName=wb.SheetNames.find(n=>/eft\s*data/i.test(n));
+      if(!confirm("Import roster?\n\nStaff: "+p.staff.length+"\nDays: "+p.dates.length+" ("+p.dates[0]+" → "+p.dates[p.dates.length-1]+")\nShifts: "+Object.keys(p.assigns).length+(eftName?"\nEFT Data sheet found — will set per-fortnight quota + hours.":"")+"\n\nAdds a NEW cycle — existing data untouched."))return;
+      const cyc=applyRosterImport(p);
+      if(eftName){const er=parseEftSheet(XLSX.utils.sheet_to_json(wb.Sheets[eftName],{header:1,raw:true,defval:null})); if(er&&er.length){const n=applyEftData(er,cyc); alert("Roster imported. Per-fortnight quota + hours set for "+n+" consultants from the EFT Data sheet.");}}
+      S.tab="roster";render();
+    }else{
+      const yr=String(parseISO(active().cycle.start).getFullYear());
+      const name=wb.SheetNames.find(n=>n===yr)||wb.SheetNames.find(n=>/^\d{4}$/.test(n))||wb.SheetNames[0];
+      const p=parseLeaveAOA(XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:null}));
+      if(p.error){alert("Leave import: "+p.error);return;}
+      if(!confirm("Import leave planner (sheet '"+name+"')?\n\nStaff: "+p.staff.length+"\nLeave blocks: "+p.leave.length+"\n\nMerges into the annual leave store."))return;
+      applyLeaveImport(p);S.tab="planner";render();
+    }};
+  reader.readAsArrayBuffer(file);
+}
+/* ---------- Payroll export (RosterOn) — flat, one row per shift ---------- */
+const SHIFT_TIMES={
+  AM :{code:"AM" ,start:"08:00",end:"16:00",hours:8  },
+  PM :{code:"PM" ,start:"15:30",end:"23:30",hours:8  },
+  ONC:{code:"ONC",start:"23:30",end:"08:00",hours:8.5},
+  CST:{code:"CST",start:"08:00",end:"16:00",hours:8  }
+};
+const LEAVE_DAY_HOURS=8; // a full-time leave day = one standard shift (8h); pro-rated by EFT below
+function leaveHours(s){return round2(LEAVE_DAY_HOURS*(+s.eft||1));}
+const DATE_FORMATS=[["DD/MM/YYYY","31/12/2026"],["YYYY-MM-DD","2026-12-31"],["DD-MMM-YYYY","31-Dec-2026"],["MM/DD/YYYY","12/31/2026"],["DD/MM/YY","31/12/26"]];
+const MONTHS3=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDate(isoD){const p=String(isoD).split("-");if(p.length!==3)return isoD;const Y=p[0],M=p[1],D=p[2];
+  switch(S.payrollDateFmt||"DD/MM/YYYY"){
+    case "YYYY-MM-DD":return Y+"-"+M+"-"+D;
+    case "DD-MMM-YYYY":return D+"-"+(MONTHS3[+M-1]||M)+"-"+Y;
+    case "MM/DD/YYYY":return M+"/"+D+"/"+Y;
+    case "DD/MM/YY":return D+"/"+M+"/"+Y.slice(2);
+    default:return D+"/"+M+"/"+Y;
+  }}
+function splitName(n){n=String(n||"").trim();if(n.indexOf(",")>=0){const a=n.split(",");return{sur:a[0].trim(),giv:(a[1]||"").trim()};}const a=n.split(/\s+/);if(a.length<2)return{sur:n,giv:""};return{sur:a[a.length-1],giv:a.slice(0,-1).join(" ")};}
+function isOnCallZone(z){if(!z)return false;return /\bOC\b|ON.?CALL|\+\s*OC/i.test((z.pmLabel||"")+" "+(z.name||""));}
+function payrollRows(){
+  const rows=[],ds=cycleDates();
+  S.staff.forEach(s=>{const nm=splitName(s.name);
+    ds.forEach(d=>{const isoD=iso(d),sh=getShift(s.id,isoD);
+      const base={emp:s.payrollId||"",sur:nm.sur,giv:nm.giv,name:s.name,date:isoD};
+      const add=(t,unit,note)=>rows.push(Object.assign({},base,{code:t.code,start:t.start,end:t.end,hours:t.hours,unit:unit||"",note:note||""}));
+      if(sh.kind==="clinical"){const z=zoneById(sh.zone),zn=z?z.name:"";
+        if(sh.period==="AM")add(SHIFT_TIMES.AM,zn,"");
+        else if(sh.period==="PM"){add(SHIFT_TIMES.PM,zn,"");if(isOnCallZone(z))add(SHIFT_TIMES.ONC,zn,"On-call");}
+      } else if(sh.kind==="cst") add(SHIFT_TIMES.CST,"","CST");
+      else if(sh.kind==="leave") rows.push(Object.assign({},base,{code:sh.code,start:"",end:"",hours:leaveHours(s),unit:"",note:LEAVE_LABEL[sh.code]||"Leave"}));
+    });
+  });
+  return rows;
+}
+// The roster data that can fill a RosterOn column:
+const PAYROLL_FIELDS=[
+  ["emp","Employee No"],["sur","Surname"],["giv","Given Name"],["name","Full name"],
+  ["date","Date"],["code","Shift Code"],["start","Start time"],["end","End time"],
+  ["hours","Hours"],["unit","Unit / area"],["note","Notes"]
+];
+function payrollFieldValue(r,key){switch(key){
+  case "emp":return r.emp;case "sur":return r.sur;case "giv":return r.giv;case "name":return r.name;
+  case "date":return fmtDate(r.date);case "code":return r.code;case "start":return r.start;case "end":return r.end;
+  case "hours":return r.hours;case "unit":return r.unit;case "note":return r.note;default:return "";}}
+// Guess which roster field feeds a RosterOn column from its header text:
+function autoMapField(h){const s=String(h||"").toLowerCase();
+  if(/surname|last\s*name|family/.test(s))return "sur";
+  if(/given|first\s*name|forename|christian/.test(s))return "giv";
+  if(/payroll|personnel|(emp(loyee)?|staff|pay)\s*(no|num|#|id|code)/.test(s))return "emp";
+  if(/date/.test(s))return "date";
+  if(/start|begin|\bfrom\b|time\s*in|commence/.test(s))return "start";
+  if(/end|finish|\bto\b|time\s*out|cease/.test(s))return "end";
+  if(/hour|hrs|duration|qty|quantity|\bunits?\b/.test(s))return "hours";
+  if(/shift|code|activity|duty|task/.test(s))return "code";
+  if(/unit|ward|cost|location|dept|department|\barea\b|team/.test(s))return "unit";
+  if(/note|comment|desc|remark/.test(s))return "note";
+  if(/name/.test(s))return "name";
+  return "";}
+function parseCSVLine(line){const out=[];let cur="",q=false;for(let i=0;i<line.length;i++){const c=line[i];
+  if(q){if(c==='"'){if(line[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=c;}
+  else{if(c===','){out.push(cur);cur="";}else if(c==='"')q=true;else cur+=c;}}
+  out.push(cur);return out.map(x=>x.trim());}
+function readPayrollTemplate(file){
+  const finish=(hdrs)=>{let headers=(hdrs||[]).map(h=>String(h==null?"":h).trim());
+    while(headers.length&&headers[headers.length-1]==="")headers.pop();
+    if(!headers.length){alert("No column headers found in that file's first row.");return;}
+    S.payrollTemplate={headers:headers,map:headers.map(autoMapField),filename:file.name};
+    logAudit("payroll.template.upload",file.name+" — "+headers.length+" columns","admin");save();render();};
+  const nm=(file.name||"").toLowerCase();
+  if(nm.endsWith(".csv")){const r=new FileReader();
+    r.onload=ev=>{const first=String(ev.target.result||"").split(/\r?\n/).find(l=>l.trim()!=="")||"";finish(parseCSVLine(first));};
+    r.readAsText(file);
+  } else {
+    if(typeof XLSX==="undefined"){alert("Spreadsheet reader not loaded — check your connection and retry, or upload a .csv template.");return;}
+    const r=new FileReader();
+    r.onload=ev=>{try{const wb=XLSX.read(ev.target.result,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});finish(aoa[0]||[]);}catch(x){alert("Couldn't read template: "+x.message);}};
+    r.readAsArrayBuffer(file);
+  }
+}
+function exportPayrollCSV(){
+  if(!S.staff.length){alert("No staff/roster to export yet.");return;}
+  const rows=payrollRows();
+  const q=x=>`"${String(x==null?"":x).replace(/"/g,'""')}"`;
+  const tpl=S.payrollTemplate;
+  let head,lineVals;
+  if(tpl&&tpl.headers&&tpl.headers.length){
+    head=tpl.headers; lineVals=r=>tpl.headers.map((h,i)=>payrollFieldValue(r,(tpl.map||[])[i]||""));
+  } else {
+    head=["Employee No","Surname","Given Name","Date","Shift Code","Start","End","Hours","Unit","Notes"];
+    lineVals=r=>[r.emp,r.sur,r.giv,fmtDate(r.date),r.code,r.start,r.end,r.hours,r.unit,r.note];
+  }
+  let csv=head.map(q).join(",")+"\n";
+  rows.forEach(r=>{csv+=lineVals(r).map(q).join(",")+"\n";});
+  download(csv,"rosteron-payroll-"+active().cycle.start+".csv","text/csv");
+  logAudit("export.payroll.rosteron",cyLabel(active())+" — "+rows.length+" shift rows"+(tpl?" (template)":""),"admin");save();
+}
+function exportRosterCSV(){
+  const ds=cycleDates();
+  let csv=["Consultant"].concat(ds.map(d=>DOW[d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1))).join(",")+"\n";
+  S.staff.forEach(s=>{csv+=[s.name].concat(ds.map(d=>shiftLabel(getShift(s.id,iso(d))).replace(/^Off$/,""))).map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")+"\n";});
+  download(csv,"roster-"+active().cycle.start+".csv","text/csv");logAudit("export.roster.csv",cyLabel(active()),"admin");save();
+}
+function exportRosterXLS(){
+  const ds=cycleDates();
+  let h='<table border="1" style="border-collapse:collapse;font-family:Arial;font-size:11px"><tr><th>Consultant</th>'+ds.map(d=>`<th>${DOW[d.getDay()]}<br>${d.getDate()}/${d.getMonth()+1}</th>`).join("")+'</tr>';
+  S.staff.forEach(s=>{h+=`<tr><td>${escapeHTML(s.name)}</td>`+ds.map(d=>{const sh=getShift(s.id,iso(d));const c=rosterColor(sh);const lbl=sh.kind==="off"?"":shiftLabel(sh);return c?`<td style="background-color:${c.bg};color:${c.t}">${lbl}</td>`:'<td></td>';}).join("")+'</tr>';});
+  h+='</table>';
+  const doc='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body><h3>'+escapeHTML(cyLabel(active()))+' ('+(STATUS[active().status]?STATUS[active().status].label:active().status)+')</h3>'+h+'</body></html>';
+  download(doc,"roster-"+active().cycle.start+".xls","application/vnd.ms-excel");logAudit("export.roster.xls",cyLabel(active()),"admin");save();
+}
+function plannerExportData(){
+  const py=plannerYear(), dates=daysInRange(py.from,py.to).map(parseISO);
+  const rows=S.staff.map(s=>({name:s.name,eft:round2(s.eft),hrs:round2(s.hrsFortnight),conf:leaveDaysInRange(s.id,py.from,py.to),cells:dates.map(d=>{const sh=getShift(s.id,iso(d));return sh.kind==="leave"?sh.code:"";})}));
+  return {dates,rows};
+}
+function exportPlannerCSV(){
+  const {dates,rows}=plannerExportData();
+  const head=["Consultant","EFT","Hrs/FTN","Conf leave"].concat(dates.map(d=>d.getDate()+"/"+(d.getMonth()+1)));
+  let csv=head.join(",")+"\n";
+  rows.forEach(r=>{csv+=[r.name,r.eft,r.hrs,r.conf].concat(r.cells).map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")+"\n";});
+  download(csv,"leave-planner.csv","text/csv");logAudit("export.planner.csv","Leave planner CSV exported","admin");save();
+}
+function exportPlannerXLS(){
+  const {dates,rows}=plannerExportData();
+  let h='<table border="1" style="border-collapse:collapse;font-family:Arial;font-size:11px"><tr><th>Consultant</th><th>EFT</th><th>Hrs/FTN</th><th>Conf leave</th>'+dates.map(d=>`<th>${d.getDate()}/${d.getMonth()+1}</th>`).join("")+'</tr>';
+  rows.forEach(r=>{h+=`<tr><td>${escapeHTML(r.name)}</td><td>${r.eft}</td><td>${r.hrs}</td><td>${r.conf}</td>`+r.cells.map(c=>{if(!c)return '<td></td>';const l=leaveStyle(c);return `<td style="background-color:${l.bg};color:${l.t}">${c}</td>`;}).join("")+'</tr>';});
+  h+='</table><br><table border="1" style="border-collapse:collapse;font-family:Arial;font-size:11px"><tr><td><b>Legend</b></td>'+["AL","CME","LSL","PL","UA","PH"].map(c=>{const l=leaveStyle(c);return `<td style="background-color:${l.bg};color:${l.t}">${c} — ${l.name}</td>`;}).join("")+'</tr></table>';
+  const doc='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body>'+h+'</body></html>';
+  download(doc,"leave-planner.xls","application/vnd.ms-excel");logAudit("export.planner.xls","Leave planner Excel exported","admin");save();
+}
+
+function shiftTally(sid){ const ds=cycleDates(); let am=0,pm=0,cst=0; const zones={},leave={};
+  ds.forEach(d=>{ const sh=getShift(sid,iso(d));
+    if(sh.kind==="clinical"){ sh.period==="AM"?am++:pm++; const z=zoneById(sh.zone),zn=z?z.name:"?"; zones[zn]=(zones[zn]||0)+1; }
+    else if(sh.kind==="cst")cst++;
+    else if(sh.kind==="leave")leave[sh.code]=(leave[sh.code]||0)+1; });
+  return {am,pm,cst,zones,leave}; }
+function viewMy(){
+  const adm=isAdmin();
+  if(!S.staff.length)return `<div class="card"><h2>My shifts</h2><div class="sub">No staff yet. ${adm?"Import your roster in <b>Admin settings → Import data</b> to get started.":"Ask your admin to publish the roster."}</div></div>`;
+  const sid=adm?(myPerson&&S.staff.find(x=>x.id===myPerson)?myPerson:S.staff[0].id):S.viewAs;
+  const s=S.staff.find(x=>x.id===sid);
+  const ds=cycleDates();
+  const r=window._range||{from:iso(ds[0]),to:iso(ds[ds.length-1])};
+  window._range=r;
+  const items=ds.filter(d=>iso(d)>=r.from&&iso(d)<=r.to).map(d=>({d,sh:getShift(sid,iso(d))}));
+  const clin=items.filter(i=>i.sh.kind==="clinical").length;
+  const cst=items.filter(i=>i.sh.kind==="cst").length;
+  const leave=items.filter(i=>i.sh.kind==="leave").length;
+  const hrs=clin*8;
+  const t=shiftTally(sid), periods=cyclePeriods();
+  return `<div class="card">
+    <h2>My shifts${adm?"":" — "+s.name}</h2>
+    <div class="sub">${adm?"Pick a consultant and date range. ":"Your shifts. "}Export drops shifts into your phone calendar.</div>
+    <div class="row">
+      ${adm?`<div class="field"><label>Consultant</label>
+        <select id="mySel">${S.staff.map(x=>`<option value="${x.id}" ${x.id===sid?"selected":""}>${x.name}</option>`).join("")}</select></div>`:""}
+      <div class="field"><label>From</label><input type="date" id="rFrom" value="${r.from}"></div>
+      <div class="field"><label>To</label><input type="date" id="rTo" value="${r.to}"></div>
+      <button class="btn sm" data-preset="all">Whole cycle</button>
+      <button class="btn sm" data-preset="2wk">Next 2 wks</button>
+      <button class="btn primary" id="icsBtn">⬇ Add to calendar (.ics)</button>
+    </div>
+    <div class="grid-tiles" style="margin:16px 0">
+      <div class="tile"><div class="k">Clinical shifts</div><div class="v">${clin}</div></div>
+      <div class="tile"><div class="k">CST</div><div class="v">${cst}</div></div>
+      <div class="tile"><div class="k">Leave days</div><div class="v">${leave}</div></div>
+      <div class="tile"><div class="k">Clinical hours</div><div class="v">${hrs}</div></div>
+      <div class="tile"><div class="k">Quota (cycle)</div><div class="v">${clin}/${s.quota}</div></div>
+    </div>
+    <div style="border-top:0.5px solid var(--line);margin:4px 0 12px;padding-top:12px">
+      <div class="sub" style="margin-bottom:8px"><b>This cycle — tally &amp; quota</b></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+        <span class="chip am">AM ${t.am}</span><span class="chip pm">PM ${t.pm}</span><span class="chip cst">CST ${t.cst}</span>
+        ${Object.keys(t.zones).sort().map(zn=>`<span class="pill muted">${escapeHTML(zn)} ×${t.zones[zn]}</span>`).join("")}
+      </div>
+      ${Object.keys(t.leave).length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${["CME","AL","PL","LSL","Sab","PH","UA","UPL","Other","Orientation","Vacant"].filter(c=>t.leave[c]).map(c=>{const l=leaveStyle(c);return `<span class="chip" style="background:${l.bg};color:${l.t}">${l.name} ${t.leave[c]}</span>`;}).join("")}</div>`:""}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <span class="muted small">Quota / ${S.quotaPeriod||"fortnight"}:</span>
+        ${periods.map(p=>{const b=bookedInPeriod(sid,p),tg=periodTarget(s,p.index);return `<span class="pill ${b>=tg?"ok":"warn"}">${p.label} ${b}/${tg}</span>`;}).join("")}
+      </div>
+    </div>
+    <div class="seg"><button class="on" id="vAgenda">Agenda</button><button id="vMonth">Month</button></div>
+    <div id="myBody">${agendaHTML(sid,r.from,r.to)}</div>
+  </div>${(s.mode==="fixed"||s.mode==="preference")?fixedPatternEditorHTML(s,adm||sid===S.viewAs,!adm):""}`;
+}
+function agendaHTML(sid,from,to){
+  const ds=cycleDates();
+  const items=ds.filter(d=>iso(d)>=from&&iso(d)<=to).map(d=>({d,sh:getShift(sid,iso(d))}));
+  if(!items.length)return '<div class="muted">No shifts in range.</div>';
+  let agenda="",lastWk=null;
+  items.forEach(({d,sh})=>{
+    const wk=Math.floor((d-ds[0])/(7*864e5));
+    if(wk!==lastWk){agenda+=`<div class="weekhdr">Week ${wk+1} · from ${fmt(addDays(ds[0],wk*7))}</div>`;lastWk=wk;}
+    agenda+=`<div class="agday${[0,6].includes(d.getDay())?" we":""}"><div class="d"><div class="dn">${DOW[d.getDay()]}</div><div class="dd">${d.getDate()}</div></div><div class="grow">${shiftLine(sh)}</div></div>`;
+  });
+  return agenda;
+}
+function shiftLine(sh){
+  if(sh.kind==="clinical"){const z=zoneById(sh.zone);return `<span class="chip ${sh.period==="AM"?"am":"pm"}">${periodTime(sh.period)} · ${z?zoneLabel(z,sh.period):"?"}</span>`;}
+  if(sh.kind==="cst")return `<span class="chip cst">CST · non-clinical</span>`;
+  if(sh.kind==="leave"){const ls=leaveStyle(sh.code);return `<span class="chip" style="background:${ls.bg};color:${ls.t}">${LEAVE_LABEL[sh.code]||sh.code}</span>`;}
+  return `<span class="muted small">Off</span>`;
+}
+function monthHTML(sid,from,to){
+  const ds=cycleDates();const items=ds.filter(d=>iso(d)>=from&&iso(d)<=to);
+  if(!items.length)return '<div class="muted">No shifts in range.</div>';
+  // group by month
+  const months={};items.forEach(d=>{const k=d.getFullYear()+"-"+d.getMonth();(months[k]=months[k]||[]).push(d);});
+  return Object.values(months).map(arr=>{
+    const first=arr[0];const y=first.getFullYear(),m=first.getMonth();
+    const start=new Date(y,m,1);const lead=start.getDay();
+    const total=new Date(y,m+1,0).getDate();
+    let cells="";
+    for(let i=0;i<lead;i++)cells+=`<div class="mcell out"></div>`;
+    for(let day=1;day<=total;day++){
+      const d=new Date(y,m,day);const isoD=iso(d);const inR=isoD>=from&&isoD<=to;
+      const sh=inR?getShift(sid,isoD):{kind:"off"};
+      cells+=`<div class="mcell ${inR?"":"out"}${[0,6].includes(d.getDay())?" we":""}"><div class="mn">${day}</div>${inR?cellChip(sh):""}</div>`;
+    }
+    return `<div class="weekhdr">${first.toLocaleDateString("en-GB",{month:"long",year:"numeric"})}</div>
+      <div class="monthgrid">${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((x,i)=>`<div class="dow${[0,6].includes(i)?" we":""}">${x}</div>`).join("")}${cells}</div>`;
+  }).join("");
+}
+
+/* ---------- modal: assign a cell ---------- */
+let modal={staffId:null,isoD:null,draft:null};
+function openCell(staffId,isoD){
+  modal={staffId,isoD,draft:Object.assign({},getShift(staffId,isoD))};
+  renderModal();
+}
+function renderModal(){
+  const root=document.getElementById("modalRoot");
+  const s=S.staff.find(x=>x.id===modal.staffId);const d=parseISO(modal.isoD);
+  const draft=modal.draft;
+  const kind=draft.kind||"off";
+  const period=draft.period||"AM";
+  function periodBtn(p){
+    const u=periodUnlocked(modal.isoD,p,modal.staffId);
+    const on=kind==="clinical"&&period===p;
+    return `<button data-period="${p}" class="${on?"on":""}" ${u.ok||on?"":"disabled"} title="${u.ok?"":u.reason||""}">${p} ${periodTime(p)}</button>`;
+  }
+  let zoneHTML="";
+  if(kind==="clinical"){
+    const zs=zonesFor(period);
+    zoneHTML=`<div class="zonebtns">`+zs.map(z=>{
+      const taken=zoneTaken(modal.isoD,period,z.id,modal.staffId);
+      const on=draft.zone===z.id;
+      return `<button data-zone="${z.id}" class="${on?"on":""}" ${taken&&!on?"disabled":""}>
+        ${zoneLabel(z,period)}${taken?`<div class="taken">${taken.initials} has it</div>`:""}</button>`;
+    }).join("")+`</div>`;
+    const u=periodUnlocked(modal.isoD,period,modal.staffId);
+    if(!u.ok&&!(getShift(modal.staffId,modal.isoD).kind==="clinical"&&getShift(modal.staffId,modal.isoD).period===period))
+      zoneHTML+=`<div class="note">🔒 ${u.reason}</div>`;
+  }
+  let leaveHTML="";
+  if(kind==="leave"){
+    leaveHTML=`<div class="field" style="margin-top:8px"><label>Leave type</label>
+      <select id="leaveSel">${LEAVE_CODES.map(c=>`<option value="${c}" ${draft.code===c?"selected":""}>${c} — ${LEAVE_LABEL[c]}</option>`).join("")}</select></div>`;
+  }
+  root.innerHTML=`<div class="overlay" id="ovl"><div class="modal">
+    <h3>${s.name}</h3>
+    <div class="muted small" style="margin-bottom:6px">${d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</div>
+    <div class="seg" id="kindSeg">
+      <button data-kind="off" class="${kind==="off"?"on":""}">Off</button>
+      <button data-kind="clinical" class="${kind==="clinical"?"on":""}">Clinical</button>
+      <button data-kind="cst" class="${kind==="cst"?"on":""}">CST</button>
+      <button data-kind="leave" class="${kind==="leave"?"on":""}">Leave</button>
+    </div>
+    ${kind==="clinical"?`<div class="seg" id="periodSeg">${periodBtn("AM")}${periodBtn("PM")}</div>`:""}
+    ${zoneHTML}
+    ${leaveHTML}
+    ${needsComment()?`<div class="field" style="margin-top:10px"><label>Reason for change (required — published roster)</label><input id="editCmt" value="${escapeHTML(draft.note||"")}" placeholder="e.g. swap cover, sickness"></div>`:""}
+    <div class="flexbtns" style="margin-top:16px">
+      ${getShift(modal.staffId,modal.isoD).kind!=="off"?`<button class="btn danger" id="mRemove">Remove shift</button>`:""}
+      <span class="grow"></span>
+      <button class="btn" id="mCancel">Cancel</button>
+      <button class="btn primary" id="mSave">Save</button>
+    </div>
+  </div></div>`;
+  // wire modal
+  root.querySelector("#ovl").onclick=e=>{if(e.target.id==="ovl")closeModal();};
+  root.querySelectorAll("[data-kind]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.kind;modal.draft={kind:k};
+    if(k==="clinical")modal.draft.period="AM";
+    if(k==="leave")modal.draft.code="AL";
+    renderModal();
+  });
+  root.querySelectorAll("[data-period]").forEach(b=>b.onclick=()=>{modal.draft.period=b.dataset.period;delete modal.draft.zone;renderModal();});
+  root.querySelectorAll("[data-zone]").forEach(b=>b.onclick=()=>{modal.draft.zone=b.dataset.zone;renderModal();});
+  const ls=root.querySelector("#leaveSel");if(ls)ls.onchange=e=>{modal.draft.code=e.target.value;};
+  root.querySelector("#mCancel").onclick=closeModal;
+  const rm=root.querySelector("#mRemove");
+  if(rm)rm.onclick=()=>{
+    if(needsComment()){const c=(document.getElementById("editCmt").value||"").trim();if(!c){alert("A comment is required to change a published roster.");return;}logAudit("roster.edit",s.name+" "+modal.isoD+" → cleared · "+c,"admin");}
+    setShift(modal.staffId,modal.isoD,{kind:"off"});closeModal();render();};
+  root.querySelector("#mSave").onclick=()=>{
+    let sh=modal.draft;
+    if(sh.kind==="clinical"&&!sh.zone){alert("Pick a zone.");return;}
+    if(sh.kind==="clinical"){
+      const u=periodUnlocked(modal.isoD,sh.period,modal.staffId);
+      const prev=getShift(modal.staffId,modal.isoD);
+      const sameSlot=prev.kind==="clinical"&&prev.period===sh.period;
+      if(!u.ok&&!sameSlot){alert(u.reason);return;}
+    }
+    if(sh.kind==="leave"&&!sh.code)sh.code="AL";
+    if(needsComment()){
+      const c=(document.getElementById("editCmt").value||"").trim();
+      if(!c){alert("A comment is required when editing a published roster.");return;}
+      if(sh.kind!=="off"){sh.note=c;sh.noteBy="Admin";sh.noteTs=Date.now();}
+      logAudit("roster.edit",s.name+" "+modal.isoD+" → "+shiftLabel(sh)+" · "+c,"admin");
+    }
+    setShift(modal.staffId,modal.isoD,sh);closeModal();render();
+  };
+}
+function closeModal(){document.getElementById("modalRoot").innerHTML="";}
+function openPlannerCell(staffId,isoD){
+  const root=document.getElementById("modalRoot");const cur=getShift(staffId,isoD);
+  const codes=["AL","CME","LSL","Sab","PL","UA","PH","Other"];
+  root.innerHTML=`<div class="overlay" id="ovlP"><div class="modal">
+    <h3>${nameOf(staffId)}</h3>
+    <div class="muted small" style="margin-bottom:8px">${parseISO(isoD).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}${cur.kind==="clinical"?" · currently rostered "+shiftLabel(cur)+" (setting leave will clear it)":(cur.kind==="leave"?" · currently "+(LEAVE_LABEL[cur.code]||cur.code):"")}</div>
+    <div class="zonebtns">${codes.map(c=>{const l=leaveStyle(c);return `<button data-pcode="${c}" style="background:${l.bg};color:${l.t};border-color:${l.t}">${c} — ${LEAVE_LABEL[c]||c}</button>`;}).join("")}</div>
+    <div class="flexbtns" style="margin-top:14px">${cur.kind==="leave"?`<button class="btn danger" id="pClear">Clear leave</button>`:""}<span class="grow"></span><button class="btn" id="pCancel">Cancel</button></div>
+  </div></div>`;
+  root.querySelector("#ovlP").onclick=e=>{if(e.target.id==="ovlP")closeModal();};
+  root.querySelector("#pCancel").onclick=closeModal;
+  const pc=root.querySelector("#pClear");if(pc)pc.onclick=()=>{plannerSetLeave(staffId,isoD,"");closeModal();render();};
+  root.querySelectorAll("[data-pcode]").forEach(b=>b.onclick=()=>{plannerSetLeave(staffId,isoD,b.dataset.pcode);closeModal();render();});
+}
+
+/* ---------- .ics export ---------- */
+function exportICS(sid){
+  const s=S.staff.find(x=>x.id===sid);const r=window._range;
+  const ds=cycleDates().filter(d=>iso(d)>=r.from&&iso(d)<=r.to);
+  let ev="";
+  const stamp=new Date().toISOString().replace(/[-:]/g,"").split(".")[0]+"Z";
+  ds.forEach(d=>{
+    const sh=getShift(sid,iso(d));const dk=iso(d).replace(/-/g,"");
+    if(sh.kind==="clinical"){
+      const z=zoneById(sh.zone);const lbl=z?zoneLabel(z,sh.period):"";
+      const[st,en]=sh.period==="AM"?["080000","160000"]:["153000","233000"];
+      ev+=`BEGIN:VEVENT\nUID:${sid}-${dk}-${sh.period}@edroster\nDTSTAMP:${stamp}\nDTSTART:${dk}T${st}\nDTEND:${dk}T${en}\nSUMMARY:${lbl} (${sh.period})\nEND:VEVENT\n`;
+    }else if(sh.kind==="cst"){
+      ev+=`BEGIN:VEVENT\nUID:${sid}-${dk}-cst@edroster\nDTSTAMP:${stamp}\nDTSTART;VALUE=DATE:${dk}\nSUMMARY:CST (non-clinical)\nEND:VEVENT\n`;
+    }else if(sh.kind==="leave"){
+      ev+=`BEGIN:VEVENT\nUID:${sid}-${dk}-lv@edroster\nDTSTAMP:${stamp}\nDTSTART;VALUE=DATE:${dk}\nSUMMARY:${LEAVE_LABEL[sh.code]||sh.code}\nEND:VEVENT\n`;
+    }
+  });
+  const cal=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Myrosta//EN\nCALSCALE:GREGORIAN\n${ev}END:VCALENDAR`;
+  const blob=new Blob([cal],{type:"text/calendar"});const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download="roster-"+sid+".ics";a.click();URL.revokeObjectURL(url);
+}
+
+/* ---------- wiring ---------- */
+function wire(){
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;save();render();});
+  const va=document.getElementById("viewAs");if(va)va.onchange=()=>{S.viewAs=va.value;save();render();};
+  const lo=document.getElementById("logoutBtn");if(lo)lo.onclick=authSignOut;
+  const csel=document.getElementById("cycleSel");if(csel)csel.onchange=()=>{S.activeId=csel.value;dailyDate=null;save();render();};
+
+  if(S.tab==="setup"){
+    renderZoneList();
+    const sc=document.getElementById("saveCycle");
+    if(sc)sc.onclick=()=>{const a=active();
+      a.cycle.start=document.getElementById("cycStart").value;
+      a.cycle.weeks=Math.max(1,+document.getElementById("cycWeeks").value||8);save();render();};
+    document.getElementById("addZone").onclick=()=>{const n="Zone"+(S.zones.length+1);S.zones.push({id:slug(n)+"-"+Date.now(),name:n,am:true,pm:true,pmLabel:""});save();render();};
+    document.getElementById("saveStaffing").onclick=()=>{
+      S.staffing={amMin:+amMin.value,amMax:+amMax.value,pmMin:+pmMin.value,pmMax:+pmMax.value};save();render();};
+    document.querySelectorAll("#uoSeg [data-uo]").forEach(b=>b.onclick=()=>{S.unlockOrder=b.dataset.uo;logAudit("settings.unlockOrder",unlockOrderLabel(),"admin");save();render();});
+    const slc=document.getElementById("saveLeaveCap");if(slc)slc.onclick=()=>{S.leaveCapEft=+document.getElementById("leaveCap").value||0;logAudit("settings.leaveCap","Max EFT on leave/day = "+S.leaveCapEft,"admin");save();render();};
+    const ir=document.getElementById("impRoster");if(ir)ir.onchange=e=>{if(e.target.files[0])importFile(e.target.files[0],"roster");};
+    const il=document.getElementById("impLeave");if(il)il.onchange=e=>{if(e.target.files[0])importFile(e.target.files[0],"leave");};
+    const ieft=document.getElementById("impEft");if(ieft)ieft.onchange=e=>{if(e.target.files[0])importEftTracker(e.target.files[0]);};
+    const eeft=document.getElementById("expEft");if(eeft)eeft.onclick=exportEftTracker;
+    const ist=document.getElementById("impStaff");if(ist)ist.onchange=e=>{if(e.target.files[0])importStaffList(e.target.files[0]);};
+    const dst=document.getElementById("dlStaffTpl");if(dst)dst.onclick=downloadStaffTemplate;
+    const ghide=document.getElementById("guideHide");if(ghide)ghide.onclick=()=>{S.guideDismissed=true;save();render();};
+    const gshow=document.getElementById("guideShow");if(gshow)gshow.onclick=()=>{S.guideDismissed=false;save();render();};
+    const wtpl=document.getElementById("wizTpl");if(wtpl)wtpl.onclick=downloadStaffTemplate;
+    const wstf=document.getElementById("wizStaff");if(wstf)wstf.onchange=e=>{if(e.target.files[0])importStaffList(e.target.files[0]);};
+    const pt=document.getElementById("payTpl");if(pt)pt.onchange=e=>{if(e.target.files[0])readPayrollTemplate(e.target.files[0]);};
+    const pdf=document.getElementById("payDateFmt");if(pdf)pdf.onchange=e=>{S.payrollDateFmt=e.target.value;logAudit("payroll.dateFmt",e.target.value,"admin");save();};
+    const ptc=document.getElementById("payTplClear");if(ptc)ptc.onclick=()=>{S.payrollTemplate=null;logAudit("payroll.template.clear","reverted to standard layout","admin");save();render();};
+    document.querySelectorAll(".payMap").forEach(sel=>sel.onchange=e=>{const i=+e.target.dataset.col;if(S.payrollTemplate&&S.payrollTemplate.map){S.payrollTemplate.map[i]=e.target.value;save();}});
+    const bd=document.getElementById("bkpDl");if(bd)bd.onclick=exportState;
+    const bu=document.getElementById("bkpUp");if(bu)bu.onchange=e=>{if(e.target.files[0])importState(e.target.files[0]);};
+    const ms=document.getElementById("memSync");if(ms)ms.onclick=cloudMembersSync;
+    const ma=document.getElementById("memAdd");if(ma)ma.onclick=()=>{const em=(document.getElementById("memEmail").value||"").trim();if(em)cloudMemberAdd(em,document.getElementById("memRole").value);};
+    document.querySelectorAll("[data-memrm]").forEach(b=>b.onclick=()=>{if(confirm("Remove "+b.dataset.memrm+" from the allow-list?"))cloudMemberRemove(b.dataset.memrm);});
+    document.querySelectorAll("#fairSeg [data-f]").forEach(b=>b.onclick=()=>{S.fairness=b.dataset.f;save();render();});
+    document.querySelectorAll("#wcSeg [data-wc]").forEach(b=>b.onclick=()=>{S.waveCount=+b.dataset.wc;save();render();});
+    document.querySelectorAll("#qpSeg [data-qp]").forEach(b=>b.onclick=()=>{S.quotaPeriod=b.dataset.qp;logAudit("settings.quotaPeriod",S.quotaPeriod,"admin");save();render();});
+    document.querySelectorAll("#qcSeg [data-qc]").forEach(b=>b.onclick=()=>{S.quotaCapMode=b.dataset.qc;logAudit("settings.quotaCap",S.quotaCapMode,"admin");save();render();});
+    document.querySelectorAll(".qt-cell").forEach(inp=>inp.onchange=e=>{const s=S.staff.find(x=>x.id===e.target.dataset.sid);if(!s)return;const i=+e.target.dataset.pi,v=e.target.value.trim();if(!s.periodTargets)s.periodTargets={};if(v==="")delete s.periodTargets[i];else s.periodTargets[i]=Math.max(0,Math.round(+v||0));save();
+      const t=periodTargetsOf(s),row=e.target.closest("tr");if(row){row.querySelectorAll(".qt-cell").forEach((c,ci)=>{c.value=t[ci];const ov=s.periodTargets[ci]!=null&&s.periodTargets[ci]!=="";c.style.fontWeight=ov?"600":"";c.style.color=ov?"var(--accent)":"";});const tc=row.querySelector(".qt-total");if(tc)tc.textContent=t.reduce((a,b)=>a+b,0);}});
+    const qtr=document.getElementById("qtReset");if(qtr)qtr.onclick=()=>{S.staff.forEach(s=>s.periodTargets={});logAudit("settings.quotaReset","all per-period targets reset to auto","admin");save();render();};
+    document.getElementById("resetAll").onclick=reset;
+    document.querySelectorAll("[data-status]").forEach(b=>b.onclick=()=>{
+      const to=b.dataset.status; active().status=to;
+      if(to==="published")notify("all","Roster "+cyLabel(active())+" is published.");
+      if(to==="open")notify("all","Self-roster is open for "+cyLabel(active())+".");
+      logAudit("cycle.status",cyLabel(active())+" → "+to,"admin");
+      save();render();});
+    document.getElementById("prepNext").onclick=prepareNext;
+    document.querySelectorAll("[data-archive]").forEach(b=>b.onclick=()=>archiveCycle(b.dataset.archive));
+    document.querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>{const c=S.cycles.find(x=>x.id===b.dataset.restore);if(c){c.archived=false;save();render();}});
+    document.querySelectorAll("[data-select]").forEach(b=>b.onclick=()=>{S.activeId=b.dataset.select;dailyDate=null;save();render();});
+    document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(confirm("Delete this cycle permanently?")){S.cycles=S.cycles.filter(x=>x.id!==b.dataset.del);if(!S.cycles.find(x=>x.id===S.activeId))S.activeId=(S.cycles.find(x=>!x.archived)||S.cycles[0]).id;save();render();}});
+  }
+  if(S.tab==="staff"){
+    document.querySelectorAll("[data-s]").forEach(rowEl=>{
+      const id=rowEl.dataset.s;const s=S.staff.find(x=>x.id===id);
+      rowEl.querySelector(".s-name").onchange=e=>{s.name=e.target.value;save();};
+      rowEl.querySelector(".s-init").onchange=e=>{s.initials=e.target.value;save();};
+      rowEl.querySelector(".s-mob").onchange=e=>{s.mobile=e.target.value;save();};
+      rowEl.querySelector(".s-email").onchange=e=>{s.email=e.target.value;save();};
+      rowEl.querySelector(".s-mode").onchange=e=>{s.mode=e.target.value;save();render();};
+      rowEl.querySelector(".s-quota").onchange=e=>{s.quota=+e.target.value;save();};
+      rowEl.querySelector(".s-eft").onchange=e=>{s.eft=round2(e.target.value);save();};
+      rowEl.querySelector(".s-hrs").onchange=e=>{s.hrsFortnight=round2(e.target.value);save();};
+      rowEl.querySelector(".s-pay").onchange=e=>{s.payrollId=e.target.value.trim();save();};
+      rowEl.querySelector(".s-del").onclick=()=>{if(confirm("Remove "+s.name+"?")){S.staff=S.staff.filter(x=>x.id!==id);save();render();}};
+    });
+    document.querySelectorAll(".s-fp").forEach(b=>b.onclick=()=>{const sid=b.dataset.sid;if(_fpOpen.has(sid))_fpOpen.delete(sid);else _fpOpen.add(sid);render();});
+    const tidy=document.getElementById("tidyStaff");if(tidy)tidy.onclick=()=>{const junk=S.staff.filter(s=>!isNameCell(s.name));if(!junk.length)return;
+      if(confirm("Remove these non-staff rows imported from the spreadsheet?\n\n"+junk.map(s=>"• "+s.name).join("\n")+"\n\nTheir shifts and leave entries are removed too.")){
+        const ids=new Set(junk.map(s=>s.id)); S.staff=S.staff.filter(s=>!ids.has(s.id));
+        S.leave=S.leave.filter(L=>!ids.has(L.staffId));
+        S.cycles.forEach(c=>Object.keys(c.assign).forEach(k=>{if(ids.has(k.slice(0,k.indexOf("|"))))delete c.assign[k];}));
+        logAudit("staff.tidy","removed "+junk.length+" non-staff rows: "+junk.map(s=>s.name).join(", "),"admin");save();render();}};
+    wireFixedEditors();
+    document.getElementById("addStaff").onclick=()=>{const n="New, Staff "+(S.staff.length+1);S.staff.push({id:slug(n)+"-"+Date.now(),name:n,initials:"NS",mobile:"",mode:"self",quota:20,fixedPattern:{recurrence:"weekly",A:{},B:{},committed:false}});save();render();};
+  }
+  if(S.tab==="roster"){
+    document.querySelectorAll("td.cell").forEach(td=>td.onclick=()=>openCell(td.dataset.s,td.dataset.d));
+    const gt=document.getElementById("gapsToggle");if(gt)gt.onclick=()=>{gapsOn=!gapsOn;render();};
+    const rx=document.getElementById("rosXls"),rc=document.getElementById("rosCsv"),rp=document.getElementById("rosPay");
+    if(rx)rx.onclick=exportRosterXLS; if(rc)rc.onclick=exportRosterCSV; if(rp)rp.onclick=exportPayrollCSV;
+  }
+  if(S.tab==="daily"){
+    const ds=cycleDates();
+    document.querySelectorAll("[data-dm]").forEach(b=>b.onclick=()=>{dailyMode=b.dataset.dm;render();});
+    const di=document.getElementById("dDate");if(di)di.onchange=e=>{dailyDate=e.target.value;render();};
+    const step=dailyMode==="week"?7:1;
+    const dp=document.getElementById("dPrev"),dn=document.getElementById("dNext");
+    if(dp)dp.onclick=()=>{const nd=addDays(parseISO(dailyDate),-step);if(nd>=ds[0])dailyDate=iso(nd);render();};
+    if(dn)dn.onclick=()=>{const nd=addDays(parseISO(dailyDate),step);if(nd<=ds[ds.length-1])dailyDate=iso(nd);render();};
+  }
+  if(S.tab==="my"){
+    const sel=document.getElementById("mySel");
+    const curSid=()=>sel?sel.value:S.viewAs;
+    if(sel)sel.onchange=()=>{myPerson=sel.value;render();};
+    const ds=cycleDates();
+    document.getElementById("rFrom").onchange=e=>{window._range.from=e.target.value;render();};
+    document.getElementById("rTo").onchange=e=>{window._range.to=e.target.value;render();};
+    document.querySelectorAll("[data-preset]").forEach(b=>b.onclick=()=>{
+      if(b.dataset.preset==="all"){window._range={from:iso(ds[0]),to:iso(ds[ds.length-1])};}
+      else{const t=new Date();let f=inCycle(t)?t:ds[0];window._range={from:iso(f),to:iso(addDays(f,13))};}
+      render();
+    });
+    document.getElementById("icsBtn").onclick=()=>exportICS(curSid());
+    document.getElementById("vAgenda").onclick=()=>{document.getElementById("vAgenda").classList.add("on");document.getElementById("vMonth").classList.remove("on");document.getElementById("myBody").innerHTML=agendaHTML(curSid(),window._range.from,window._range.to);};
+    document.getElementById("vMonth").onclick=()=>{document.getElementById("vMonth").classList.add("on");document.getElementById("vAgenda").classList.remove("on");document.getElementById("myBody").innerHTML=monthHTML(curSid(),window._range.from,window._range.to);};
+    wireFixedEditors();
+  }
+  if(S.tab==="messages"){
+    const send=document.getElementById("msgSend");
+    if(send)send.onclick=()=>{
+      const ta=document.getElementById("msgText");const txt=(ta.value||"").trim();if(!txt)return;
+      const to=document.getElementById("msgTo").value;
+      if(isAdmin()){
+        S.messages.unshift({id:"m"+Date.now(),from:"admin",to,text:txt,ts:Date.now()});
+        notify(to==="all"?"all":to,"New message from Admin");
+      }else{
+        S.messages.unshift({id:"m"+Date.now(),from:S.viewAs,to,text:txt,ts:Date.now()});
+        notify(to==="admin"?"admin":to,nameOf(S.viewAs)+" sent you a message");
+      }
+      if(isAdmin()||to==="admin")logAudit("message.send","to "+(to==="all"?"All staff":to==="admin"?"Admin":nameOf(to)),S.viewAs);
+      replyTo=null; save();render();
+    };
+    document.querySelectorAll("[data-reply]").forEach(b=>b.onclick=()=>{replyTo=b.dataset.reply;render();const t=document.getElementById("msgText");if(t)t.focus();});
+  }
+  if(S.tab==="requests"){
+    const sub=document.getElementById("lvSubmit");
+    if(sub)sub.onclick=()=>{
+      const from=document.getElementById("lvFrom").value, to=document.getElementById("lvTo").value;
+      if(to<from){alert("End date is before start date.");return;}
+      submitLeaveRequest(S.viewAs,from,to,document.getElementById("lvCode").value,document.getElementById("lvReason").value);
+      render();
+    };
+    document.querySelectorAll("[data-approve]").forEach(b=>b.onclick=()=>{
+      const id=b.dataset.approve;const c=(document.getElementById("cmt-"+id)||{}).value||"";
+      approveRequest(id,c);render();openEmailModal();});
+    document.querySelectorAll("[data-decline]").forEach(b=>b.onclick=()=>{
+      const id=b.dataset.decline;const c=(document.getElementById("cmt-"+id)||{}).value||"";
+      declineRequest(id,c);render();openEmailModal();});
+    const swp=document.getElementById("swPeer");if(swp)swp.onchange=()=>{swapPeer=swp.value||null;render();};
+    const swsub=document.getElementById("swSubmit");if(swsub)swsub.onclick=()=>{
+      const mine=document.getElementById("swMine").value, theirs=(document.getElementById("swTheirs")||{}).value;
+      if(submitSwapRequest(S.viewAs,mine,swapPeer,theirs,document.getElementById("swReason").value))render();};
+    document.querySelectorAll("[data-peeragree]").forEach(b=>b.onclick=()=>{agreeSwap(b.dataset.peeragree);render();});
+    document.querySelectorAll("[data-peerdecline]").forEach(b=>b.onclick=()=>{declineSwapPeer(b.dataset.peerdecline);render();});
+    document.querySelectorAll("[data-approveswap]").forEach(b=>b.onclick=()=>{const id=b.dataset.approveswap;approveSwap(id,(document.getElementById("cmt-"+id)||{}).value||"");render();});
+    document.querySelectorAll("[data-declineswap]").forEach(b=>b.onclick=()=>{const id=b.dataset.declineswap;declineSwap(id,(document.getElementById("cmt-"+id)||{}).value||"");render();});
+    document.querySelectorAll("[data-withdraw]").forEach(b=>b.onclick=()=>{if(confirm("Withdraw this request?")){withdrawRequest(b.dataset.withdraw);render();}});
+    document.querySelectorAll("[data-reqcancel]").forEach(b=>b.onclick=()=>{if(confirm("Request cancellation of this approved item? Admin will review.")){requestCancellation(b.dataset.reqcancel);render();}});
+    document.querySelectorAll("[data-cancel]").forEach(b=>b.onclick=()=>{if(confirm("Cancel this approved request and reverse the roster?")){cancelApproved(b.dataset.cancel,"");render();}});
+    document.querySelectorAll("[data-cancelapprove]").forEach(b=>b.onclick=()=>{const id=b.dataset.cancelapprove;cancelApproved(id,(document.getElementById("cmt-"+id)||{}).value||"");render();});
+    document.querySelectorAll("[data-cancelkeep]").forEach(b=>b.onclick=()=>{keepApproval(b.dataset.cancelkeep);render();});
+  }
+  if(S.tab==="selfroster"){
+    const adFixed=document.getElementById("adFixed");if(adFixed)adFixed.onclick=()=>{const n=applyFixedPatterns();logAudit("selfroster.fixed","placed "+n+" fixed/preference shifts","admin");save();alert("Laid down "+n+" fixed/preference shifts from patterns. Now release for self-roster (Admin settings → Roster status) so staff fill the rest.");render();};
+    const adMin=document.getElementById("adMin");if(adMin)adMin.onclick=()=>{const r=autoDraft(false);alert("Auto-draft (minimum): placed "+r.filled+" shifts. Coverage gaps remaining: "+r.gaps+".");render();};
+    const adMax=document.getElementById("adMax");if(adMax)adMax.onclick=()=>{const r=autoDraft(true);alert("Auto-draft (fill to max): placed "+r.filled+" shifts. Coverage gaps remaining: "+r.gaps+".");render();};
+    const adClear=document.getElementById("adClear");if(adClear)adClear.onclick=()=>{if(confirm("Clear all shifts in this cycle? (Leave is kept.)")){clearShifts();render();}};
+    const snStart=document.getElementById("snStart");if(snStart)snStart.onclick=()=>{startRounds();render();};
+    const snAdvance=document.getElementById("snAdvance");if(snAdvance)snAdvance.onclick=()=>{advanceTurn();render();};
+    const snStop=document.getElementById("snStop");if(snStop)snStop.onclick=()=>{stopRounds();render();};
+    const wvStart=document.getElementById("wvStart");if(wvStart)wvStart.onclick=()=>{startWaves();render();};
+    const wvNext=document.getElementById("wvNext");if(wvNext)wvNext.onclick=()=>{if(!waveAllSettled()&&!confirm("Open the next wave? Not everyone in the current wave has hit quota / marked done."))return;advanceWave();render();};
+    const wvReassign=document.getElementById("wvReassign");if(wvReassign)wvReassign.onclick=()=>{if(confirm("Re-shuffle into new random waves? Resets wave order and progress (booked shifts are kept)."))startWaves();render();};
+    const wvStop=document.getElementById("wvStop");if(wvStop)wvStop.onclick=()=>{if(confirm("Stop waves? Anyone will be able to pick (within guards)."))stopWaves();render();};
+    const wvDone=document.getElementById("wvDone");if(wvDone)wvDone.onclick=()=>{const w=active().waveState;setWaveDone(_srSid,!(w&&w.done&&w.done[_srSid]));render();};
+    const snPass=document.getElementById("snPass");if(snPass)snPass.onclick=()=>{advanceTurn();render();};
+    const srWho=document.getElementById("srWho");if(srWho)srWho.onchange=()=>{myPerson=srWho.value;render();};
+    document.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const k=b.dataset.pick,i=_srPick.indexOf(k);if(i>=0)_srPick.splice(i,1);else _srPick.push(k);render();});
+    document.querySelectorAll(".srConfirm").forEach(b=>b.onclick=srBatchBook);
+    document.querySelectorAll(".srClear").forEach(b=>b.onclick=()=>{_srPick=[];render();});
+    document.querySelectorAll("[data-book]").forEach(b=>b.onclick=()=>{const parts=b.dataset.book.split("|");if(bookShift(_srSid||(srWho?srWho.value:S.viewAs),parts[0],parts[1],parts[2]))render();});
+    document.querySelectorAll("[data-unbook]").forEach(b=>b.onclick=()=>{unbookShift(_srSid||(srWho?srWho.value:S.viewAs),b.dataset.unbook);render();});
+  }
+  if(S.tab==="planner"){
+    const pp=document.getElementById("plPrev"),pn=document.getElementById("plNext");
+    if(pp)pp.onclick=()=>{plannerMonth=new Date(plannerMonth.getFullYear(),plannerMonth.getMonth()-1,1);render();};
+    if(pn)pn.onclick=()=>{plannerMonth=new Date(plannerMonth.getFullYear(),plannerMonth.getMonth()+1,1);render();};
+    const xls=document.getElementById("plXls"),csv=document.getElementById("plCsv");
+    if(xls)xls.onclick=exportPlannerXLS; if(csv)csv.onclick=exportPlannerCSV;
+    document.querySelectorAll("td.pcell").forEach(td=>td.onclick=()=>openPlannerCell(td.dataset.ps,td.dataset.pd));
+  }
+  if(S.tab==="notifs"){ markNotifsRead(S.viewAs); const bb=document.getElementById("bellBadge"); if(bb){bb.textContent="";bb.style.display="none";} }
+  const bell=document.getElementById("bell");
+  if(bell)bell.onclick=()=>{S.tab="notifs";save();render();};
+  const hr=document.getElementById("hardReset");
+  if(hr)hr.onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){} location.reload();};
+}
+
+function safeRenderInit(){ try{ render(); }catch(e){ console.error("render failed, resetting:",e); S=defaultState(); try{localStorage.setItem(KEY,JSON.stringify(S));}catch(x){} render(); } }
+async function boot(){
+  if(cloudOn()){
+    load(); // have a valid local S so the auth screen can render while we connect
+    authState="checking"; cloudState="connecting"; safeRenderInit();
+    try{
+      cloudInit();
+      _sb.auth.onAuthStateChange((_e,sess)=>{ handleAuth(sess); });
+      const {data}=await _sb.auth.getSession();
+      await handleAuth(data?data.session:null);
+    }catch(e){ console.error("cloud boot failed",e); cloudState="error"; alert("Cloud connection failed — running in local mode.\n\n"+e.message); authState="local"; load(); safeRenderInit(); }
+  } else { authState="local"; load(); safeRenderInit(); }
+}
+boot();
+</script>
+</body>
+</html>

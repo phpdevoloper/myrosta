@@ -1,0 +1,60 @@
+{
+ "take": "A6-sync",
+ "secs": 18.52,
+ "fps": 25,
+ "log": [
+  {
+   "t": 0.96,
+   "label": "1 · Fairness: the same table for everyone"
+  },
+  {
+   "t": 9.0,
+   "label": "2 · Roster, then Export"
+  },
+  {
+   "t": 13.68,
+   "label": "3 · The grid as Excel or CSV; the payroll file when it is on"
+  }
+ ],
+ "sync": {
+  "orig": "A6",
+  "pre": 2.4,
+  "anchors": [
+   "Fairness shows",
+   "When it's time to pay",
+   "The grid as Excel"
+  ],
+  "targets": [
+   -0.2,
+   8.94,
+   13.56
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.4,
+    1.5,
+    0.0
+   ],
+   [
+    1.4,
+    5.83,
+    1.0,
+    2.177
+   ],
+   [
+    7.23,
+    6.17,
+    1.3355,
+    0.0
+   ],
+   [
+    13.4,
+    4.84,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "73/78"
+ }
+}

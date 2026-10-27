@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Myrosta — the ED roster, finally on every phone</title>
+<meta name="description" content="Myrosta is the roster app for emergency departments: staff book shifts, swap them, take leave and see their fair share from their phone. Hosted in Australia. In daily use since June 2026, now taking on new departments.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="canonical" href="https://myrosta.com.au/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://myrosta.com.au/">
+<meta property="og:title" content="Myrosta — the ED roster, finally on every phone">
+<meta property="og:description" content="Staff book shifts, swap them, take leave and see their fair share from their phone. Hosted in Australia. In daily use since June 2026, now taking on new departments.">
+<meta property="og:image" content="https://myrosta.com.au/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Myrosta — the ED roster, finally on every phone">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myrosta.com.au/og-image.png">
+<meta name="twitter:title" content="Myrosta — the ED roster, finally on every phone">
+<meta name="twitter:description" content="Staff book shifts, swap them, take leave and see their fair share from their phone. Hosted in Australia.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230F243A'/%3E%3Cpath d='M17 31 L17 11 L24.5 22 L32 11 L32 31' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 13 L14 13' fill='none' stroke='%234C86E8' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M7 21 L12 21' fill='none' stroke='%23F2A638' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M7 29 L14 29' fill='none' stroke='%232FA86E' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@300..500&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Myrosta","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Roster app for emergency departments: staff book shifts, swap them, take leave and see their fair share from their phone. Hosted in Australia.","url":"https://myrosta.com.au/"}</script>
+<script>document.documentElement.className+=" js"</script>
+<style>
+:root{
+  --bg:#FFFFFF;--panel:#EFF4F2;--ink:#000000;--ink-2:#666666;--line:rgba(0,0,0,.1);--field:#757575;
+  --accent:#05665A;--accent-deep:#044E45;--amber:#FBE9CE;--amber-line:#F9D7A5;
+  --glass:rgba(255,255,255,.8);--glass-subtle:rgba(255,255,255,.5);--glass-strong:rgba(255,255,255,.9);--blur:10px;
+  --r-panel:8px;--r-card:24px;--r-section:48px;--r-chip:37px;--r-pill:46px;
+  --t-fast:150ms;--t:250ms;--t-slow:700ms;--ease:cubic-bezier(.2,0,0,1);
+  --font:"Google Sans Flex",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --pw:300px;--ps:.768;--barh:60px;
+}
+*{box-sizing:border-box}
+html{font-size:100%;scroll-behavior:smooth;scroll-padding-top:calc(var(--barh) + 20px);-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);font-size:1rem;font-weight:300;line-height:1.5;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+@media (max-resolution:1.5dppx){body{font-weight:400}}   /* Light at 16px is spindly on an ordinary monitor */
+h1,h2,h3,p,ol{margin:0} ol{padding:0;list-style:none}   /* the mock-up relies on this margin reset too: do not scope it */
+a{color:var(--accent);text-underline-offset:.18em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 max(24px,env(safe-area-inset-right)) 0 max(24px,env(safe-area-inset-left))}
+.intro h1,.lead,.trust,.cap,.eb,.pill,.chip,.step h3,.num,.vhead h2,.state,.pgrid h2,.stat b,.formcard h3,.lbl,.fgrid h2,.q summary{text-box:trim-both cap alphabetic}   /* progressive: without text-box the full line box stays */
+.bar,.pin,.chip,.formcard,.plate.small{-webkit-backdrop-filter:blur(var(--blur));backdrop-filter:blur(var(--blur))}
+.vhead h2,.pgrid h2,.fgrid h2,.state{font-size:clamp(1.75rem,1rem + 2vw,2.25rem);font-weight:300;line-height:1.1}
+.panel{margin-inline:clamp(12px,1.6vw,20px);background:var(--panel);border-radius:var(--r-section)}
+.eb{font-size:.875rem;font-weight:500;line-height:1.2;text-transform:uppercase;color:var(--accent)}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 28px;border:1px solid transparent;border-radius:var(--r-pill);font:inherit;font-size:1.25rem;font-weight:300;line-height:1.2;white-space:nowrap;text-decoration:none;cursor:pointer;transition:background-color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)}
+.pill.primary{background:var(--accent);border-color:var(--accent-deep);color:#fff}
+.pill.primary:hover{background:var(--accent-deep)}
+.pill.secondary{background:var(--amber);border-color:var(--amber-line);color:var(--ink)}
+.pill.secondary:hover{background:var(--amber-line)}
+.pill.disc{padding:0 2px 0 32px}
+.dc{display:grid;place-items:center;width:48px;height:48px;flex:none;border-radius:50%;background:var(--amber);color:var(--ink)}
+.dc svg{width:16px;height:16px}
+.chip{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border:1px solid var(--line);border-radius:var(--r-chip);background:var(--glass-subtle);color:var(--ink);text-decoration:none;transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)}
+.chip:hover{color:var(--accent);border-color:var(--accent)}
+/* bar */
+.bar{position:sticky;top:0;z-index:20;background:var(--glass);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;min-height:60px;padding-top:max(0px,env(safe-area-inset-top))}
+.lock{display:flex;align-items:center;gap:10px;min-height:44px;font-size:1.25rem;font-weight:500;line-height:1.1;color:var(--ink);text-decoration:none}
+.lock svg{width:28px;height:28px;flex:none} .lock .wm{white-space:nowrap} .lock .o{color:var(--accent)}
+/* hero (GetLayers artist-hero): the plate is the phone */
+.hero{padding:0 0 24px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) var(--pw);gap:0 72px;align-items:start}
+.intro{grid-column:1;grid-row:1;display:flex;flex-direction:column;justify-content:center;min-height:calc(100svh - var(--barh));padding:48px 0}
+.intro h1{font-size:clamp(2.5rem,1.3rem + 3.4vw,3.75rem);font-weight:300;line-height:1.1;text-wrap:balance;max-width:11em}
+.lead{font-size:1.25rem;line-height:1.3;margin-top:32px;max-width:27em}
+.cta{display:flex;flex-wrap:wrap;gap:8px;margin-top:40px}
+.rule{width:100%;height:1px;margin:48px 0 0;border:0;background:var(--line)}
+.trust{display:flex;align-items:center;gap:12px;margin-top:24px;line-height:1.2;color:var(--accent)}
+.tick{flex:none;width:50px;height:1px;background:var(--accent)}
+.cap{margin-top:14px;line-height:1.2;color:var(--ink-2)}
+.hero .phone{grid-column:2;grid-row:1 / span 2;margin-left:auto}
+.hero .phone.sticky{position:sticky;top:max(calc(var(--barh) + 24px),calc(50svh + var(--barh) / 2 - (640px * var(--ps) + 12px) / 2))}   /* the centre of the screen: the line the story script reads */
+/* steps (GetLayers artist-process, mirrored) */
+.steps{grid-column:1;grid-row:2;padding:24px 0 220px}   /* room for the pinned phone beside the last step */
+.steps .eb{margin-bottom:24px}
+.step{display:grid;grid-template-columns:104px minmax(0,1fr);align-content:start;padding:32px 0 44px;border-top:1px solid var(--line)}
+.step,.num,.step h3,.step p{transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)}
+.num{grid-row:1 / span 2;font-size:3.75rem;line-height:1;color:rgba(0,0,0,.18)}
+.step h3{font-size:1.5rem;font-weight:300;line-height:1.2}
+.step p{margin-top:16px;max-width:33em}
+.js .step h3,.js .step p{color:var(--ink-2)}
+.js .step[aria-current="step"]{border-top-color:var(--accent)}
+.js .step[aria-current="step"] h3,.js .step[aria-current="step"] p{color:var(--ink)}
+.js .step[aria-current="step"] .num{color:var(--accent)}
+/*phone-css*/   /* the mock-up is product UI: it keeps the app's own tokens, type and components, fenced off from the page */
+.phone{--bg:#F6F7F9;--surface:#fff;--line:rgba(11,18,32,.08);--line2:rgba(11,18,32,.16);--text:#0B1220;--muted:#5A636E;--hint:#6B7480;--accent:#00A88E;--accent-bg:#E6F5F1;--accent-ink:#067A67;--accent-line:#CFE6E0;--neutral-2:#F1F3F5;--we:#E8ECF2;--am:#E6EEFB;--am-t:#2D5BA6;--pm:#FBE9CE;--pm-t:#8A5A12;--cst:#E4F2E8;--cst-t:#2F6B43;--warn:#FBF0DA;--warn-t:#8A5A12;--ok:#E3F4EC;--ok-t:#1E6B45;--danger-t:#B23B3F;--navy:#0F243A;--navy-2:#16384F;--navy-muted:#9FB6C8;--am-rail:#4C86E8;--radius:14px;--radius-sm:10px;--radius-xs:6px;--card-shadow:0 1px 2px rgba(11,18,32,.03),0 10px 26px -14px rgba(11,18,32,.12);--shadow:0 1px 2px rgba(11,18,32,.04),0 14px 34px rgba(11,18,32,.08);--fs-2xs:.6875rem;--fs-xs:.75rem;--fs-sm:.8125rem;--fs-md:.9375rem;--fs-lg:1.125rem;--fs-xl:1.375rem;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-family:var(--font);font-size:var(--fs-md);font-weight:400;line-height:1.55;letter-spacing:normal;color:var(--text);width:var(--pw);height:calc(640px * var(--ps) + 12px);border:6px solid var(--navy);border-radius:calc(var(--pw) * .1);background:var(--bg);overflow:hidden;position:relative;flex:none;isolation:isolate;-webkit-mask-image:-webkit-radial-gradient(#fff,#000)}   /* the mask keeps Safari clipping the scaled screens to the rounded frame */
+:where(.phone) h2{letter-spacing:-.015em;color:var(--navy);text-wrap:balance;font-size:var(--fs-xl);font-weight:700}
+:where(.phone) .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:10px 18px;border-radius:var(--radius-sm);border:1px solid var(--line2);background:var(--surface);color:var(--text);font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+:where(.phone) .btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+:where(.phone) .eyebrow{font-size:var(--fs-2xs);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+:where(.phone) .brand{display:flex;align-items:center;gap:9px;min-height:44px;font-weight:700;font-size:var(--fs-lg);color:var(--navy);text-decoration:none}
+:where(.phone) .logo{width:28px;height:28px;flex:none}
+:where(.phone) .alt{font-size:var(--fs-sm);color:var(--muted);margin-top:10px;text-align:center}
+.screens{width:375px;height:640px;position:absolute;left:0;top:0;transform:scale(var(--ps));transform-origin:0 0}
+.screen{position:absolute;inset:0;background:var(--bg);opacity:0;transition:opacity .3s ease;pointer-events:none}
+.screen.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.screen{transition:none}}
+.tb{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;background:#fff;border-bottom:1px solid var(--line)}
+.tb .brand{font-size:var(--fs-md)}.tb .bell{width:36px;height:36px;border:1px solid var(--line2);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;position:relative;background:#fff}
+.tb .bell b{position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;border-radius:9px;background:var(--danger-t);color:#fff;font-size:var(--fs-2xs);display:flex;align-items:center;justify-content:center;padding:0 4px}
+.tic{width:16px;height:16px;stroke:var(--navy);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{padding:14px 12px 70px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--card-shadow)}
+.card h2{font-size:var(--fs-lg);margin-bottom:8px}
+.tag{display:inline-block;font-size:var(--fs-2xs);font-weight:600;line-height:1.3;padding:3px 8px;border-radius:var(--radius-xs);white-space:nowrap;vertical-align:middle;background:var(--neutral-2);color:var(--text)}
+.tag.lg{font-size:var(--fs-xs);padding:4px 10px}
+.tag.am{background:var(--am);color:var(--am-t)}.tag.pm{background:var(--pm);color:var(--pm-t)}.tag.cst{background:var(--cst);color:var(--cst-t)}.tag.ok{background:var(--ok);color:var(--ok-t)}.tag.brand{background:var(--accent-bg);color:var(--accent-ink)}.tag.warn{background:var(--warn);color:var(--warn-t)}
+.tag.solid{color:#fff;font-weight:700;letter-spacing:.03em;text-transform:uppercase}.tag.solid.am{background:var(--am-t)}
+.nextcard{background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff;border-radius:var(--radius);padding:14px 16px;margin:4px 0 14px;box-shadow:var(--card-shadow);border-left:5px solid var(--am-rail)}
+.nextlbl{color:var(--navy-muted)}
+.nextrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:3px}
+.nextmain{font-size:var(--fs-lg);font-weight:700}.nextmain .tag{margin-right:6px;vertical-align:2px}
+.nextwhen{font-size:var(--fs-xs);font-weight:600;color:var(--accent-line);background:rgba(255,255,255,.12);border-radius:20px;padding:2px 10px}
+.qbar{margin-top:12px}.qbar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;font-size:var(--fs-sm)}.qbar-top span{color:var(--navy-muted)}
+.qtrack{height:7px;background:rgba(255,255,255,.16);border-radius:5px;overflow:hidden}.qfill{height:100%;background:var(--accent);border-radius:5px}
+.actrow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.actrow .btn{flex:1 1 45%;padding:8px 10px;font-size:var(--fs-sm)}
+.wkhead{display:flex;align-items:center;justify-content:space-between;margin:2px 0 6px;font-size:var(--fs-sm)}.wkhead .btn{flex:0 0 auto;min-height:32px;padding:4px 10px;gap:5px}.tic{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.wk{border-top:1px solid var(--line)}
+.wk-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:var(--fs-sm)}
+.wk-row .d{font-weight:600;color:var(--navy)}.wk-row .muted{color:var(--muted)}
+.bn{position:absolute;left:0;right:0;bottom:0;height:60px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;font-size:var(--fs-2xs);color:var(--muted)}
+.bn span{display:flex;flex-direction:column;align-items:center;gap:3px}.bn .ni{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.bn span.on{color:var(--accent-ink)}.bn span.on .ni{stroke-width:2.2}
+.statusline{font-size:var(--fs-sm);color:var(--muted);margin:0 0 12px;line-height:1.55}.statusline b{color:var(--text)}
+.dayrow{display:flex;align-items:center;gap:12px;min-height:52px;padding:8px 6px;border-bottom:1px solid var(--line)}
+.dayrow .d{width:42px;text-align:center;flex:none;display:flex;flex-direction:column;align-items:center}.dayrow .d .dn{font-size:var(--fs-xs);color:var(--muted)}.dayrow .d .dd{font-size:var(--fs-lg);font-weight:600}
+.dayrow .st{flex:1;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.dayrow.picked{background:var(--accent-bg)}.dayrow.we{background:var(--we)}.dayrow .chev{color:var(--hint)}
+.srfoot{position:absolute;left:12px;right:12px;bottom:70px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--navy);color:#fff;border-radius:12px;padding:10px 14px;box-shadow:var(--shadow);font-size:var(--fs-sm)}
+.srfoot .grow{flex:1}.srfoot .btn{min-height:36px;padding:6px 10px;font-size:var(--fs-sm);color:#fff;background:transparent;border-color:rgba(255,255,255,.4)}.srfoot .btn.primary{background:var(--accent-ink);border-color:var(--accent-ink)}
+.dim{position:absolute;inset:0;background:rgba(15,20,28,.5)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:18px 18px 0 0;padding:8px 12px 16px;box-shadow:0 -12px 40px -12px rgba(11,18,32,.35)}
+.sheetgrab{width:40px;height:4px;border-radius:2px;background:var(--line2);margin:4px auto 10px}
+.dshead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:var(--fs-lg);font-weight:700;color:var(--navy)}.dshead .btn{min-height:36px;padding:6px 12px;font-size:var(--fs-sm)}
+.seg{display:inline-flex;gap:3px;margin:0 0 8px;background:var(--bg);padding:3px;border-radius:11px;border:1px solid var(--line)}
+.seg span{border-radius:8px;padding:7px 14px;font-size:var(--fs-sm);color:var(--muted);font-weight:500}.seg span.on{background:var(--accent-bg);color:var(--accent-ink);box-shadow:inset 0 0 0 1px var(--accent-ink);font-weight:600}
+.cover{font-size:var(--fs-sm);color:var(--muted);margin-bottom:6px}
+.zchips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 10px}
+.zchip{min-height:52px;padding:7px 10px;border:1px solid var(--line2);border-radius:var(--radius-sm);background:var(--surface);display:flex;flex-direction:column;gap:2px;font-size:var(--fs-sm)}
+.zchip b{font-weight:600}.zchip .zsub{font-size:var(--fs-xs);color:var(--muted)}.zchip.off{opacity:.6}.zchip.on{background:var(--accent-bg);border-color:var(--accent-ink);color:var(--accent-ink)}.zchip.on .zsub{color:var(--accent-ink)}
+.dsact{display:flex;gap:6px;flex-wrap:wrap}.dsact .btn{min-height:36px;padding:6px 10px;font-size:var(--fs-xs)}
+.listrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:var(--fs-sm)}.listrow .grow{flex:1}.listrow .btn{min-height:36px;padding:6px 10px;font-size:var(--fs-sm)}
+.listrow .btn.danger{color:var(--danger-t)}
+.notif{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:var(--fs-sm)}.notif .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:6px;flex:none}.notif .dot.read{background:var(--line2)}.notif .grow{flex:1}.notif .when{display:block;font-size:var(--fs-xs);color:var(--muted);margin-top:2px}
+.sheet h4{margin:0 0 4px;font-size:var(--fs-lg);color:var(--navy)}
+/*/phone-css*/
+/* the film (Bedsidely-style player: a poster, one tap, then every chapter on watch.html) */
+.filmsec{padding:96px 0 8px}
+.fhead h2{margin-top:24px;font-size:clamp(1.75rem,1rem + 2vw,2.25rem);font-weight:300;line-height:1.1;text-wrap:balance}
+.fhead > p:last-child{margin-top:16px;max-width:33em;color:var(--ink-2)}
+.player{position:relative;margin-top:40px;overflow:hidden;border:1px solid var(--line);border-radius:var(--r-card);background:#000}
+.player video{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.play{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:var(--glass-strong);pointer-events:none;transition:opacity var(--t) var(--ease)}
+.play::after{content:"";position:absolute;left:31px;top:24px;border-style:solid;border-width:14px 0 14px 22px;border-color:transparent transparent transparent var(--ink)}
+.js .player.on .play{opacity:0}
+.more{margin-top:20px;font-size:1.125rem}
+/* director's view (GetLayers creative-director-portfolio) */
+.view{padding:104px 0 88px}
+.vhead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px 72px;align-items:end;padding-bottom:44px;border-bottom:1px solid var(--line)}
+.vhead h2{margin-top:24px;text-wrap:balance}
+.vhead > p{max-width:33em}
+.plates{position:relative;margin-top:56px;padding-bottom:72px}
+.plate{position:relative;display:block;overflow:hidden;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.plate img{display:block;width:100%;height:auto}
+.plate.small{position:absolute;right:40px;bottom:0;width:min(42%,480px);padding:10px;background:var(--glass-strong)}
+.plate.small img{border-radius:14px;-webkit-mask-image:linear-gradient(to right,#000 80%,transparent);mask-image:linear-gradient(to right,#000 80%,transparent)}
+/* assurance (GetLayers artist-statement) */
+.assure{padding:128px 0}
+.state{line-height:1.2;color:var(--ink-2);max-width:23em;text-wrap:balance}
+.k{color:var(--ink)}
+/* proof (GetLayers clarix-stats) and the form card riding over its edge (stride-contact) */
+.pgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.6fr);gap:88px 72px;padding-top:96px;padding-bottom:152px}
+.pstate{grid-column:1 / -1;max-width:44em}
+.why{margin-top:28px}
+.corner{align-self:end}
+.stats{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:16px}
+.stat{display:flex;flex-direction:column;gap:22px;padding-left:24px;border-left:1px solid var(--accent)}
+.stat b{font-size:clamp(2.25rem,1.4rem + 1.6vw,3rem);font-weight:300;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat span{font-size:.9375rem;line-height:1.35}
+.formcard{position:relative;display:block;max-width:720px;margin:-72px auto 0;padding:48px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--glass-strong);scroll-margin-top:calc(var(--barh) + 24px)}
+.formcard h3{font-size:1.5rem;font-weight:300;line-height:1.2}
+.offer{margin-top:16px;color:var(--ink-2)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:24px 16px;margin-top:36px}
+.field{display:flex;flex-direction:column;gap:12px} .field.wide{grid-column:1 / -1}
+.lbl{font-size:.875rem;font-weight:500;line-height:1.2;text-transform:uppercase;color:var(--accent)}
+.opt{font-weight:300;text-transform:none;color:var(--ink-2)}
+input{font:inherit;width:100%;min-height:52px;padding:14px 20px;border:1px solid var(--field);border-radius:var(--r-panel);background:transparent;color:var(--ink)}
+input::placeholder{color:var(--ink-2);opacity:1}
+input:focus-visible{border-color:var(--accent)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.formcard .pill{margin-top:36px}
+.or{margin-top:24px;color:var(--ink-2)}
+/* faq (GetLayers artist-faq) */
+.faq{padding:152px 0 128px}
+.fgrid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:40px 72px}
+.fgrid h2{text-wrap:balance}
+.q{border-top:1px solid var(--line)} .q:last-child{border-bottom:1px solid var(--line)}
+.q summary{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:76px;padding:24px 0;font-size:1.25rem;line-height:1.3;cursor:pointer;list-style:none}
+.q summary::-webkit-details-marker{display:none}
+.plus{position:relative;flex:none;width:18px;height:18px;color:var(--accent);transition:transform var(--t) var(--ease)}
+.plus::before,.plus::after{content:"";position:absolute;left:0;right:0;top:calc(50% - .75px);height:1.5px;background:currentColor}
+.plus::after{transform:rotate(90deg)}
+.q[open] .plus{transform:rotate(45deg)}
+.q p{padding:0 56px 32px 0;max-width:41em}
+/* footer (GetLayers loopstack-footer) */
+.foot{padding:64px 0 max(44px,env(safe-area-inset-bottom));border-radius:var(--r-section) var(--r-section) 0 0}
+.frow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.frow + .frow{margin-top:32px;padding-top:28px;border-top:1px solid var(--line);font-size:.9375rem;color:var(--ink-2)}
+.frow + .frow a{color:var(--ink-2)} .frow + .frow a:hover{color:var(--accent)}
+/* reveal: out of a blur, rising; only under .js, once. ORDER MATTERS: the "revealed" rule below ties the hidden rules on specificity and wins by coming last */
+.js [data-r],.js .w{opacity:0;filter:blur(12px);transform:translateY(20px);transition:opacity 400ms var(--ease) var(--d,0ms),filter var(--t-slow) var(--ease) var(--d,0ms),transform var(--t-slow) var(--ease) var(--d,0ms)}
+.js .w{display:inline-block;filter:blur(20px);transform:translateY(24px)}
+.js .plates{filter:none}
+.js [data-r="w"],.js .in,.js .in .w{opacity:1;filter:none;transform:none}
+@media (prefers-reduced-motion:reduce){.js [data-r],.js .w{filter:none;transform:none;transition:opacity 150ms linear}}
+@media print{.js [data-r],.js .w{opacity:1;filter:none;transform:none}}
+/* frosted surfaces fall back to solid white */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.bar,.pin,.formcard,.chip,.plate.small{background:#fff}}
+@media (prefers-reduced-transparency:reduce){.bar,.pin,.formcard,.chip,.plate.small{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} .step,.num,.step h3,.step p,.plus,.pill,.chip{transition:none}}
+@media (min-width:861px) and (max-height:699px){.intro{min-height:0}}
+@media (max-width:1099px){:root{--pw:240px;--ps:.608} .hero .wrap{gap:0 48px}}
+@media (max-width:860px){
+  .wrap{padding:0 max(20px,env(safe-area-inset-right)) 0 max(20px,env(safe-area-inset-left))}
+  .panel{border-radius:var(--r-card)}
+  .foot{border-radius:var(--r-card) var(--r-card) 0 0}
+  .pill{height:48px;padding:0 22px;font-size:1.125rem} .pill.disc{padding:0 2px 0 24px} .dc{width:42px;height:42px}
+  .hero{padding:0 0 8px}
+  .hero .wrap{grid-template-columns:minmax(0,1fr);gap:20px 0}
+  .intro{min-height:0;padding:44px 0 12px;grid-row:1} .hero .phone,.pin{grid-column:1;grid-row:2} .steps{grid-row:3}
+  .lead{font-size:1.125rem;margin-top:24px} .cta{margin-top:32px} .rule{margin-top:36px}
+  .trust{align-items:flex-start} .tick{display:none}
+  .hero .phone,.hero .phone.sticky{position:static;margin:0 auto}
+  .pin{position:sticky;top:var(--barh,60px);z-index:5;margin:0 -20px;padding:10px 20px 14px;background:var(--glass);border-bottom:1px solid var(--line)}   /* the steps slide beneath it */
+  .pin .phone,.pin .phone.sticky{position:relative;top:auto;margin:0 auto}   /* relative: the frame must stay the block that clips its screens */
+  .steps{padding:20px 0 40px}
+  .step{grid-template-columns:minmax(0,1fr);padding:24px 0 32px} .js .step{min-height:46vh}
+  .num{grid-row:auto;font-size:2.5rem;margin-bottom:20px} .step h3{font-size:1.25rem}
+  .filmsec{padding:56px 0 0} .player{margin-top:28px;border-radius:16px} .play{width:60px;height:60px;margin:-30px 0 0 -30px} .play::after{left:23px;top:18px;border-width:12px 0 12px 18px}
+  .view{padding:72px 0 64px} .vhead{grid-template-columns:minmax(0,1fr);padding-bottom:32px}
+  .plates{margin-top:36px;padding-bottom:0} .plate.small{position:static;width:auto;margin-top:12px} .plate.small img{-webkit-mask-image:none;mask-image:none}
+  .assure{padding:88px 0}
+  .pgrid{grid-template-columns:minmax(0,1fr);gap:48px;padding-top:64px;padding-bottom:96px}
+  .stats{grid-template-columns:minmax(0,1fr);gap:28px} .stat{gap:14px;padding-left:16px}
+  .formcard{margin-top:-48px;padding:32px 24px} .fields{grid-template-columns:minmax(0,1fr)} .field.wide{grid-column:auto}
+  .formcard .pill{width:100%;height:auto;min-height:52px;justify-content:space-between;white-space:normal;text-align:left;padding-block:4px;font-size:1rem}
+  .faq{padding:104px 0 88px} .fgrid{grid-template-columns:minmax(0,1fr)}
+  .q summary{font-size:1.125rem;min-height:64px;padding:20px 0} .q p{padding-right:0}
+  .foot{padding-top:48px}
+}
+@media (max-width:600px){
+  .plate.cut::after{content:"";position:absolute;inset:auto 0 0;height:72px;background:linear-gradient(rgba(255,255,255,0),#fff)} .plate.cut img{-webkit-mask-image:linear-gradient(to right,#000 80%,transparent);mask-image:linear-gradient(to right,#000 80%,transparent)}
+}
+@media (max-width:860px) and (max-height:620px){
+  .pin{position:static;border-bottom:0;margin-bottom:8px}   /* short screens: nothing pins */
+  .js .step{min-height:0}
+}
+@media print{.bar{position:static}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="mk" viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#0F243A"/><path d="M17 31 L17 11 L24.5 22 L32 11 L32 31" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 13 L14 13" fill="none" stroke="#4C86E8" stroke-width="2.2" stroke-linecap="round"/><path d="M7 21 L12 21" fill="none" stroke="#F2A638" stroke-width="2.2" stroke-linecap="round"/><path d="M7 29 L14 29" fill="none" stroke="#2FA86E" stroke-width="2.2" stroke-linecap="round"/></symbol></svg>
+
+<header class="bar"><div class="wrap">
+  <a class="lock" href="/"><svg viewBox="0 0 40 40" aria-hidden="true"><use href="#mk"/></svg><span class="wm">Myr<span class="o">o</span>sta</span></a>
+  <a class="chip" href="app.html">Sign in</a>
+</div></header>
+
+<main>
+<section class="hero" aria-labelledby="h1"><div class="wrap">
+  <div class="intro">
+    <h1 id="h1" data-r="w"><span class="w" style="--d:0ms">The</span> <span class="w" style="--d:55ms">ED</span> <span class="w" style="--d:110ms">roster,</span> <span class="w" style="--d:165ms">finally</span> <span class="w" style="--d:220ms">on</span> <span class="w" style="--d:275ms">every</span> <span class="w" style="--d:330ms">phone.</span></h1>
+    <p class="lead" data-r style="--d:420ms">Book shifts, swap them, take leave and see your fair share, from the phone in your pocket. Hosted in Australia.</p>
+    <div class="cta" data-r style="--d:510ms"><a class="pill primary disc" href="demo.html">Try the demo<span class="dc" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><a class="pill secondary" href="#walkthrough">Book a walkthrough</a></div>
+    <hr class="rule" data-r style="--d:600ms">
+    <p class="trust" data-r style="--d:690ms">In daily use at a Victorian emergency department since June 2026.<span class="tick" aria-hidden="true"></span></p>
+    <p class="cap" data-r style="--d:780ms">Taking on new departments across Australia.</p>
+  </div>
+  <!--phone-->
+  <div class="phone sticky" id="phone" data-r style="--d:300ms"  aria-hidden="true" data-current="1"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="n1" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4M8 14h4"/></symbol><symbol id="n2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol><symbol id="n3" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></symbol><symbol id="n4" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 1 1 21 11.5z"/></symbol><symbol id="n5" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></symbol></svg><div class="screens">
+
+    <div class="screen on" data-screen="1">
+      <div class="tb"><span class="brand"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true" style="width:22px;height:22px"><rect width="40" height="40" rx="11" fill="#0F243A"/><path d="M17 31 L17 11 L24.5 22 L32 11 L32 31" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 13 L14 13" fill="none" stroke="#4C86E8" stroke-width="2.2" stroke-linecap="round"/><path d="M7 21 L12 21" fill="none" stroke="#F2A638" stroke-width="2.2" stroke-linecap="round"/><path d="M7 29 L14 29" fill="none" stroke="#2FA86E" stroke-width="2.2" stroke-linecap="round"/></svg>Emergency Medicine</span><span class="bell"><svg class="tic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><b>2</b></span></div>
+      <div class="app"><div class="card"><h2>My shifts</h2><div class="muted" style="font-size:var(--fs-sm,13px);margin:-4px 0 10px">Jordan Lee · Emergency Medicine</div>
+        <div class="nextcard"><div class="eyebrow nextlbl">Your next shift</div><div class="nextrow"><div class="nextmain"><span class="tag solid am">AM</span>Mon 28 Sept · EPIC · 08:00</div><span class="nextwhen">in 20 days</span></div>
+          <div class="qbar"><div class="qbar-top"><span>Booked this cycle</span><b>11 / 14</b></div><div class="qtrack"><div class="qfill" style="width:79%"></div></div></div></div>
+        <div class="actrow"><span class="btn primary">Book shifts</span><span class="btn">Request leave or swap</span></div>
+        <div class="actrow" style="margin-top:-6px"><span class="btn">Open shifts (2)</span><span class="btn">Calendar</span></div>
+        <div class="wkhead"><b>First week of the cycle</b><span class="btn sm"><svg class="tic" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>Share</span></div>
+        <div class="wk">
+          <div class="wk-row"><span class="d">Mon 28</span><span><span class="tag lg am">EPIC AM</span> <span class="muted">· 08:00–16:00</span></span></div>
+          <div class="wk-row"><span class="d">Tue 29</span><span class="muted">Off</span></div>
+          <div class="wk-row"><span class="d">Wed 30</span><span><span class="tag lg pm">Paeds PM</span> <span class="muted">· 15:30–23:30</span></span></div>
+          <div class="wk-row"><span class="d">Thu 1 – Fri 2</span><span class="muted">Off</span></div>
+        </div></div></div>
+      <div class="bn"><span class="on"><svg class="ni"><use href="#n1"/></svg>My shifts</span><span><svg class="ni"><use href="#n2"/></svg>Book shifts</span><span><svg class="ni"><use href="#n3"/></svg>Roster</span><span><svg class="ni"><use href="#n4"/></svg>Requests</span><span><svg class="ni"><use href="#n5"/></svg>More</span></div>
+    </div>
+
+    <div class="screen" data-screen="2">
+      <div class="tb"><span class="brand">Emergency Medicine</span><span class="bell"><svg class="tic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span></div>
+      <div class="app"><div class="card"><h2>Book shifts</h2><p class="statusline"><b>Booking open</b> · closes Fri 19 Sept, 5:00 pm · you've booked <b>11</b> of 14</p>
+        <div class="dayrow"><span class="d"><span class="dn">Mon</span><span class="dd">28</span></span><span class="st"><span class="tag lg am">EPIC AM</span></span></div>
+        <div class="dayrow"><span class="d"><span class="dn">Tue</span><span class="dd">29</span></span><span class="st"><span class="muted">Off · 2 open</span></span></div>
+      </div></div>
+      <div class="dim"></div>
+      <div class="sheet"><div class="sheetgrab"></div><div class="dshead"><span>Tue 29 Sept</span><span class="btn">Done</span></div>
+        <div class="seg"><span class="on">AM</span><span>PM</span></div>
+        <p class="cover">AM cover 3 of 5 · minimum 4 — still filling</p>
+        <div class="zchips">
+          <div class="zchip off"><b>EPIC</b><span class="zsub">Taken by Dr Ng</span></div>
+          <div class="zchip off"><b>Resus</b><span class="zsub">Taken by Dr Okafor</span></div>
+          <div class="zchip"><b>Fast track</b><span class="zsub">Open</span></div>
+          <div class="zchip"><b>SSU</b><span class="zsub">Open</span></div>
+          <div class="zchip off"><b>Paeds</b><span class="zsub">Taken by Dr Patel</span></div>
+        </div>
+        <div class="dsact"><span class="btn">Mark clinical support time (CST)</span><span class="btn">Mark off</span><span class="btn">Mark unavailable (UA)</span></div>
+      </div>
+    </div>
+
+    <div class="screen" data-screen="3">
+      <div class="tb"><span class="brand">Emergency Medicine</span><span class="bell"><svg class="tic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span></div>
+      <div class="app"><div class="card"><h2>Book shifts</h2><p class="statusline"><b>Booking open</b> · closes Fri 19 Sept, 5:00 pm · you've booked <b>11</b> of 14</p>
+        <div class="dayrow"><span class="d"><span class="dn">Mon</span><span class="dd">28</span></span><span class="st"><span class="tag lg am">EPIC AM</span></span></div>
+        <div class="dayrow picked"><span class="d"><span class="dn">Tue</span><span class="dd">29</span></span><span class="st"><span class="tag lg brand">✓ Picked · AM · Fast track</span></span></div>
+        <div class="dayrow"><span class="d"><span class="dn">Wed</span><span class="dd">30</span></span><span class="st"><span class="tag lg pm">Paeds PM</span></span></div>
+        <div class="dayrow"><span class="d"><span class="dn">Thu</span><span class="dd">1</span></span><span class="st"><span class="muted">Off · 2 open</span></span></div>
+        <div class="dayrow"><span class="d"><span class="dn">Fri</span><span class="dd">2</span></span><span class="st"><span class="muted">Off · nothing open</span></span></div>
+        <div class="dayrow we"><span class="d"><span class="dn">Sat</span><span class="dd">3</span></span><span class="st"><span class="tag lg am">Acute bays AM</span></span></div>
+      </div></div>
+      <div class="srfoot"><span><b>1 picked</b> · 11 → 12 of 14 after confirm</span><span class="grow"></span><span class="btn">Clear</span><span class="btn primary">Confirm 1 pick</span></div>
+      <div class="bn"><span><svg class="ni"><use href="#n1"/></svg>My shifts</span><span class="on"><svg class="ni"><use href="#n2"/></svg>Book shifts</span><span><svg class="ni"><use href="#n3"/></svg>Roster</span><span><svg class="ni"><use href="#n4"/></svg>Requests</span><span><svg class="ni"><use href="#n5"/></svg>More</span></div>
+    </div>
+
+    <div class="screen" data-screen="4">
+      <div class="tb"><span class="brand">Emergency Medicine</span><span class="bell"><svg class="tic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><b>2</b></span></div>
+      <div class="app"><div class="card"><h2>Needs you</h2>
+          <div class="listrow"><span class="grow">Dr Patel offers their <b>Paeds PM</b> on Sun 4 Oct for your <b>Acute bays AM</b> on Sat 3 Oct</span></div>
+          <div class="actrow" style="margin:8px 0 0"><span class="btn danger" style="color:var(--danger-t)">Decline</span><span class="btn primary">Agree</span></div></div>
+        <div class="card"><h2>Your requests</h2>
+          <div class="listrow"><span class="grow">Annual leave · Mon 12 Oct – Fri 16 Oct</span><span class="tag ok">Approved</span></div>
+          <div class="listrow"><span class="grow">Swap with Dr Okafor · Sat 17 Oct ↔ Sun 18 Oct</span><span class="tag">Waiting for your colleague</span></div></div>
+        <div class="actrow"><span class="btn primary">Request leave</span><span class="btn">Request a swap</span></div>
+      </div>
+      <div class="bn"><span><svg class="ni"><use href="#n1"/></svg>My shifts</span><span><svg class="ni"><use href="#n2"/></svg>Book shifts</span><span><svg class="ni"><use href="#n3"/></svg>Roster</span><span class="on"><svg class="ni"><use href="#n4"/></svg>Requests</span><span><svg class="ni"><use href="#n5"/></svg>More</span></div>
+    </div>
+
+    <div class="screen" data-screen="5">
+      <div class="tb"><span class="brand">Emergency Medicine</span><span class="bell"><svg class="tic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><b>2</b></span></div>
+      <div class="app"><div class="card"><h2>My shifts</h2><div class="nextcard"><div class="eyebrow nextlbl">Your next shift</div><div class="nextrow"><div class="nextmain"><span class="tag solid am">AM</span>Mon 28 Sept · EPIC · 08:00</div></div></div></div></div>
+      <div class="dim"></div>
+      <div class="sheet"><div class="sheetgrab"></div><h4>Notifications</h4>
+        <div class="notif"><span class="dot"></span><span class="grow">Open shift: Thu 8 Oct PM · Acute bays. First to claim it takes it.<span class="when">16 Sept, 09:14</span></span></div>
+        <div class="notif"><span class="dot"></span><span class="grow">Your Annual leave request for Mon 12 Oct – Fri 16 Oct was approved.<span class="when">15 Sept, 16:40</span></span></div>
+        <div class="notif"><span class="dot read"></span><span class="grow">Booking is open — closes Fri 19 Sept, 5:00 pm.<span class="when">13 Sept, 09:00</span></span></div>
+        <p class="alt" style="margin:10px 0 0">Mark all read</p>
+      </div>
+    </div>
+
+  </div></div>
+  <!--/phone-->
+  <div class="steps">
+    <h2 id="storyT" class="eb">See it work</h2>
+    <ol role="list">
+    <li class="step" data-step="1" aria-current="step"><span class="num" aria-hidden="true">01</span><h3>Your next shift, at a glance.</h3><p>Open the app and the answer is there: when you're on next, and how many shifts you've booked this cycle.</p></li>
+    <li class="step" data-step="2"><span class="num" aria-hidden="true">02</span><h3>Tap a day. See what's open and why.</h3><p>Every zone says Open, or who has it, or which rule is holding it. No guessing.</p></li>
+    <li class="step" data-step="3"><span class="num" aria-hidden="true">03</span><h3>Pick. The first tap wins.</h3><p>Tap a zone marked Open and the shift is yours at once, checked against the live roster as you tap. First tap gets the slot; you're told at once if a colleague got there first. A group that prefers a basket and a Confirm step can switch one on.</p></li>
+    <li class="step" data-step="4"><span class="num" aria-hidden="true">04</span><h3>Swaps, leave and open shifts come to you.</h3><p>A colleague's swap offer, your leave decision and an open shift arrive as things you can act on, not messages to chase.</p></li>
+    </ol>
+  </div>
+
+</div></section>
+
+
+
+<section class="filmsec" id="film" aria-labelledby="filmT"><div class="wrap">
+  <div class="fhead" data-r><p class="eb">In three minutes</p><h2 id="filmT">Watch it work.</h2><p>The running product at a fictional hospital, narrated. Then every chapter, for staff, admins and directors.</p></div>
+  <div class="player" data-r><video id="filmv" controls preload="none" playsinline crossorigin="anonymous" poster="film-poster.webp" width="1280" height="720"><source src="https://skpdqqhwrqgxsxawniho.supabase.co/storage/v1/object/public/Videos-public/film.mp4" type="video/mp4"><track kind="captions" src="https://skpdqqhwrqgxsxawniho.supabase.co/storage/v1/object/public/Videos-public/film.vtt" srclang="en" label="English"><a href="https://skpdqqhwrqgxsxawniho.supabase.co/storage/v1/object/public/Videos-public/film.mp4">Download the film.</a></video><span class="play" aria-hidden="true"></span></div>
+  <p class="more"><a href="app.html?go=help">Signed in? Every chapter →</a></p>
+</div></section>
+
+<section class="view panel" id="view" aria-labelledby="viewT"><div class="wrap">
+  <div class="vhead" data-r>
+    <div><p class="eb">For whoever runs the roster</p><h2 id="viewT">The whole roster on one screen.</h2></div>
+    <p>Every zone and every day at once, with the days that still need cover flagged. The Fairness view shows who carried the weekends and the late shifts — the same table for everyone.</p>
+  </div>
+  <div class="plates" data-r>
+    <picture class="plate cut"><source media="(max-width:600px)" srcset="view-roster-narrow.webp" width="780" height="1120"><img src="view-roster.webp" width="1760" height="989" alt="The roster grid: staff down the side, days across, every booked zone a coloured chip, cover counted under each day" loading="lazy" decoding="async"></picture>
+    <div class="plate small"><img src="view-fairness.webp" width="1000" height="756" alt="The Fairness view: each person's share of weekends, Friday and Monday evenings, as bars against the team average" loading="lazy" decoding="async"></div>
+  </div>
+</div></section>
+
+<section class="assure"><div class="wrap"><p class="state" data-r>A code by text or email, <span class="k">no password</span>. <span class="k">No patient data.</span> Data <span class="k">stays in Sydney</span>. Every change <span class="k">is logged</span>.</p></div></section>
+
+<section class="proof" aria-labelledby="proofT">
+  <div class="panel"><div class="wrap pgrid">
+    <div class="pstate" data-r>
+      <h2 id="proofT">Built in an ED, for EDs.</h2>
+      <p class="why">Most department rosters still live in a 56-column spreadsheet that one person can edit. Myrosta puts the whole thing on every phone, with the fairness rules built in. It was built by an emergency physician who ran his own department's roster.</p>
+    </div>
+    <p class="eb corner">Real roster, real numbers</p>
+    <div class="stats" data-r>
+      <div class="stat"><b>June 2026</b><span>live in a Victorian emergency department</span></div>
+      <div class="stat"><b>36</b><span>doctors on the roster, in 56-day cycles</span></div>
+      <div class="stat"><b>0</b><span>passwords or app-store installs</span></div>
+    </div>
+  </div></div>
+  <div class="wrap"><form name="walkthrough" id="walkthrough" class="formcard" data-r method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field">
+    <h3>Book a 20-minute walkthrough</h3>
+    <p class="offer">Bring your current roster to the walkthrough and we'll show what it looks like in Myrosta.</p>
+    <input type="hidden" name="form-name" value="walkthrough">
+    <p class="hp" aria-hidden="true"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+    <div class="fields">
+      <label class="field"><span class="lbl">Name</span><input name="name" autocomplete="name" required></label>
+      <label class="field"><span class="lbl">Work email</span><input type="email" name="email" autocomplete="email" required></label>
+      <label class="field wide"><span class="lbl">Hospital and department</span><input name="hospital" autocomplete="organization" required></label>
+      <label class="field wide"><span class="lbl">What runs your roster today? <span class="opt">(optional)</span></span><input name="today" placeholder="A spreadsheet, a whiteboard, another app…"></label>
+    </div>
+    <button class="pill primary disc" type="submit">Book a 20-minute walkthrough<span class="dc" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <p class="or">Prefer email? <a href="mailto:hello@myrosta.com.au?subject=Myrosta%20walkthrough">hello@myrosta.com.au</a></p>
+  </form></div>
+</section>
+
+<section class="faq" aria-labelledby="faqT"><div class="wrap fgrid">
+  <h2 id="faqT" data-r>Questions, answered.</h2>
+  <div>
+  <details class="q"><summary>Is it fair?<span class="plus" aria-hidden="true"></span></summary><p>Everyone books against the same open slots with the same rules: a share per cycle, fortnight caps, optional safe-hours rules and cover minimums. The Fairness tab shows who carried the tough shifts.</p></details>
+  <details class="q"><summary>Does it work for nurses, junior doctors and clerks?<span class="plus" aria-hidden="true"></span></summary><p>Clerks and any group on day and evening shifts, yes: each staff group has its own roster, its own zones and its own wording, under one hospital. Rostered night shifts are next to build, so 24-hour nursing and junior-doctor rosters wait for that.</p></details>
+  <details class="q"><summary>Where is the data?<span class="plus" aria-hidden="true"></span></summary><p>In a database hosted in Sydney. Sign-in is a one-time code by text or email; the services that deliver the codes are listed in the <a href="privacy.html">privacy policy</a>. Every change is logged with who made it.</p></details>
+  <details class="q"><summary>Does it talk to payroll?<span class="plus" aria-hidden="true"></span></summary><p>It exports the roster and a one-row-per-shift payroll file in your template's columns, including for RosterOn.</p></details>
+  <details class="q"><summary>What does it cost?<span class="plus" aria-hidden="true"></span></summary><p>Early departments join on pilot terms while pricing settles. Book a walkthrough and ask.</p></details>
+  </div>
+</div></section>
+</main>
+
+<footer class="foot panel"><div class="wrap">
+  <div class="frow"><a class="lock" href="/"><svg viewBox="0 0 40 40" aria-hidden="true"><use href="#mk"/></svg><span class="wm">Myr<span class="o">o</span>sta</span></a><span>Made in Melbourne</span></div>
+  <div class="frow"><span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="support.html">Support</a> · <a href="demo.html">Demo</a></span><span>© 2026 Myrosta</span></div>
+</div></footer>
+
+<script>
+(function(){
+  document.documentElement.className+=" js";
+  var phone=document.getElementById("phone"), steps=[].slice.call(document.querySelectorAll(".step")), screens=[].slice.call(phone.querySelectorAll(".screen"));
+  var bar=document.querySelector(".bar"); function barh(){ try{ document.documentElement.style.setProperty("--barh",(bar?bar.offsetHeight:60)+"px"); }catch(e){} }
+  var mq=window.matchMedia("(max-width:860px)"), stepsBox=document.querySelector(".steps"), heroHome=phone.parentNode, pin=null, io=null;
+  function place(){   // on a phone the frame sits in a full-width band under the hero text, pinned above the steps; on a desktop it goes back beside them
+    if(mq.matches){ if(!pin){ pin=document.createElement("div"); pin.className="pin"; } if(pin.parentNode!==stepsBox.parentNode)stepsBox.parentNode.insertBefore(pin,stepsBox); if(phone.parentNode!==pin)pin.appendChild(phone); }
+    else { if(phone.parentNode!==heroHome)heroHome.insertBefore(phone,stepsBox); if(pin&&pin.parentNode)pin.parentNode.removeChild(pin); }
+    observe(); }
+  function line(){ var pinned=mq.matches&&pin&&pin.parentNode&&getComputedStyle(pin).position==="sticky"; return pinned?pin.getBoundingClientRect().bottom+8:window.innerHeight*0.5; }   // phone: just under the pinned frame; desktop: the middle of the viewport
+  var tick=false, again=false;
+  function pick(){ tick=false; var L=line(), cur="1"; for(var k=0;k<steps.length;k++){ if(steps[k].getBoundingClientRect().top<=L)cur=steps[k].getAttribute("data-step"); } if(cur!==phone.getAttribute("data-current"))show(cur); if(again){ again=false; tick=true; setTimeout(pick,16); } }   // a scroll that arrived while a pick was pending gets its own pick, so the final position is always evaluated   // the last step whose heading has passed the line is current — read from position, so a fast flick cannot skip one and scrolling back always returns
+  function observe(){ pick(); }
+  function show(n){ phone.setAttribute("data-current",n); screens.forEach(function(s){ s.classList.toggle("on",s.getAttribute("data-screen")===String(n)); }); steps.forEach(function(st){ if(st.getAttribute("data-step")===String(n))st.setAttribute("aria-current","step"); else st.removeAttribute("aria-current"); }); }
+  barh(); place(); mq.addEventListener?mq.addEventListener("change",place):mq.addListener(place);
+  window.addEventListener("scroll",function(){ if(tick){ again=true; } else { tick=true; setTimeout(pick,16); } },{passive:true});   // a timer, not requestAnimationFrame: it keeps running in background tabs and in-app browsers that pause animation frames
+  window.addEventListener("resize",function(){ clearTimeout(window._lp); window._lp=setTimeout(function(){ barh(); pick(); },150); });
+})();
+</script>
+<script>
+(function(){
+  var els=[].slice.call(document.querySelectorAll("[data-r]")); function show(e){ e.classList.add("in"); }
+  if(!("IntersectionObserver" in window)){ els.forEach(show); return; }
+  var io=new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.isIntersecting){ show(x.target); io.unobserve(x.target); } }); },{threshold:0.12,rootMargin:"0px 0px -6% 0px"});
+  els.forEach(function(e){ io.observe(e); });
+  document.addEventListener("focusin",function(e){ var b=e.target.closest&&e.target.closest("[data-r]"); if(b)show(b); });   // focus never lands in a block that is still hidden
+  function sweep(){ els.forEach(function(e){ var r=e.getBoundingClientRect(); if(r.top<window.innerHeight&&r.bottom>0)show(e); }); }   // nothing in view may stay hidden: a missed callback heals itself
+  setTimeout(sweep,3000); window.addEventListener("pageshow",sweep);
+})();
+</script>
+<script>(function(){var p=document.querySelector(".player"),v=document.getElementById("filmv");if(!v)return;v.addEventListener("play",function(){p.classList.add("on")});v.addEventListener("pause",function(){p.classList.remove("on")});})();</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+[
+  {
+    "created_at": "2026-10-09T20:09:10.659878Z",
+    "display_name": "Text to Speech V2",
+    "id": "badc0e7c-c593-4fef-8797-a1172b04cb4a",
+    "job_type": "text2speech_v2",
+    "min_result_url": null,
+    "params": {
+      "batch_size": 1,
+      "model": "elevenlabs",
+      "prompt": "If you are on a fixed pattern, your fixed shifts are already on the roster. Tap one on Book shifts and the day sheet says so. Can't make it? You have three ways. Offer it to the group: you stay on it until a colleague takes it, then you're off. Ask to come off, with a reason: your admin decides. Or Swap it with a colleague; your admin approves the swap. What you can't do is remove it outright. Your pattern itself stays as it was; to change it for good, change the pattern and send it for approval.",
+      "voice": {
+        "age": "middle_aged",
+        "gender": "female",
+        "id": "5c1d2f7f-cdb4-5b1d-bca9-156439e3275e",
+        "name": "Soraya",
+        "source": "https://d1xarpci4ikg0w.cloudfront.net/audio_voice/5c1d2f7f-cdb4-5b1d-bca9-156439e3275e/preview-bea68c38c833903b.mp3",
+        "supported_models": [
+          "elevenlabs",
+          "minimax",
+          "seed_speech"
+        ],
+        "thumbnail_url": "https://d1xarpci4ikg0w.cloudfront.net/audio_voice/5c1d2f7f-cdb4-5b1d-bca9-156439e3275e/thumbnail-eb43aee2511cf3a0.webp",
+        "type": "preset",
+        "waveform_url": "https://d1xarpci4ikg0w.cloudfront.net/waveform/2088ee79-dd98-4853-878b-b4c65f0f4fb5.json"
+      },
+      "voice_id": "5c1d2f7f-cdb4-5b1d-bca9-156439e3275e",
+      "voice_type": "preset"
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3KFrr5vyvoxBSFR8PsUAbaonduV/hf_20261009_200910_badc0e7c-c593-4fef-8797-a1172b04cb4a.mp3",
+    "status": "completed"
+  }
+]

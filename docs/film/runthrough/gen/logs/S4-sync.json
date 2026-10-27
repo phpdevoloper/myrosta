@@ -1,0 +1,108 @@
+{
+ "take": "S4-sync",
+ "secs": 34.28,
+ "fps": 25,
+ "log": [
+  {
+   "t": 0.88,
+   "label": "1 · Tap the shift, then Swap it"
+  },
+  {
+   "t": 5.0,
+   "label": "2 · With a colleague, or Ask everyone"
+  },
+  {
+   "t": 7.84,
+   "label": "3 · Ask everyone"
+  },
+  {
+   "t": 17.56,
+   "label": "4 · On a colleague's phone: Swaps wanted, Offer a shift"
+  },
+  {
+   "t": 21.56,
+   "label": "5 · Offers arrive under Requests: Accept"
+  },
+  {
+   "t": 26.04,
+   "label": "6 · Your admin approves, with the cover in front of them"
+  },
+  {
+   "t": 31.84,
+   "label": "7 · Swapped"
+  }
+ ],
+ "sync": {
+  "orig": "S4",
+  "pre": 5.4,
+  "anchors": [
+   "Tap the shift",
+   "Two ways",
+   "or Ask everyone",
+   "Add a note",
+   "Offers arrive",
+   "and it goes to your admin",
+   "If a colleague asks"
+  ],
+  "targets": [
+   -1.08,
+   1.38,
+   7.68,
+   17.36,
+   19.96,
+   25.74,
+   31.48
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.22,
+    1.5,
+    0.0
+   ],
+   [
+    1.22,
+    6.1,
+    1.5,
+    0.0
+   ],
+   [
+    7.32,
+    3.31,
+    1.1821,
+    0.0
+   ],
+   [
+    10.63,
+    2.5,
+    1.0,
+    7.18
+   ],
+   [
+    13.13,
+    5.92,
+    1.5,
+    0.0
+   ],
+   [
+    19.05,
+    6.03,
+    1.3602,
+    0.0
+   ],
+   [
+    25.08,
+    5.81,
+    1.0122,
+    0.0
+   ],
+   [
+    30.89,
+    2.47,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "106/108"
+ }
+}

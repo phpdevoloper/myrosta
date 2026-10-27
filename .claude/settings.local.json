@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c ' *)",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "Bash(cp \"ED Consultant Roster 080626-020826 \\(2\\).xlsx\" \"ED Consultant Roster \\(cleaned\\).xlsx\")",
+      "Bash(node --check _check.js)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(python3 -c \"import re;h=open\\('index.html'\\).read\\(\\);open\\('_check.js','w'\\).write\\(re.search\\(r'<script>\\(.*\\)</script>',h,re.S\\).group\\(1\\)\\)\")",
+      "Bash(osascript -l JavaScript _test.js)",
+      "Bash(xargs kill -9)",
+      "Bash(mkdir -p /tmp/rosterapp)",
+      "Bash(cp \"/Users/ranjithkandavelu/Desktop/Claude/Project 2/index.html\" /tmp/rosterapp/index.html)",
+      "Read(//tmp/**)",
+      "Bash(grep -n 'editable?\"cell\":\"\"\\\\|editable?\"Click any cell\\\\|td class=\"${editable' index.html)",
+      "Bash(osascript -l JavaScript _test7.js)",
+      "Bash(osascript -l JavaScript _test8.js)",
+      "Bash(osascript -l JavaScript _test9.js)"
+    ]
+  }
+}

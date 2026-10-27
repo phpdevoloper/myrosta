@@ -1,0 +1,96 @@
+{
+ "take": "S2a-sync9",
+ "secs": 32.44,
+ "fps": 25,
+ "log": [
+  {
+   "t": 2.72,
+   "label": "1 · Open Book shifts"
+  },
+  {
+   "t": 4.0,
+   "label": "2 · Tap a day"
+  },
+  {
+   "t": 6.04,
+   "label": "3 · AM or PM, then a zone marked Open"
+  },
+  {
+   "t": 20.68,
+   "label": "4 · Add more days"
+  },
+  {
+   "t": 25.28,
+   "label": "5 · Confirm"
+  },
+  {
+   "t": 26.6,
+   "label": "6 · Your receipt"
+  }
+ ],
+ "sync": {
+  "orig": "S2a",
+  "pre": 2.4,
+  "anchors": [
+   "Open Book shifts",
+   "and tap a day",
+   "At the top",
+   "Add a few more days",
+   "then Confirm",
+   "The receipt is"
+  ],
+  "targets": [
+   2.7,
+   3.28,
+   5.98,
+   20.6,
+   22.14,
+   24.44
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.52,
+    1.0,
+    1.18
+   ],
+   [
+    1.52,
+    1.88,
+    1.5,
+    0.0
+   ],
+   [
+    3.4,
+    1.7,
+    1.0,
+    0.327
+   ],
+   [
+    5.1,
+    9.9,
+    1.0,
+    4.72
+   ],
+   [
+    15.0,
+    6.84,
+    1.5,
+    0.0
+   ],
+   [
+    21.84,
+    1.91,
+    1.5,
+    0.0
+   ],
+   [
+    23.75,
+    5.85,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "123/124"
+ }
+}

@@ -1,0 +1,33 @@
+[
+  {
+    "created_at": "2026-10-09T20:09:10.972199Z",
+    "display_name": "Text to Speech V2",
+    "id": "cb18d465-8e9f-42a5-bdd1-6231b752621f",
+    "job_type": "text2speech_v2",
+    "min_result_url": null,
+    "params": {
+      "batch_size": 1,
+      "model": "elevenlabs",
+      "prompt": "Some people work the same shifts every time. Open their card on Staff, then Pattern. A pattern can repeat every week, every fortnight, every four weeks, or by calendar month. Every four weeks gives you weeks A to D, and the heading says which cycle weeks each one covers. Calendar month is a list of rules: the first Wednesday, the last Saturday. The shift column is your own shift types, a full shift or an admin day included. Save it, then Commit to lock it, and the pattern places those shifts in every cycle. Now Roster, then Fixed cover. This is what the patterns alone would place, ghosted, with the cover row counted against your minimum. The weekday summary underneath is the recruiting brief: which days and halves the patterns cover to the minimum, and which never are. And the drift panel shows every fixed shift that now differs from its pattern: given away, swapped, on leave. The pattern is the promise; the roster is what happened.",
+      "voice": {
+        "age": "middle_aged",
+        "gender": "female",
+        "id": "5c1d2f7f-cdb4-5b1d-bca9-156439e3275e",
+        "name": "Soraya",
+        "source": "https://d1xarpci4ikg0w.cloudfront.net/audio_voice/5c1d2f7f-cdb4-5b1d-bca9-156439e3275e/preview-bea68c38c833903b.mp3",
+        "supported_models": [
+          "elevenlabs",
+          "minimax",
+          "seed_speech"
+        ],
+        "thumbnail_url": "https://d1xarpci4ikg0w.cloudfront.net/audio_voice/5c1d2f7f-cdb4-5b1d-bca9-156439e3275e/thumbnail-eb43aee2511cf3a0.webp",
+        "type": "preset",
+        "waveform_url": "https://d1xarpci4ikg0w.cloudfront.net/waveform/2088ee79-dd98-4853-878b-b4c65f0f4fb5.json"
+      },
+      "voice_id": "5c1d2f7f-cdb4-5b1d-bca9-156439e3275e",
+      "voice_type": "preset"
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3KFrr5vyvoxBSFR8PsUAbaonduV/hf_20261009_200910_cb18d465-8e9f-42a5-bdd1-6231b752621f.mp3",
+    "status": "completed"
+  }
+]

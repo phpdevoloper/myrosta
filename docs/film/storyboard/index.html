@@ -1,0 +1,172 @@
+<title>Myrosta Film Storyboard</title>
+<meta name="description" content="The twelve-frame narrated storyboard for the Myrosta film, with the real app screens that cut in.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: a film treatment read top to bottom — a short brief, the cast, then twelve frames as rows: the generated keyframe left, the words and the real app inserts right. */
+:root{
+  --bg:#F6F5F1; --fg:#17202A; --muted:#5B6673; --line:#DDD9CF; --card:#FFFFFF;
+  --accent:#0F7B6C; --accent-ink:#0B5E52; --navy:#0F243A; --tint:#E3F1EE; --warn:#8A5A12; --warn-bg:#FBF0DA;
+  --display:"Fraunces",Georgia,"Times New Roman",serif; --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif; --mono:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#121A22; --fg:#ECEFF2; --muted:#A3AEB9; --line:#2B3744; --card:#1A242E; --accent:#4FC3AE; --accent-ink:#8FDCCB; --navy:#DCE6F0; --tint:#15302C; --warn:#E6C27A; --warn-bg:#3A2E14; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#121A22; --fg:#ECEFF2; --muted:#A3AEB9; --line:#2B3744; --card:#1A242E; --accent:#4FC3AE; --accent-ink:#8FDCCB; --navy:#DCE6F0; --tint:#15302C; --warn:#E6C27A; --warn-bg:#3A2E14; color-scheme:dark }
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;padding-block:0 48px;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+header.top{padding-block:40px 24px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+h1{font-family:var(--display);font-weight:500;font-size:clamp(34px,6vw,56px);line-height:1.05;margin:10px 0 14px;text-wrap:balance;color:var(--navy)}
+.lede{max-width:62ch;color:var(--muted);font-size:18px;margin:0}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px}
+.fact{border-top:2px solid var(--accent);padding-top:10px}
+.fact b{display:block;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
+.fact span{font-size:15px}
+section.film{padding-block:28px;border-bottom:1px solid var(--line)}
+.filmgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:760px){ .filmgrid{grid-template-columns:1fr} }
+.player{min-width:0;background:var(--navy);border-radius:12px;overflow:hidden;aspect-ratio:16/9;max-width:100%}
+.players{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:14px;align-items:start}
+@media (max-width:760px){ .players{grid-template-columns:1fr} }
+.player.vert{aspect-ratio:9/16;max-width:180px;width:100%;margin:0}
+.plabel{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:6px}
+.player video{display:block;width:100%;height:100%;background:#000}
+.cuts{min-width:0;display:flex;flex-direction:column;gap:10px}
+.cut{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.cut b{display:block;font-size:15px;color:var(--navy)} .cut span{font-size:14px;color:var(--muted)}
+.cut.now{border-color:var(--accent)}
+section.cast{padding-block:28px;border-bottom:1px solid var(--line)}
+h2{font-family:var(--display);font-weight:500;font-size:28px;margin:0 0 14px;color:var(--navy);text-wrap:balance}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.person{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.person{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:start}.person img{width:72px;height:96px;object-fit:cover;border-radius:8px;display:block}.person b{font-size:16px}
+.person .role{color:var(--accent-ink);font-weight:600;font-size:13px;margin:2px 0 6px}
+.person p{margin:0;color:var(--muted);font-size:14px}
+.frames{padding-block:28px 0}
+.scene{margin-top:34px}
+.scene h2{font-size:22px}
+.scene .when{color:var(--muted);font-size:14px;margin:-8px 0 14px}
+.frame{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:14px}
+@media (max-width:760px){ .frame{grid-template-columns:1fr} }
+.key{min-width:0}
+.num{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:8px}
+.num i{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--bg);font-style:normal;text-align:center;line-height:26px;font-weight:600;font-family:var(--body)}
+.board{aspect-ratio:16/9;max-width:100%;border-radius:8px;overflow:hidden;background:var(--tint);border:1px dashed var(--accent);position:relative;display:flex;align-items:flex-end}
+.board img{width:100%;height:100%;object-fit:cover;display:block}
+.board .prompt{padding:14px 16px;font-size:13.5px;line-height:1.45;color:var(--fg)}
+.board .tag{position:absolute;top:10px;left:10px;background:var(--warn-bg);color:var(--warn);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:4px 8px;border-radius:999px}
+.board .tag.done{background:var(--tint);color:var(--accent-ink)}
+.words{min-width:0;display:flex;flex-direction:column;gap:12px}
+.caption{font-family:var(--display);font-size:22px;line-height:1.2;color:var(--navy);font-weight:500;text-wrap:balance;margin:0}
+.vo{margin:0;padding-left:14px;border-left:3px solid var(--accent);font-size:16px}
+.vo small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;font-weight:600}
+.line{margin:0;font-size:15px;color:var(--fg)}
+.line b{color:var(--accent-ink)}
+.inserts{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.ins{min-width:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--bg)}
+.ins.phone{width:150px} .ins.laptop{width:100%;max-width:420px}
+.ins img{display:block;width:100%;height:auto}
+.ins figcaption{font-family:var(--mono);font-size:11.5px;color:var(--muted);padding:6px 8px;border-top:1px solid var(--line)}
+.recs{padding-block:34px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+footer.end{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+footer.end p{margin:6px 0;max-width:80ch}
+code{font-family:var(--mono);font-size:.92em}
+@media (prefers-reduced-motion:no-preference){ .frame{transition:border-color .2s} .frame:hover{border-color:var(--accent)} }
+</style>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Storyboard v4 · staff-first opening · thirteen frames animated · the film · 7 October 2026</div>
+  <h1>Myrosta: the film</h1>
+  <p class="lede">A roster that lives on the phone in your pocket, is fair to the people on it, and takes minutes, not nights. Thirteen frames, one cycle, two people, at the fictional Wattle Hospital emergency department. Both sides of the roster: the staff member who chooses, the rota lead who still decides.</p>
+  <div class="facts">
+    <div class="fact"><b>Master</b><span>About 3 min 17 s, with a 92 s cut, a 42 s cut and a 38 s vertical staff cut from the same footage</span></div>
+    <div class="fact"><b>Film order</b><span>Hook card, then frames 3 (the cold open), 2 and 1 (the flashback), 4 to 11, 13 (Emma's bookend) and 12 (the close)</span></div>
+    <div class="fact"><b>Order of work</b><span>The twelve stills were the approval gate; the same frames are now animated and cut</span></div>
+    <div class="fact"><b>App on screen</b><span>Real recordings of the demo sandbox, never an AI-drawn screen</span></div>
+    <div class="fact"><b>Format</b><span>16:9, composed in the centre third so a 9:16 crop works</span></div>
+  </div>
+</header>
+
+<section class="film">
+  <h2>The film</h2>
+  <div class="filmgrid">
+    <div class="players">
+      <div><div class="player"><video controls preload="metadata" playsinline poster="img/F06.jpg" src="film/myrosta-film-cut42-web.mp4"></video></div><div class="plabel">Short cut, 16:9, captioned</div></div>
+      <div><div class="player vert"><video controls preload="metadata" playsinline poster="img/F04.jpg" src="film/myrosta-film-staff-9x16-web.mp4"></video></div><div class="plabel">Staff cut, 9:16, captioned</div></div>
+    </div>
+    <div class="cuts">
+      <div class="cut now"><b>Short cut, 42 s, captioned (plays here)</b><span>The hook card, the handover cold open, frames 6, 7 and 9, the swap on the phone, the end card. The narrator's last lines. Burned-in captions for social posts.</span></div>
+      <div class="cut now"><b>Staff cut, 9:16, captioned (plays here)</b><span>Made for staff to share: a two-second hook card, the café booking, the month view and Add to calendar, the call, the swap on the phone, the notification, an end card with one call to action.</span></div>
+      <div class="cut"><b>Master, about 3 min 17 s, 1080p</b><span>A hook card, then all thirteen frames and the nine real recordings, the full narration. Re-cut on 7 October so the staff side leads: the cold open is the roster landing on every phone, the flashback names Emma's fridge before Sam's spreadsheet, the swap approval shows her phone and his side by side, the rota lead is told he still decides, leave ends with Emma knowing before lunch, and Emma gets the last picture: the fridge with nothing on it. In the Desktop folder "Myrosta film" (too large for this page).</span></div>
+      <div class="cut"><b>92-second cut, 1080p</b><span>The hook card, the cold open, the flashback (frames 2 and 1), the café booking, the swap, the two phones at the approval, the leave approval, the close. Same folder, with and without captions.</span></div>
+      <div class="cut"><b>How it was made</b><span>Each frame animated with Google Veo 3.1 from its keyframe (the lines are spoken on camera; the handover crowd and the garden on Kling 3.0). The master opens on a hook card, and the swap approval is a composite of two real phone recordings on one plate. Every spoken line was then checked for lip movement as well as timing (a face-aware measure plus a frame-by-frame mouth strip); the café line and the office exchange were re-generated because their first takes smiled or grinned through the words. Narration: an Australian stock AI voice (Soraya). Music: generated. App screens: real recordings of the demo sandbox. Assembly: ffmpeg from a timeline file in <code>docs/film/gen/film</code>, at the clips’ native 24 fps, with the lip sync of every spoken line measured against mouth movement (every line measured within about 40 ms; no clip needed a shift).</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cast">
+  <h2>The people</h2>
+  <div class="people">
+    <div class="person"><img src="img/P-emma.jpg" alt="Emma Walsh, character reference"><div><b>Dr Emma Walsh</b><div class="role">Emergency consultant, 36</div><p>Her shifts live on her phone. Books her share from a café; sorts a swap in a minute when the school rings; her Saturday is in the family calendar, not on the fridge.</p></div></div>
+    <div class="person"><img src="img/P-sam.jpg" alt="Sam Patel, character reference"><div><b>Dr Sam Patel</b><div class="role">Consultant and rota lead, 40</div><p>His evenings went to a spreadsheet. Opens the round, approves the swap from the corridor, gets his Sunday back.</p></div></div>
+    <div class="person"><img src="img/P-morgan.jpg" alt="Morgan O'Brien, character reference"><div><b>Dr Morgan O'Brien</b><div class="role">Director of emergency medicine, 52</div><p>One scene: today's cover, the whole department under one heading, who carries the tough shifts, every change written down.</p></div></div>
+    <div class="person"><img src="img/P-alex.jpg" alt="Alex Campbell, character reference"><div><b>Dr Alex Campbell</b><div class="role">Emergency consultant, 40</div><p>Offers a shift back from the car park. One line.</p></div></div>
+  </div>
+</section>
+
+<section class="frames" id="frames"></section>
+
+<section class="recs">
+  <h2>The real screens that cut in</h2>
+  <div class="tablewrap"><table>
+    <tr><th>#</th><th>Recording</th><th>Device</th><th>What it shows</th></tr>
+    <tr><td>R1</td><td>A mock spreadsheet roster</td><td>Laptop</td><td>Made for the film: an unreadable grid of initials and codes. Not Myrosta.</td></tr>
+    <tr><td>R2</td><td>Book shifts</td><td>Phone</td><td>The day sheet with zones reading Open, two picks, the receipt "That's your share".</td></tr>
+    <tr><td>R3</td><td>The roster filling</td><td>Laptop</td><td>The Roster tab during an open round.</td></tr>
+    <tr><td>R4</td><td>The swap</td><td>Phone</td><td>Swap it → Ask everyone; Alex's Swaps wanted and his offer; Emma accepts.</td></tr>
+    <tr><td>R5</td><td>The approval</td><td>Phone</td><td>The pending swap tagged "via Ask everyone", the two shifts, Approve swap; Emma's My shifts after. In the film it plays as two phones side by side: Emma's holds "gone to your admin" until Sam's approves, then shows her shifts.</td></tr>
+    <tr><td>R6</td><td>The director's glance</td><td>Laptop</td><td>Day board, Fairness, Audit log. The Whole department board is not in the sandbox; the narration carries it.</td></tr>
+    <tr><td>R7</td><td>Publish</td><td>Phone</td><td>Close booking, Publish, "Published (live)"; the notification on a staff phone.</td></tr>
+    <tr><td>R8</td><td>Leave</td><td>Phone</td><td>Emma requests annual leave with a reason; the rota lead's card: days taken this year, this request in days and hours, who else is away against the cap, Approve. Added 7 October.</td></tr>
+  </table></div>
+</section>
+
+<footer class="end">
+  <p><b>What the viewer will be told.</b> Dramatisation. Characters and hospital are fictional. Scenes and voices created with AI; app screens are real recordings of Myrosta.</p>
+  <p>Script: <code>docs/film/myrosta-film-script-v1.md</code> · Prompts: <code>docs/film/higgsfield-prompt-pack-v1.md</code> · Recordings guide: <code>docs/film/screen-recordings.md</code>. The app stills here were taken in the demo sandbox with its synthetic people; the hospital name was set to Wattle Hospital for the film.</p>
+</footer>
+</div>
+<script>
+window.__generated=["img/F01.jpg", "img/F02.jpg", "img/F03.jpg", "img/F04.jpg", "img/F05.jpg", "img/F06.jpg", "img/F07.jpg", "img/F08.jpg", "img/F09.jpg", "img/F10.jpg", "img/F11.jpg", "img/F12.jpg", "img/F13.jpg"];
+const FRAMES=[
+ {n:1,scene:"Scene 1 · before (a flashback, after the cold open)",when:"Last Sunday, 11:10 pm",caption:"Sam's Sunday nights were a spreadsheet",vo:"And Sam's Sunday nights were a spreadsheet nobody else could open.",line:"<b>Sam</b> (flat, to nobody): “That's three swaps since dinner.”",key:"Sam Patel in a grey hoodie at the kitchen table at night, laptop glow on his glasses, a cold mug, a printed sheet with pencil crossings, his phone face up beside the laptop lighting with a message.",img:"img/F01.jpg",inserts:[]},
+ {n:2,scene:"Scene 1 · before (a flashback, after the cold open)",when:"Last Monday, 7:15 am",caption:"Saturday, love. It's on the fridge.",vo:"Until this cycle, Emma's week was whatever landed on the fridge.",line:"<b>Emma</b> (calling through, fond): “Saturday, love. It's on the fridge.”",key:"Emma Walsh in navy scrubs at a bright kitchen fridge in the morning, one finger on a printed sheet pinned under a round magnet, the sheet unreadable, a school bag by the door.",img:"img/F02.jpg",inserts:[]},
+ {n:3,scene:"Cold open · the round opens (the first picture after the hook card)",when:"Monday, 8:05 am",caption:"The roster just landed on every phone",vo:"Monday, five past eight. The roster just landed on every phone in the department.",line:"",key:"Morning handover at the nurses' station: a dozen staff in navy and ceil-blue scrubs, several glancing down at phones in their hands, two smiling; Sam Patel at the edge of the group sliding his own phone into his pocket.",img:"img/F03.jpg",inserts:[{src:"img/hookcard-16x9.jpg",kind:"laptop",cap:"The hook card that opens the master, 2.4 s, before this frame"}]},
+ {n:4,scene:"Scene 2 · the round opens",when:"Monday, 8:20 am",caption:"Her share, booked from the café; her calendar, shared at home",vo:"Now you pick your shifts, up to your share — nobody picks them for you — and the grid fills itself. Your roster lives in your pocket, and in the calendar your family already shares.",line:"<b>Emma</b> (half to herself): “Resus Tuesday… and the Thursday evening. Done.”",key:"Emma Walsh in a denim jacket over a white tee at a café window seat with a flat white, thumb on her phone, a small satisfied nod, morning light.",img:"img/F04.jpg",inserts:[{src:"img/R2a-sheet-open.png",kind:"phone",cap:"R2 · the day sheet, zones reading Open"},{src:"img/R2-still.png",kind:"phone",cap:"R2 · the receipt: That's your share"},{kind:"phone",src:"img/R2b-month.jpg",cap:"R2b · the month view, her shifts in it"},{kind:"phone",src:"img/R2c-add-to-calendar.jpg",cap:"R2b · Add to calendar"}]},
+ {n:5,scene:"Scene 2 · the round opens",when:"Monday, 9:00 am",caption:"The grid fills itself",vo:"",line:"<b>Sam</b> (dry): “Half full already.”",key:"Sam Patel in teal scrubs at the doctors' station, a laptop open, its screen a soft glow, coffee in one hand, a faint smile as he watches the screen.",img:"img/F05.jpg",inserts:[{src:"img/R3-still.png",kind:"laptop",cap:"R3 · the Roster tab, booking open"}]},
+ {n:6,scene:"Scene 3 · life happens",when:"Two weeks later, Thursday, 1:40 pm",caption:"The school rings on a rostered day",vo:"Two weeks later, life happens.",line:"<b>Emma</b> (gentle): “I'll come and get her. Twenty minutes.”",key:"Emma Walsh in navy scrubs stepping to the side of a quiet hospital corridor, phone to her ear, listening, one hand on the handrail, daylight from the far door.",img:"img/F06.jpg",inserts:[]},
+ {n:7,scene:"Scene 3 · life happens",when:"Thursday, 1:42 pm",caption:"From the shift itself, she asks everyone",vo:"From the shift itself, Emma asks the whole group.",line:"",key:"Close-up of a woman's hands with deep brown skin holding a phone in a pale corridor, thumb poised over the screen, the screen a soft white glow.",img:"img/F07.jpg",inserts:[{src:"img/R4a-ask-everyone.png",kind:"phone",cap:"R4 · Swap it → Ask everyone"}]},
+ {n:8,scene:"Scene 3 · life happens",when:"Thursday, 1:55 pm",caption:"A shift back, from the car park",vo:"Alex offers a shift back; she accepts;",line:"<b>Alex</b> (to himself, amused): “I'll take your Saturday.”",key:"Alex Campbell beside a commuter bike in a staff car park, black cycling jacket half on over ceil-blue scrubs, reading his phone and grinning, bright afternoon light.",img:"img/F08.jpg",inserts:[{src:"img/R4b-swaps-wanted.png",kind:"phone",cap:"R4 · Alex's Swaps wanted"},{src:"img/R4c-offer-accept.png",kind:"phone",cap:"R4 · Emma accepts the offer"}]},
+ {n:9,scene:"Scene 3 · life happens",when:"Thursday, 2:05 pm",caption:"Approved, in a minute, mid-corridor",vo:"and the rota lead approves it in a minute, with cover and fairness in front of him. Nobody rings around. Staff choose. The rota lead still decides. Leave works the same way. Emma asks for the school holidays from her phone, and the rota lead sees the whole picture — the days she has taken, who else is away, the cap — and approves it in one tap. Emma knows before lunch.",line:"<b>Sam</b> (matter-of-fact): “Cover's fine. Approved.”",key:"Sam Patel in teal scrubs walking a hospital corridor between two doors, phone raised in one hand, not breaking stride, daylight ahead.",img:"img/F09.jpg",inserts:[{src:"img/R5a-approve-swap.png",kind:"phone",cap:"R5 · the pending swap, via Ask everyone"},{src:"img/R5b-my-shifts-after.png",kind:"phone",cap:"R5 · Emma's My shifts after"},{src:"img/R5-two-phones.jpg",kind:"laptop",cap:"R5 as cut · Emma's phone and Sam's side by side: her accepted offer, his approval"},{kind:"phone",src:"img/R8a-leave-request.jpg",cap:"R8 · Emma asks for the school holidays"},{kind:"phone",src:"img/R8b-leave-review.jpg",cap:"R8 · what the rota lead sees before approving"}]},
+ {n:10,scene:"Scene 4 · the director's glance",when:"Friday, 8:50 am",caption:"What the spreadsheet never showed",vo:"The director sees what the spreadsheet never showed: today's cover, every roster in the department under one heading, who is carrying the tough shifts, and every change written down. Myrosta holds no patient data, and it's hosted in Sydney.",line:"<b>Morgan</b> (not looking up): “So that's everyone.” · <b>Sam:</b> “Five rosters. One heading.”",key:"Morgan, an Anglo-Australian woman of 55 with a silver bob, navy blazer over a white shirt, reading glasses on a chain, reading a laptop in a small hospital office with venetian blinds; Sam Patel leaning in at the door holding two takeaway coffees.",img:"img/F10.jpg",inserts:[{src:"img/R6a-day-board.png",kind:"laptop",cap:"R6 · the Day board"},{src:"img/R6b-fairness.png",kind:"laptop",cap:"R6 · Fairness: who is carrying the tough shifts"},{src:"img/R6c-audit-log.png",kind:"laptop",cap:"R6 · the Audit log"}]},
+ {n:11,scene:"Scene 5 · Sam's evening",when:"Sunday, 6:40 pm",caption:"The rota lead gets the evening back",vo:"And the rota lead gets the evening back. And a text before your shift, in case the week ran away.",line:"<b>Sam</b> (to his son, easy): “No, I'm done. Round's closed.”",key:"A back garden at dusk: a boy of about ten seen from behind kicking a football toward Sam Patel in a faded navy polo; on the outdoor table a phone lying face down; warm low sun through the fence.",img:"img/F11.jpg",inserts:[{src:"img/R7a-published-live.png",kind:"phone",cap:"R7 · Published (live)"},{src:"img/R7b-notification.png",kind:"phone",cap:"R7 · the notification on a staff phone"}]},
+ {n:13,scene:"Scene 6 · close, first picture (Emma's bookend, before frame 12)",when:"Monday, 7:05 am",caption:"Saturday? It's in the calendar, love.",vo:"",line:"<b>Her daughter</b> (from the next room): “Mum, Saturday?” <b>Emma</b> (pocketing her phone, keys in hand): “It's in the calendar, love.”",key:"The same small kitchen as frame 2, the next Monday at 7 am: Emma Walsh in navy scrubs slipping her phone into her pocket and lifting her keys, glancing back toward the doorway with a fond smile; the fridge door bare except one child's crayon drawing under a round magnet, no roster, no paper; morning sun, a school bag by the door.",img:"img/F13.jpg",inserts:[]},
+ {n:12,scene:"Scene 6 · close",when:"Monday, 7:20 am",caption:"Built in an ED, by an emergency doctor",vo:"Myrosta was built in an emergency department by an emergency doctor, because a roster should live on the phone in your pocket, be fair to the people on it, and take minutes, not nights. One department. One eight-week pilot.",line:"End card: Myrosta · myrosta.com.au · the disclosure.",key:"Emma Walsh and Sam Patel in scrubs walking in through the staff entrance of a hospital at first light, side by side, phones in pockets, mid-conversation, the glass doors sliding open ahead of them.",img:"img/F12.jpg",inserts:[]}
+];
+const GEN=new Set(window.__generated||[]);   // names of the keyframes that exist as images; the rest show their prompt
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+let last="", html="";
+FRAMES.forEach(f=>{ if(f.scene!==last){ last=f.scene; html+=`<div class="scene"><h2>${esc(f.scene)}</h2><div class="when">${esc(f.when)}</div></div>`; }
+  const has=GEN.has(f.img);
+  html+=`<article class="frame" id="frame-${f.n}">
+    <div class="key"><div class="num"><i>${f.n}</i> keyframe</div>
+      <div class="board">${has?`<img src="${f.img}" alt="Frame ${f.n}: ${esc(f.caption)}"><span class="tag done">generated</span>`:`<span class="tag">to be generated</span><div class="prompt">${esc(f.key)}</div>`}</div></div>
+    <div class="words"><p class="caption">${esc(f.caption)}</p>
+      <blockquote class="vo"><small>Narration</small>${esc(f.vo)}</blockquote>
+      ${f.line?`<p class="line">${f.line}</p>`:""}
+      ${f.inserts.length?`<div class="inserts">${f.inserts.map(i=>`<figure class="ins ${i.kind}" style="margin:0"><img src="${i.src}" alt="${esc(i.cap)}" loading="lazy"><figcaption>${esc(i.cap)}</figcaption></figure>`).join("")}</div>`:""}
+    </div></article>`; });
+document.getElementById("frames").innerHTML=html;
+</script>

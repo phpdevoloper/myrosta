@@ -1,0 +1,120 @@
+{
+ "style": "Cinematic 35mm film look, a large, busy metropolitan tertiary hospital in an Australian capital city — a modern public-hospital tower with coloured façade panels and sun-shading louvres, a glazed atrium, an ambulance bay with yellow-and-white chequered ambulances with no lettering, wide bright corridors with staff in navy and teal scrubs passing, trolleys, nurses' stations with banks of monitors, an Australian city skyline, eucalyptus and jacaranda trees in October bloom beyond the windows, hard bright Australian sunlight and a deep blue sky — and the Federation houses, terraces and inner-city streets around it, naturalistic and warm. Natural daylight through windows by day; low-key practical lighting at night, one lamp, screen glow, no harsh fluorescents. Teal and warm-white accents, nothing neon. Shallow depth of field, soft highlights, subtle film grain, true skin tones, photorealistic. 16:9 frame with the subject in the centre third.",
+ "neg": "No text, no captions, no readable words, no logos, no brand names, no hospital names, no school names, no insignia, no patches, no readable screens, no readable spreadsheets, no watermarks. Hands and faces natural. No cartoon, no oversaturated colour, no stock-photo smiles.",
+ "screens": "The phone or laptop screen faces away from camera or shows only a soft white glow on the face. No readable interface on any screen.",
+ "portraits": {
+  "emma": "Portrait photograph of an Australian woman aged 36, Caucasian, dark blonde hair in a loose low ponytail, blue-grey eyes, light freckles, a natural relaxed friendly smile. Completely plain navy hospital scrubs with no text, no logos, no badges.",
+  "sam": "Portrait photograph of a handsome Indian-Australian man aged 40 who looks young for his age, fit, a neat short beard, dark hair cropped short at the sides and full on top, no glasses, a bright easy smile. Completely plain teal hospital scrubs.",
+  "morgan": "Portrait photograph of an Anglo-Australian man aged 52, short grey-flecked hair, clean-shaven, reading glasses pushed up on his head, a plain navy blazer over a plain white open-collar shirt, no tie.",
+  "alex": "Portrait photograph of a smart, composed Afro-Caribbean man aged 40 of Jamaican heritage, a short neat fade haircut, a trimmed beard, thin dark-rimmed glasses, a calm confident closed-mouth smile. Completely plain ceil-blue hospital scrubs."
+ },
+ "frames": [
+  {
+   "n": 1,
+   "refs": [
+    "sam"
+   ],
+   "screen": true,
+   "prompt": "Sam Patel, tired and unsmiling, in a grey hoodie at a suburban kitchen table at 11 pm, one pendant lamp, laptop glow on his face, rubbing one eye with the heel of his hand, a cold mug, a printed sheet covered in pencil crossings, his phone face up beside the laptop lighting with a message, the rest of the room in shadow. Weary, flat expression, no smile."
+  },
+  {
+   "n": 2,
+   "refs": [
+    "emma"
+   ],
+   "screen": false,
+   "prompt": "Emma Walsh, an emergency doctor in plain navy hospital scrubs, standing at a bright small kitchen fridge at 7 am, one finger resting on a printed roster sheet pinned under a round magnet, the sheet unreadable, morning sun on the bench behind her, turning her head toward the doorway with a fond look."
+  },
+  {
+   "n": 3,
+   "refs": [
+    "sam"
+   ],
+   "screen": true,
+   "prompt": "Morning handover at the central nurses' station of a large Australian metropolitan emergency department: twenty or more staff in navy and teal scrubs with no patches, a long bank of monitors, trolleys moving past, several staff glancing down at phones in their hands, two smiling; Sam Patel at the edge of the group sliding his own phone into his pocket; through the windows behind them an Australian city skyline, jacaranda tops and bright sunlight; the department busy and bright, every whiteboard and screen blurred."
+  },
+  {
+   "n": 4,
+   "refs": [
+    "emma"
+   ],
+   "screen": true,
+   "prompt": "Emma Walsh in a denim jacket over a plain white t-shirt, seated at a corner window of an inner-city Australian café with a flat white on the table, holding her phone in both hands and looking down at it with a small satisfied nod, hard bright morning sun; across the road, out of focus, a Victorian terrace under a jacaranda in purple bloom and, beyond it, the coloured-panel tower of a large public hospital, people in scrubs crossing at the lights."
+  },
+  {
+   "n": 5,
+   "refs": [
+    "sam"
+   ],
+   "screen": true,
+   "prompt": "Sam Patel in teal scrubs at a busy doctors' workstation in the middle of a large Australian metropolitan emergency department in the morning, a laptop open with its screen a soft glow, coffee in one hand, a faint smile as he watches the screen; behind him a long bank of monitors, colleagues in navy and teal scrubs at the desks and passing with trolleys, tall windows with sun louvres, an Australian city skyline and gum-tree tops outside, the department wide and bright."
+  },
+  {
+   "n": 6,
+   "refs": [
+    "emma"
+   ],
+   "screen": false,
+   "prompt": "Emma Walsh in navy scrubs stepping to the side of a wide, busy corridor in a large modern Australian tertiary hospital, phone to her ear, listening with her eyes half closed, one hand on the handrail; staff in navy and teal scrubs and a trolley passing out of focus behind her, a glass wall onto jacaranda-lined streets and a city skyline in hard bright sunlight."
+  },
+  {
+   "n": 7,
+   "refs": [],
+   "screen": true,
+   "prompt": "Close-up of a woman's hands with fair skin holding a phone in a busy Australian hospital corridor, thumb poised over the screen, the screen a soft white glow, navy scrub sleeves, staff in scrubs and a trolley passing out of focus behind, a window with eucalyptus leaves and bright sun beyond, shallow focus."
+  },
+  {
+   "n": 8,
+   "refs": [
+    "alex"
+   ],
+   "screen": true,
+   "prompt": "Alex Campbell beside a commuter bike at the staff bike racks of a large Australian metropolitan hospital, black cycling jacket half on over ceil-blue scrubs, reading his phone and grinning; behind him the hospital tower with coloured façade panels, gum trees and a jacaranda in bloom, a stream of staff in scrubs arriving, a yellow-and-white chequered ambulance in the bay with no lettering, hard early-afternoon light."
+  },
+  {
+   "n": 9,
+   "refs": [
+    "sam"
+   ],
+   "screen": true,
+   "prompt": "Sam Patel in teal scrubs walking a wide, busy corridor of a large Australian tertiary hospital, phone raised in one hand, not breaking stride, staff in navy and teal scrubs passing both ways and a trolley ahead, daylight from a glass wall with sun louvres and an Australian city skyline beyond, tracking shot from the side."
+  },
+  {
+   "n": 10,
+   "refs": [
+    "sam",
+    "morgan"
+   ],
+   "screen": true,
+   "prompt": "A director's office high in a large Australian metropolitan hospital at 8:50 am, venetian blinds half open on an Australian city skyline with jacaranda and gum-tree canopies below: Morgan O'Brien, an Anglo-Australian man of 52 with short grey-flecked hair and reading glasses pushed up on his head, a navy blazer over a white open-collar shirt, reading a laptop at the desk, a meeting folder under one hand; Sam Patel in teal scrubs leaning in at the door holding two takeaway coffees, the corridor behind him busy with staff."
+  },
+  {
+   "n": 11,
+   "refs": [
+    "sam"
+   ],
+   "screen": true,
+   "prompt": "A suburban back garden at dusk: a boy of about ten in a plain football jersey seen only from behind, kicking a football toward Sam Patel — the same man as the reference photo, 40, thick dark hair, a neat short beard — in a faded navy polo; on a timber outdoor table a phone lying face down; warm low sun through a timber fence; low suburban rooftops beyond the fence, no tall buildings, no signs."
+  },
+  {
+   "n": 12,
+   "refs": [
+    "emma",
+    "sam"
+   ],
+   "screen": false,
+   "prompt": "Emma Walsh and Sam Patel in hospital scrubs walking in through the main staff entrance of a large Australian metropolitan hospital at first light, side by side, phones in pockets, mid-conversation; the tower with coloured façade panels and sun louvres rising above them, an ambulance bay beside the entrance with yellow-and-white chequered ambulances with no lettering, gum trees and a jacaranda in bloom, many other staff in scrubs streaming in around them, sliding glass doors glowing ahead, wet pavement, a pale gold Australian sky, seen from behind and slightly to the side."
+  },
+  {
+   "n": 13,
+   "refs": [
+    "emma"
+   ],
+   "ref_files": [
+    "frame_02.png"
+   ],
+   "screen": false,
+   "prompt": "The same bright small kitchen as the second reference image, 7 am the next Monday: Emma Walsh, an emergency doctor in plain navy hospital scrubs, slipping her phone into her pocket with one hand and lifting her car keys from the bench with the other, glancing back toward the doorway with a fond smile. The fridge door beside her is bare except one child's crayon drawing under a round magnet: no roster, no printed sheet, no paper, no lists. Morning sun on the bench, a school bag by the door."
+  }
+ ]
+}

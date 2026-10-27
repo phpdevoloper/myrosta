@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Myrosta — multi-org isolation test</title>
+<style>
+ body{font-family:-apple-system,Helvetica,Arial,sans-serif;max-width:860px;margin:24px auto;padding:0 16px;color:#1F2937;line-height:1.45}
+ h1{color:#0F243A;font-size:22px} h2{font-size:16px;color:#0F243A;margin-top:22px}
+ input,button{font:inherit;padding:8px 10px;border:1px solid #cfd5dc;border-radius:8px}
+ button{background:#0F243A;color:#fff;border-color:#0F243A;cursor:pointer} button.sec{background:#fff;color:#0F243A}
+ .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+ .card{border:1px solid #e6e9ed;border-radius:12px;padding:14px 16px;margin:12px 0;background:#fff}
+ table{border-collapse:collapse;width:100%;font-size:14px} td,th{border-bottom:1px solid #eef1f4;padding:6px 8px;text-align:left;vertical-align:top}
+ .pass{color:#1C5733;font-weight:700} .fail{color:#9E2B2B;font-weight:700} .skip{color:#7A8290}
+ .verdict{font-size:18px;font-weight:800;padding:12px 14px;border-radius:10px;margin-top:10px}
+ .ok{background:#EAF6F2;color:#0E5A4E} .bad{background:#FBE6E6;color:#8A1F1F} .muted{color:#6A7480;font-size:13px}
+ code{background:#F3F5F7;padding:1px 5px;border-radius:5px}
+</style></head><body>
+<h1>Myrosta — multi-org isolation test</h1>
+<p class="muted">v4 — every probe is <b>non-destructive</b>, so it can run against staging, a rehearsal clone, or production at cutover. Proves a member of one organisation is <b>denied</b> another organisation's data by the database itself (RLS) — regardless of what any app code does. Nothing here touches production.</p>
+
+<div class="card">
+ <h2>1 · Project</h2>
+ <div class="row"><input id="url" placeholder="https://xxxx.supabase.co" style="flex:2;min-width:260px"><input id="key" placeholder="anon public key (eyJ…)" style="flex:3;min-width:300px"></div>
+ <div class="row"><input id="orgA" value="test-orgA" style="width:130px"><input id="orgB" value="test-orgB" style="width:130px"><span class="muted">your org + an org you are NOT a member of (staging: test-orgA / test-orgB)</span></div>
+</div>
+
+<div class="card">
+ <h2>2 · Sign in as a test user</h2>
+ <p class="muted">Sign in as <b>User A</b> (member of org A only) and run. Then sign out, sign in as <b>User B</b>, run again. Optionally User AB (both orgs) to see the memberships list return two rows.</p>
+ <div class="row"><input id="email" placeholder="test user email" style="min-width:260px"><input id="pw" type="password" placeholder="password" style="width:150px"><button id="pwin">Sign in with password</button><button class="sec" id="signout">Sign out</button></div>
+ <div class="row muted">Password sign-in avoids the staging email limits (create the users under Authentication → Users with "Auto confirm"). Email code also works if you prefer: <button class="sec" id="send" style="padding:3px 8px">Send code</button> <input id="code" placeholder="6-digit code" style="width:110px;padding:4px"> <button class="sec" id="verify" style="padding:3px 8px">Verify</button></div>
+ <div id="who" class="muted">Not signed in.</div>
+</div>
+
+<div class="card">
+ <h2>3 · Run the probes</h2>
+ <div class="row"><button id="run">Run isolation test as this user</button><span class="muted">Each probe expects the database to <b>deny</b> the other org and <b>allow</b> your own.</span></div>
+ <table id="results"><thead><tr><th style="width:36%">Probe</th><th style="width:12%">Expect</th><th style="width:12%">Result</th><th>Detail</th></tr></thead><tbody></tbody></table>
+ <div id="verdict"></div>
+ <p class="muted" style="margin-top:10px">Any FAIL = do <b>not</b> ship multi-org. Re-run after any RLS change.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+let sb=null, myOrgs=[];
+const $=id=>document.getElementById(id);
+function client(){ if(sb)return sb; const u=$("url").value.trim(), k=$("key").value.trim(); if(!u||!k){alert("Enter the project URL and anon key first.");return null;}
+  sb=window.supabase.createClient(u,k,{auth:{persistSession:true}}); return sb; }
+async function refreshWho(){ const c=client(); if(!c)return; const {data}=await c.auth.getSession(); const s=data&&data.session;
+  if(!s){ $("who").textContent="Not signed in."; myOrgs=[]; return; }
+  const r=await c.rpc("my_orgs"); myOrgs=(r.data||[]);
+  $("who").innerHTML="Signed in as <b>"+s.user.email+"</b> · memberships from my_orgs(): <b>"+(myOrgs.map(o=>o.org+" ("+o.role+")").join(", ")||"none")+"</b>"+(r.error?" · <span class='fail'>my_orgs error: "+r.error.message+"</span>":""); }
+$("send").onclick=async()=>{ const c=client(); if(!c)return; const {error}=await c.auth.signInWithOtp({email:$("email").value.trim(),options:{shouldCreateUser:true}}); alert(error?error.message:"Code sent — check that inbox."); };
+$("verify").onclick=async()=>{ const c=client(); if(!c)return; const {error}=await c.auth.verifyOtp({email:$("email").value.trim(),token:$("code").value.trim(),type:"email"}); if(error)alert(error.message); await refreshWho(); };
+$("pwin").onclick=async()=>{ const c=client(); if(!c)return; const {error}=await c.auth.signInWithPassword({email:$("email").value.trim(),password:$("pw").value}); if(error)alert(error.message); await refreshWho(); };
+$("signout").onclick=async()=>{ const c=client(); if(!c)return; await c.auth.signOut(); await refreshWho(); $("results").querySelector("tbody").innerHTML=""; $("verdict").innerHTML=""; };
+
+function row(name,expect,ok,detail){ const tb=$("results").querySelector("tbody"); const tr=document.createElement("tr");
+  tr.innerHTML="<td>"+name+"</td><td>"+expect+"</td><td class='"+(ok===null?"skip":ok?"pass":"fail")+"'>"+(ok===null?"SKIP":ok?"PASS":"FAIL")+"</td><td class='muted'>"+detail+"</td>"; tb.appendChild(tr); return ok; }
+
+$("run").onclick=async()=>{
+  const c=client(); if(!c)return; await refreshWho();
+  const {data:sd}=await c.auth.getSession(); if(!sd||!sd.session){alert("Sign in first.");return;}
+  $("results").querySelector("tbody").innerHTML=""; $("verdict").innerHTML="";
+  const A=$("orgA").value.trim(), B=$("orgB").value.trim();
+  const mine=myOrgs.map(o=>o.org); const own=mine.includes(A)?A:(mine.includes(B)?B:null); const other=own===A?B:A;
+  const results=[];
+  if(mine.length>0 && mine.every(o=>[A,B].includes(o))) results.push(row("my_orgs() lists only real memberships","own only", true, "returned: "+mine.join(", ")));
+  else if(mine.includes(A)&&mine.includes(B)) row("my_orgs() lists only real memberships","own only",null,"user belongs to "+mine.length+" orgs ("+mine.join(", ")+") — the two-org check is for test users A/B");
+  else results.push(row("my_orgs() lists only real memberships","own only", false, "returned: "+mine.join(", ")+" — includes an org outside A/B for a single-org user"));
+  if(!own){ row("(no membership in either test org — sign in as User A or B)","—",null,""); return; }
+  const single = mine.length===1;
+  // READ own
+  { const r=await c.from("org_state").select("data").eq("org",own); results.push(row("READ own org_state ("+own+")","allow", !r.error && r.data && r.data.length===1, r.error?r.error.message:("1 row · "+JSON.stringify(r.data[0].data||{}).length+" bytes of roster data"))); }
+  // READ other
+  if(single){ const r=await c.from("org_state").select("data").eq("org",other); results.push(row("READ other org_state ("+other+")","0 rows", !r.error && r.data && r.data.length===0, r.error?r.error.message:(r.data.length+" row(s) visible"+(r.data.length?" — LEAK: "+JSON.stringify(r.data[0].data):"")))); }
+  else row("READ other org_state","0 rows",null,"user is in both orgs — use User A/B for this probe");
+  // READ all (no filter) — must return only own orgs
+  { const r=await c.from("org_state").select("org"); const seen=(r.data||[]).map(x=>x.org); results.push(row("READ org_state with NO filter","own only", !r.error && seen.every(o=>mine.includes(o)), "visible orgs: "+(seen.join(", ")||"none"))); }
+  // UPDATE other → 0 rows affected
+  if(single){ const r=await c.from("org_state").update({data:{hacked:true}}).eq("org",other).select("org"); results.push(row("UPDATE other org_state","0 rows", (!r.error && (r.data||[]).length===0) || (r.error&&/permission|policy|violat/i.test(r.error.message)), r.error?r.error.message:((r.data||[]).length+" row(s) changed")));
+    // confirm no damage
+    const chk=await c.from("org_state").select("data").eq("org",other); results.push(row("…and other org's data untouched (still hidden)","0 rows", !chk.error && chk.data.length===0, chk.error?chk.error.message:(chk.data.length+" row(s)"))); }
+  // INSERT into other org (only matters if user is admin of own — RLS with-check should deny)
+  if(single){ const r=await c.from("org_state").upsert({org:other,data:{hijack:true},updated:new Date().toISOString()}).select("org"); results.push(row("UPSERT into other org_state","denied", !!r.error || (r.data||[]).length===0, r.error?r.error.message:((r.data||[]).length+" row(s) written"))); }
+  // roster_members other
+  if(single){ const r=await c.from("roster_members").select("*").eq("org",other); results.push(row("READ other org's roster_members","0 rows", !r.error && r.data.length===0, r.error?r.error.message:(r.data.length+" row(s) visible"))); }
+  // roster_members no filter — only own
+  { const r=await c.from("roster_members").select("org,email"); const seen=[...new Set((r.data||[]).map(x=>x.org))]; results.push(row("READ roster_members with NO filter","own only", !r.error && seen.every(o=>mine.includes(o)), "orgs visible: "+(seen.join(", ")||"none"))); }
+  // write own (admin only) — proves policies aren't just denying everything
+  { // NON-DESTRUCTIVE: write the row's own current timestamp back to itself. Proves the policy allows own-org writes
+    // without changing the roster blob or its CAS token (v2 replaced `data` with a marker — fine on staging, fatal on production).
+    const cur=await c.from("org_state").select("updated").eq("org",own).maybeSingle();
+    const r=cur.error||!cur.data?{error:cur.error||{message:"own row not readable"}}:await c.from("org_state").update({updated:cur.data.updated}).eq("org",own).select("org");
+    results.push(row("UPDATE own org_state (no-op write)","allow (member)", !r.error && (r.data||[]).length===1, r.error?r.error.message:((r.data||[]).length+" row(s) — RLS allows own-org writes; roster data untouched"))); }
+  // delete must be revoked
+  { // SAFE: the filter can never match a row, but a revoked privilege errors before matching — so an error = revoked, no error = NOT revoked.
+    const r=await c.from("org_state").delete().eq("org",own).eq("updated","1970-01-01T00:00:00+00:00");
+    results.push(row("DELETE on org_state (impossible filter)","denied (revoked)", !!r.error && /permission|denied|42501/i.test(r.error.message||r.error.code||""), r.error?r.error.message:"NO ERROR — delete privilege is NOT revoked: run `revoke delete on public.org_state from authenticated;`"));
+    const chk=await c.from("org_state").select("org").eq("org",own); results.push(row("…own row still exists after delete attempt","1 row", !chk.error && chk.data.length===1, chk.error?chk.error.message:(chk.data.length+" row(s)"))); }
+  // --- v2 probes: things the signed-in probes above structurally cannot catch ---
+  { // unauthenticated: a client with NO session must see nothing in any table (catches missing/disabled RLS)
+    const bare=window.supabase.createClient($("url").value.trim(),$("key").value.trim(),{auth:{persistSession:false,storageKey:"probe-anon"}});
+    for(const tbl of ["org_state","roster_members","orgs"]){
+      const r=await bare.from(tbl).select("*").limit(5);
+      results.push(row("UNAUTHENTICATED read of "+tbl,"0 rows / denied", (!!r.error) || (r.data&&r.data.length===0), r.error?r.error.message:((r.data||[]).length+" row(s) visible"+((r.data||[]).length?" — RLS MISSING OR DISABLED":""))));
+    }
+  }
+  if(!single) row("push-send refuses a cross-org send","403",null,"user is in both orgs — use User A/B for this probe");
+  else { // edge function: a member of THIS org must be refused when naming the OTHER org (service-role path — RLS does not apply there)
+    const fnUrl=$("url").value.trim().replace(/\/$/,"")+"/functions/v1/push-send";
+    try{
+      const tok=(await c.auth.getSession()).data.session.access_token;
+      const fr=await fetch(fnUrl,{method:"POST",headers:{"Authorization":"Bearer "+tok,"apikey":$("key").value.trim(),"Content-Type":"application/json"},body:JSON.stringify({org:other,title:"isolation probe",body:"should be refused",targets:[]})});
+      if(fr.status===404||fr.status===503) row("push-send cross-org probe","403",null,"function not deployed on this project — run this probe on production at cutover");
+      else results.push(row("push-send refuses a cross-org send","403", fr.status===403, "HTTP "+fr.status+(fr.status===200?" — CROSS-ORG PUSH ALLOWED":"")));
+    }catch(e){ row("push-send cross-org probe","403",null,"unreachable: "+e.message); }
+  }
+  // --- v4 probes: the department board and add-a-group (supabase/prod-department.sql) ---
+  { const bare=window.supabase.createClient($("url").value.trim(),$("key").value.trim(),{auth:{persistSession:false,storageKey:"probe-anon4"}});
+    for(const tbl of ["board_slice","hospitals"]){ const r=await bare.from(tbl).select("*").limit(5);
+      results.push(row("UNAUTHENTICATED read of "+tbl,"0 rows / denied", (!!r.error)||(r.data&&r.data.length===0), r.error?r.error.message:((r.data||[]).length+" row(s) visible"+((r.data||[]).length?" — RLS MISSING OR DISABLED":"")))); } }
+  { const me=myOrgs.find(o=>o.org===own)||{}, hid=me.hospital_id||null;
+    if(!hid) row("board probes","—",null,"my_orgs() carries no hospital_id — run prod-department.sql first, then re-run");
+    else {
+      const cur=await c.from("board_slice").select("data").eq("org",own).maybeSingle();   // NON-DESTRUCTIVE: a group's own digest is written back to itself; a group that never published is left alone
+      if(cur.error||!cur.data) row("UPSERT own board_slice row","allow (member)",null,"no board row yet — switch on Publish to the department board in the app, then re-run");
+      else { const w=await c.from("board_slice").upsert({hospital_id:hid,org:own,data:cur.data.data},{onConflict:"hospital_id,org"}).select("org");
+        results.push(row("UPSERT own board_slice row (no-op write)","allow (member)", !w.error&&(w.data||[]).length===1, w.error?w.error.message:"1 row — digest unchanged")); }
+      { const r=await c.from("board_slice").select("hospital_id,org"); const seen=r.data||[];
+        results.push(row("READ board_slice with NO filter","same hospital only", !r.error&&seen.every(x=>x.hospital_id===hid), r.error?r.error.message:(seen.length+" row(s): "+(seen.map(x=>x.org).join(", ")||"none")))); }
+      if(single){ const w2=await c.from("board_slice").upsert({hospital_id:hid,org:other,data:{v:1,noun:"forged",days:{}}},{onConflict:"hospital_id,org"}).select("org");
+        results.push(row("UPSERT the other org's board_slice row","denied", !!w2.error||(w2.data||[]).length===0, w2.error?w2.error.message:((w2.data||[]).length+" row(s) — FORGERY ALLOWED"))); }
+      else row("UPSERT the other org's board_slice row","denied",null,"user is in both orgs — use User A/B for this probe");
+      { const w3=await c.from("board_slice").upsert({hospital_id:"not-my-hospital",org:own,data:{v:1,noun:"forged",days:{}}},{onConflict:"hospital_id,org"}).select("org");
+        results.push(row("UPSERT own org under a forged hospital_id","denied", !!w3.error||(w3.data||[]).length===0, w3.error?w3.error.message:((w3.data||[]).length+" row(s) — FORGERY ALLOWED"))); }
+      const b=await c.rpc("board_for_org",{p_org:own}); const brows=b.data||[];
+      results.push(row("board_for_org(own) returns only this hospital's rows","same hospital", !b.error&&brows.every(x=>x.hospital_id===hid), b.error?b.error.message:(brows.length+" row(s): "+(brows.map(x=>x.org).join(", ")||"none"))));
+      if(single){ const b2=await c.rpc("board_for_org",{p_org:other}); results.push(row("board_for_org(an org I'm not in)","0 rows", !b2.error&&(b2.data||[]).length===0, b2.error?b2.error.message:((b2.data||[]).length+" row(s)"))); }
+      else row("board_for_org(an org I'm not in)","0 rows",null,"user is in both orgs — use User A/B for this probe");
+      const hg=await c.rpc("hospital_groups",{p_org:own}); const gs=(hg.data||[]).map(x=>x.org);
+      results.push(row("hospital_groups(own) lists my own group","includes own", !hg.error&&gs.includes(own), hg.error?hg.error.message:("groups: "+gs.join(", "))));
+      if(single){ const cg=await c.rpc("create_group",{p_sibling_org:other,p_label:"Probe group",p_noun:"probe",p_admin2_email:null});
+        results.push(row("create_group via an org I don't admin","denied", !!cg.error, cg.error?cg.error.message:("CREATED "+cg.data+" — a non-admin made a group"))); }
+      else row("create_group via an org I don't admin","denied",null,"user is in both orgs — use User A/B for this probe");
+      { const dr=await c.from("board_slice").delete().eq("hospital_id",hid).eq("org",own).eq("updated","1970-01-01T00:00:00+00:00");
+        results.push(row("DELETE on board_slice (impossible filter)","denied (revoked)", !!dr.error && /permission|denied|42501/i.test(dr.error.message||dr.error.code||""), dr.error?dr.error.message:"NO ERROR — delete privilege is NOT revoked: run `revoke delete on public.board_slice from authenticated;`")); }
+      const nr=await c.rpc("tables_without_rls"); const bad=nr.data||[];
+      results.push(row("every table in public has row-level security","none without", !nr.error&&bad.length===0, nr.error?nr.error.message:(bad.length?("WITHOUT RLS: "+bad.join(", ")):"all covered"))); } }
+  const fails=results.filter(x=>x===false).length;
+  $("verdict").innerHTML="<div class='verdict "+(fails?"bad":"ok")+"'>"+(fails?("❌ "+fails+" FAILURE(S) — DO NOT SHIP multi-org"):"✅ ALL PROBES PASSED for this user — now repeat as the other user")+"</div>";
+};
+</script>
+</body></html>

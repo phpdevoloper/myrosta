@@ -1,0 +1,72 @@
+{
+ "take": "S7-sync",
+ "secs": 26.6,
+ "fps": 25,
+ "log": [
+  {
+   "t": 0.72,
+   "label": "1 · The bell"
+  },
+  {
+   "t": 8.28,
+   "label": "2 · Day board: who is on today"
+  },
+  {
+   "t": 13.0,
+   "label": "3 · Fairness: the same table for everyone"
+  },
+  {
+   "t": 19.52,
+   "label": "4 · Help, and Send feedback"
+  }
+ ],
+ "sync": {
+  "orig": "S7",
+  "pre": 2.4,
+  "anchors": [
+   "The bell",
+   "Day board shows",
+   "Fairness shows",
+   "And Help"
+  ],
+  "targets": [
+   -0.2,
+   8.18,
+   12.86,
+   19.36
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.01,
+    1.5,
+    0.0
+   ],
+   [
+    1.01,
+    4.93,
+    1.0,
+    2.577
+   ],
+   [
+    5.94,
+    3.61,
+    1.0,
+    1.07
+   ],
+   [
+    9.55,
+    4.01,
+    1.0,
+    2.49
+   ],
+   [
+    13.56,
+    7.08,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "50/53"
+ }
+}

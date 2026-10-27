@@ -1,0 +1,72 @@
+{
+ "take": "A5-sync",
+ "secs": 25.12,
+ "fps": 25,
+ "log": [
+  {
+   "t": 0.96,
+   "label": "1 · The Day board: cover per half, who is where"
+  },
+  {
+   "t": 7.12,
+   "label": "2 · Week: the shape of the week"
+  },
+  {
+   "t": 10.08,
+   "label": "3 · Messages: everyone, or one person"
+  },
+  {
+   "t": 15.76,
+   "label": "4 · The audit log: every change, by person or by kind"
+  }
+ ],
+ "sync": {
+  "orig": "A5",
+  "pre": 2.4,
+  "anchors": [
+   "The Day board is today",
+   "Week shows",
+   "Messages reach",
+   "And the audit log"
+  ],
+  "targets": [
+   -0.2,
+   7.08,
+   10.0,
+   14.62
+  ],
+  "pieces": [
+   [
+    0.0,
+    1.4,
+    1.5,
+    0.0
+   ],
+   [
+    1.4,
+    5.54,
+    1.0,
+    0.607
+   ],
+   [
+    6.94,
+    2.27,
+    1.0,
+    0.65
+   ],
+   [
+    9.21,
+    8.45,
+    1.5,
+    0.0
+   ],
+   [
+    17.66,
+    9.38,
+    1.0,
+    0.0
+   ]
+  ],
+  "words_matched": "59/61"
+ }
+}
