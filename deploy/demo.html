@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0F243A">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="img/icon-180.png">
 <meta name="robots" content="noindex,nofollow">
 <title>DEMO · Myrosta</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230F243A'/%3E%3Cpath d='M17 31 L17 11 L24.5 22 L32 11 L32 31' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 13 L14 13' fill='none' stroke='%234C86E8' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M7 21 L12 21' fill='none' stroke='%23F2A638' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M7 29 L14 29' fill='none' stroke='%232FA86E' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -1382,7 +1382,7 @@ function a2hsState(){ try{ return JSON.parse(devGet("a2hs")||"null")||{n:0,ts:0}
 function a2hsCardHTML(){   // iPhone Safari, once per device: the product's most visible surface is its icon
   if(!cloudOn()||authState!=="in"||inDemo()||_sharedDevice||!iosNeedsInstall())return "";   // a ward iPad in shared mode is signed out when the tab closes — "stays signed in" would be false
   const st=a2hsState(); if(st.n>=2||(st.n===1&&Date.now()-st.ts<30*864e5))return "";   // the first Not now hides it for a month; the second hides it for good
-  return `<div class="a2hs"><img src="icon-180.png" width="44" height="44" alt=""><div class="grow"><b>Put Myrosta on your Home Screen</b><div class="muted small">Tap Share ${ic("share")} then <b>Add to Home Screen</b>. It opens like an app and stays signed in.</div></div><button class="btn sm" id="a2hsLater">Not now</button></div>`; }
+  return `<div class="a2hs"><img src="img/icon-180.png" width="44" height="44" alt=""><div class="grow"><b>Put Myrosta on your Home Screen</b><div class="muted small">Tap Share ${ic("share")} then <b>Add to Home Screen</b>. It opens like an app and stays signed in.</div></div><button class="btn sm" id="a2hsLater">Not now</button></div>`; }
 function a2hsDismiss(){ const st=a2hsState(); devSet("a2hs",JSON.stringify({n:(st.n||0)+1,ts:Date.now()})); }
 function landingTab(viewAs,deviceTab){ return viewAs==="admin"?(deviceTab||S.tab):"my"; }   // staff land on My shifts; admins where THIS device left off
 function reset(){ openDangerModal(); }   // every wipe goes through the typed confirmation

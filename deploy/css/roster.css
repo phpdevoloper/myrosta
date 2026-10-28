@@ -1,0 +1,48 @@
+﻿  /* admin grid */
+  .gridscroll{overflow:auto;border:1px solid var(--line);border-radius:var(--radius);max-height:72vh}
+  table.roster{border-collapse:separate;border-spacing:0;font-size:var(--fs-xs)}
+  table.roster th,table.roster td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;text-align:center}
+  table.roster thead th{position:sticky;top:var(--hd0,0px);background:var(--surface);z-index:5;min-width:62px;padding:5px 4px;font-weight:500}   /* the day header sticks under the fortnight band when there is one (--hd0, measured) */
+  table.roster thead tr.fnrow th{top:0;z-index:6;font-size:var(--fs-2xs);font-weight:600;color:var(--navy);text-align:left;padding:3px 8px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1px solid var(--line2)} table.roster thead tr.fnrow th.fn{border-left:3px solid var(--navy)}   /* one merged cell per quota period: "Fortnight 1 · 23 Nov – 6 Dec" (16 Oct 2026) */
+  table.roster th.fnstart,table.roster td.fnstart{border-left:3px solid var(--navy)}   /* the period's first day carries a heavier rule down the whole grid, over the week rule */
+  table.roster thead th.we{background:var(--we)}
+  table.roster .namecol{position:sticky;left:0;background:var(--surface);z-index:6;text-align:left;padding:6px 10px;min-width:150px;font-weight:600;color:var(--navy);border-right:1px solid var(--line2)}
+  table.roster tr.rowhl td{background:var(--accent-bg)}
+  table.roster tr.rowhl .namecol{background:var(--accent-bg);box-shadow:inset 3px 0 0 var(--accent)}
+  table.roster thead th.corner{z-index:7;left:0;position:sticky}
+  table.roster td.cell{cursor:pointer;height:30px}
+  table.roster.fixedcols{table-layout:fixed;width:1px}   /* the roster grid: fixed columns, so its lines never move as cells fill; a chip that cannot fit shows the zone's short name */
+  table.roster.fixedcols th,table.roster.fixedcols td{box-sizing:border-box} table.roster.fixedcols thead th{width:72px;min-width:72px} table.roster.fixedcols .namecol{width:164px}
+.namecol .nm{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .namecol .nm .namecol-btn{display:inline;max-width:100%} .namecol .tag{display:inline-block;margin-top:3px}   /* every row the same height: the name on one line (cut with an ellipsis, the full name in the tooltip), the mode badge on the line below (13 Oct 2026) */
+  table.roster.fixedcols th,table.roster.fixedcols td{border-right-color:var(--line2);border-bottom-color:var(--line2)}   /* the grid's lines at the name column's strength: an 8% hairline vanishes on a projector or a scaled video */
+  table.roster.fixedcols .cellbtn .tag.lg{font-size:var(--fs-grid);padding:3px 6px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  table.roster td.cell:hover{outline:2px solid var(--accent);outline-offset:-2px}
+  table.roster td.we{background:var(--we)}
+  table.roster th.mon,table.roster td.mon{border-left:2px solid var(--line2)}   /* a 2 px rule where each week starts */
+  table.roster thead tr.coverrow th,table.roster thead tr.coverrow td{position:sticky;top:calc(var(--hd0,0px) + var(--hd1,52px));background:var(--surface);z-index:5;box-shadow:0 1px 0 var(--line)} table.roster thead tr.coverrow td.we{background:var(--we)} table.roster thead tr.coverrow td.gapcell{background:var(--gap-bg)} table.roster thead tr.coverrow th.namecol{z-index:7}   /* the cover row rides under the day header */
+  table.roster thead th.mo,.mo{font-size:var(--fs-grid);min-height:1.2em}
+  .tag.fxghost{opacity:.7;border:1px dashed var(--muted);background:transparent;color:var(--muted)} .tag.fxghost.soft{opacity:.45} .ghostwrap{cursor:default}   /* its own name: .ghost already styles a placeholder card elsewhere */   /* the Fixed cover view: what the patterns would place, never mistaken for the roster */
+  table.roster tbody tr:not(.rowhl):hover td:not(.namecol){background:var(--hover)}
+  table.roster .dimcol{opacity:.3}
+  table.roster th.gaphdr{background:var(--gaphdr-bg)}
+  table.roster td.gapcell{background:var(--gap-bg);color:var(--danger-t)}
+  table.roster td.gapcell .cap b{color:var(--danger-t)}
+  table.roster td{position:relative}
+  .noteflag{position:absolute;top:1px;right:1px;width:12px;height:12px;display:inline-flex} .noteflag .tic{width:12px;height:12px;stroke:var(--accent-ink)}
+  .cap .capwarn .tic{width:11px;height:11px;stroke:var(--danger-t);vertical-align:-2px}
+  table.roster td.pcell{cursor:pointer}
+  table.roster td.pcell:hover{outline:2px solid var(--accent);outline-offset:-2px}
+  .daynum{font-weight:600;font-size:var(--fs-sm);color:var(--navy)} .dayname{font-size:var(--fs-grid);color:var(--hint);text-transform:uppercase;letter-spacing:.04em}
+  .cap{font-size:var(--fs-grid);margin-top:2px}
+  .cap b{font-weight:600}
+  .full-cell{display:block;padding:3px 2px}
+
+  table.roster thead th.phhdr{background:var(--ph-bg)}   /* needs the thead specificity to beat the sticky header surface; declared before .todaycol so today still wins on a PH-today */
+  table.roster thead th.todaycol{background:var(--accent-bg)}
+  table.roster thead th.todaycol .daynum{color:var(--accent-ink)}
+  th.we .dayname,th.todaycol .dayname,th.phhdr .dayname{color:var(--muted)}   /* --hint passes AA on white but not on the tinted header cells */
+  .rcard.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .rcard.ph{border-color:var(--warn-line);background:var(--ph-bg)}
+  .agday.ph .d{background:var(--ph-bg);border-radius:8px;padding:2px 4px;margin:-2px -4px}
+  .mcell.ph{background:var(--ph-bg)}
+  th.phclick{cursor:pointer}

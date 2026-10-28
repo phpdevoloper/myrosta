@@ -16,7 +16,10 @@
       "Bash(grep -n 'editable?\"cell\":\"\"\\\\|editable?\"Click any cell\\\\|td class=\"${editable' index.html)",
       "Bash(osascript -l JavaScript _test7.js)",
       "Bash(osascript -l JavaScript _test8.js)",
-      "Bash(osascript -l JavaScript _test9.js)"
+      "Bash(osascript -l JavaScript _test9.js)",
+      "Bash(Get-ChildItem -Path \"c:\\\\xampp\\\\htdocs\\\\myrosta-review-main\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "PowerShell(Get-ChildItem -Recurse \"c:\\\\xampp\\\\htdocs\\\\myrosta-review-main\" -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })"
     ]
   }
 }

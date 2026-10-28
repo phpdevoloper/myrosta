@@ -1,0 +1,72 @@
+﻿  @media (max-width:600px){ .mcell{height:54px;min-height:0;padding:4px 2px} .mcell .tag{padding:0 1px;letter-spacing:-.15px} .mcell .mcell-win{display:none} }   /* a 375px phone gives a cell 42px: five letters need every pixel */
+
+  @media print{
+    body.print-poster #app>*:not(#posterCard){display:none !important} body.print-poster #posterCard{display:block !important} body.print-cap #app>*:not(#capCard){display:none !important} body.print-eq #app>*:not(#eqCard){display:none !important} body.print-dept #app>*:not(#deptCard){display:none !important} body.print-dept .deptcol{break-inside:avoid}
+    .printhead{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--navy);padding-bottom:8px;margin-bottom:12px} .printhead svg{width:28px;height:28px;flex:none} .printhead .ptitle{font-weight:700;color:var(--navy);text-align:right}
+    .printhead b{color:var(--navy)} .scronly{display:none !important}
+    .printfoot{display:block;margin-top:12px;border-top:1px solid var(--line2);padding-top:8px;font-size:var(--fs-sm);color:var(--muted)}
+    body.print-cap #capCard input{border:none;font-weight:700}
+    .topbar,#toasts,#alerts,.bell,.bottomnav,#sheetRoot,.newbuild{display:none !important}
+    .btn,.seg{display:none !important}
+    .wrap{padding:0;max-width:none}
+    .card{box-shadow:none;border:1px solid var(--line2);page-break-inside:avoid;margin:0 0 10px}
+    .gridscroll{max-height:none !important;overflow:visible !important;border:none}
+    body{background:#fff}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important} .topbar.loading::after,.topbar.loaded::after{animation:none !important;opacity:0}}
+
+  @media(min-width:641px){ .tab{white-space:nowrap} }
+  @media(max-width:640px){
+    body{font-size:var(--fs-md)}
+    .topbar{padding:8px 10px;gap:7px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right));padding-top:max(8px,env(safe-area-inset-top))}
+    .brand .logo{width:26px;height:26px} .brand img.logo{width:auto;max-width:96px} .brand .wordmark{font-size:var(--fs-lg)}
+    .tabs,#acctWrap{display:none !important} .sync{font-size:var(--fs-2xs)} #cycleWrap{flex-wrap:wrap} .sync.warn{flex:1 0 100%;justify-content:flex-end;padding-right:2px}   /* offline is a state, not a flash: on phones its line sits under the chip so the dates stay readable */   /* the bottom bar and the More sheet take over on phones */
+    .bottomnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--topbar);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+    .bn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;border:none;background:none;color:var(--muted);font:inherit;font-size:var(--fs-2xs);font-weight:500;padding:6px 2px}
+    .bn.active{color:var(--accent-ink)} .bn.active .nic{stroke-width:2.2}
+    #cycleWrap{width:100%;order:1;flex:1 1 100%;min-width:0} .bell{order:0;margin-left:auto}   /* brand + bell on the first row, the cycle chip on its own row beneath */   /* cycle selector gets its own full-width row on small screens — bigger tap target, never cramped beside the brand */
+    #cycleWrap select{flex:1 1 auto;min-width:0;text-overflow:ellipsis}
+    .tabs{flex:1 0 100%;flex-wrap:nowrap;overflow-x:auto;order:5;width:100%;margin:0 -10px;padding:4px 10px;gap:5px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}   /* one scrolling row instead of three wrapped ones — the header drops from ~300px to ~150px */
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{padding:8px 12px;white-space:nowrap;flex:none;scroll-snap-align:center}
+    .viewas{font-size:var(--fs-xs)}
+    .wrap{padding:14px 12px calc(76px + env(safe-area-inset-bottom))}
+    .card{padding:14px}
+    .card.list{margin:0 -12px 18px;padding:0 0 8px;border:0;border-radius:0;background:none;box-shadow:none} .card.list>:not(.daylist){margin-left:12px;margin-right:12px} .card.list .daylist{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)} .card.list .dayrow{padding:8px 12px;border-radius:0}   /* the day list runs edge to edge; everything else keeps the page margin */
+    h2{font-size:var(--fs-lg)}
+    .row{flex-direction:column;align-items:stretch}
+    .row .field{width:100%}
+    .field input:not([type=checkbox]):not([type=radio]),.field select,.field textarea{width:100%;min-width:0;box-sizing:border-box}   /* a full-width box stays inside its card; a checkbox keeps its own size, so "on" sits beside it instead of at the far edge (14 Oct 2026) */
+    input,select,textarea{font-size:var(--fs-input)}   /* prevents iOS zoom-on-focus */
+    .btn{padding:10px 14px} .btn.sm{padding:10px 14px}
+    .seg button{padding:8px 14px}
+    /* 44px touch floor for every control on a phone */
+    .btn,.btn.sm,.tab,.bell,.seg button,.fbm,.zonebtns button,.hd summary,select,input:not([type=checkbox]):not([type=radio]),textarea{min-height:44px}
+    .bell{min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+    #dPrev,#dNext,#plPrev,#plNext{min-width:44px;justify-content:center}
+    .pmday,.agday{min-height:52px} .notif{min-height:56px}
+    .setidx{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -12px;padding:8px 12px 10px} .setidx::-webkit-scrollbar{display:none} .setidx a{flex:none;min-height:44px}
+    .actrow .btn{flex:1 1 45%;justify-content:center}
+    label:has(>input[type=checkbox]){min-height:44px;display:inline-flex;align-items:center}
+    .qt-cell,.qt-quota,.qt-cstcell,.qt-cstq{min-height:36px}
+    .agday{padding:13px 0}
+    .grid-tiles{grid-template-columns:repeat(2,1fr)}
+    .kindgrid{grid-template-columns:1fr 1fr}
+    .audrow{flex-wrap:wrap;gap:4px 10px} .audrow .awho{min-width:0;flex:1} .audrow .grow{flex-basis:100%;padding-left:54px} .audrow .atime.wide{min-width:0}   /* phones: time · who on one line, the sentence beneath */
+    .zonebtns{grid-template-columns:1fr}
+    .overlay{padding:10px;padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(10px,env(safe-area-inset-bottom));z-index:70}   /* modals clear the notch + home indicator too, and sit ABOVE the bottom bar (z 60) */
+    .sheetwrap{align-items:flex-end;padding:0} .sheet{border-radius:18px 18px 0 0;padding:8px 12px max(16px,env(safe-area-inset-bottom));box-shadow:0 -12px 40px -12px rgba(11,18,32,.35);max-height:80vh} .sheetgrab{display:block}   /* the phone's bottom drawer, with its grab handle */
+    #toasts{bottom:calc(72px + env(safe-area-inset-bottom))} #alerts{bottom:calc(132px + env(safe-area-inset-bottom))}
+    .listrow{flex-wrap:wrap}
+    .listrow.assignrow,.listrow.pdrow{flex-wrap:nowrap} .listrow.assignrow .grow,.listrow.pdrow .grow{flex:1 1 auto;min-width:0}   /* one line per person: chip · name · chevron */
+    button.rcard-h,.stoggle,button.pmday{min-height:44px}
+    .listrow .grow{flex-basis:100%}
+    .staffsum,.stoggle{flex-wrap:wrap;gap:6px 8px}
+    .staffsum .grow{display:none}
+    .staffsum .smeta{flex-basis:100%}
+    .staffsum .s-fp,.staffsum .s-del{flex:1}
+    .sd-grid{grid-template-columns:1fr}
+    .srfoot{bottom:calc(64px + var(--demo-banner,0px) + env(safe-area-inset-bottom))}   /* clears the bottom bar (and the demo's banner) */
+    .srfoot.done .grow{flex:1 0 calc(100% - 40px)} .srfoot.done .btn{flex:1 1 auto}   /* the receipt: its sentence on one line, its two buttons beneath */
+  }
