@@ -13,6 +13,11 @@
 - **Moved** the incident report, staging runbook and technical brief into `docs/operations/`, with links updated.
 - **New** `README.md` (layout, run, dev/prod config) and `docs/README.md` (every doc with a one-line purpose).
 
+## 30 Oct 2026 — Dev and production config files (tools only)
+
+- **`.dev_config` / `.prod_config`** (gitignored; `.example` templates committed) hold the Supabase URL, anon key, org, admin emails, SSO flags and VAPID key per environment. **`tools/use-env.py dev|prod`** writes them into the `CLOUD` block of `js/config.js` (prod also `deploy/js/config.js`); `--check` reports a mismatch without writing.
+- **New `env-config` gate** fails a release if `deploy/js/config.js` does not match `.prod_config` (warns when `.prod_config` is absent or unfilled). The `deploy-parity` gate no longer expects `js/config.js` in `deploy/`, and the release agent runs `use-env.py prod` instead of copying it. See `docs/deployment/DEPLOY.md`.
+
 ## 22 Oct 2026 — A de-identified staging copy for an outside reviewer (tools only)
 
 - **Run against the real export (22 Oct):** two defects the fixture had not reached. A member row named "Admin" was treated as a person, so the checker read every "admin" in the role column as a surviving name: a name made only of generic words is no longer a person, and keeps its own wording. And a call-in is keyed `day|zone|staffId`, so a staff id is not always the first segment of a key: keys are now scrubbed anywhere inside, like values. The mapping file also carries each person's real ids.
