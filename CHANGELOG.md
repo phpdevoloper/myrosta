@@ -1,5 +1,10 @@
 # Myrosta — changelog
 
+## 30 Oct 2026 — Clocking re-layered: the first feature on the Clean Architecture rule (no behaviour change)
+
+- **Clocking and own hours** now sit in their layers: pure rules in `src/domain/clocking/` (state and "now" passed in, nothing saved), use cases in `src/application/clocking/` (they save, redraw, toast, locate and commit only through `clockingPorts`), the device side in `src/infrastructure/device/clock-device.js`, the cards, sheets and poster in `src/presentation/clocking/`, and the wiring in `src/composition/clocking.js`. Every old name still works (thin wrappers), so nothing else changed. Unrelated functions that lived in the same file moved to their own homes: `instantBook…` to `application/settings/group-switches.js`, `?go=help` to `presentation/shell/deep-links.js`, `srHoursFor` to the self-roster view, `importShift` to the roster importer.
+- **New `layers` check** in `tests/run.py` fails when a re-layered feature reaches past its layer; six boundary tests in `tests/suite.js`. See `docs/ARCHITECTURE.md` for the recipe the next features follow.
+
 ## 30 Oct 2026 — Code split into Clean Architecture folders (no behaviour change)
 
 - **`js/` (8 files) → `src/` (55 files)** in layers: `config/`, `domain/<feature>/`, `application/<feature>/`, `infrastructure/{supabase,local,push,files}/`, `presentation/<feature>/`, `main.js`. Move-only: every line copied byte for byte along the existing section headers, still classic scripts in the same load order (`app.html` lists them). `deploy/` mirrors `src/`; the landing page loads `src/config/cloud.js`. Layer rules, measured debts and the next phases: `docs/ARCHITECTURE.md`.

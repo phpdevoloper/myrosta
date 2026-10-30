@@ -4655,6 +4655,24 @@ try{
     var html=roundStepperHTML(c); var n=resetCycle();
     T("reset: every placed shift goes, leave and unavailable stay, the schedule and history clear, open shifts withdraw, and the cycle is a fresh draft", html.indexOf('id="adReset"')>0 && n===3 && !("s1|"+d1 in c.assign) && !("s2|"+d2 in c.assign) && !("s3|"+d3 in c.assign) && c.assign["s1|"+d4].code==="UA" && c.status==="draft" && c.window===null && c.statusLog.length===0 && S.openShifts[0].status==="withdrawn" && S.audit[0].action==="selfroster.reset" && roundSteps(c).filter(function(x){ return x.key==="open"; })[0].state!=="done");
     S=JSON.parse(keepS); normalize(); })();
+  // Clocking, re-layered (30 Oct 2026): the domain rules work on the state they are handed and never save; the use cases save
+  // through clockingPorts, so a fake port sees every write. docs/ARCHITECTURE.md.
+  (function(){ var keepS=JSON.stringify(S), keepSave=clockingPorts.save, saves=0, globalSaves=0, keepGlobal=save;
+    try{
+      T("clocking domain: grace, site and radius come from the state passed in", clockGraceOf({})===7 && clockGraceOf({clockGrace:0})===0 && clockGraceOf({clockGrace:99})===7
+        && clockSiteOf({site:{lat:-33.7,lng:150.9,radius:300}}).lat===-33.7 && clockSiteOf({site:{lat:"x"}})===null && clockRadiusOf(null)===150 && clockRadiusOf({radius:300})===300);
+      save=function(){ globalSaves++; }; clockingPorts.save=function(){ saves++; };
+      var cyc={id:"cx",assign:{"p1|2030-01-07":{kind:"clinical",period:"AM"}},settings:{}}, now=new Date(2030,0,7,7,58);
+      var r=clockTapRecord(cyc,"p1","2030-01-07","in",now,{via:"poster"});
+      T("clocking domain: a tap lands on the cycle it is given, rounded to 5 minutes, and nothing is saved", r.ok && r.tap.t==="08:00" && cyc.clock["p1|2030-01-07"].in.via==="poster" && saves===0 && globalSaves===0);
+      T("clocking domain: a second clock-in is refused without touching the record", clockTapRecord(cyc,"p1","2030-01-07","in",now,{}).ok===false && cyc.clock["p1|2030-01-07"].in.t==="08:00");
+      T("clocking domain: the manager's rows sort by the name reader they are handed", clockRowsOf({clock:{}},7,now,function(){ return ""; }).length===0);
+      var g=clockSetGrace(9);
+      T("clocking use case: a setting saves through the port, once, and not through the global", g.ok && S.clockGrace===9 && saves===1 && globalSaves===0);
+      saves=0; S.clockOn=true; S.site={lat:1,lng:2,radius:150,posterKey:"K"};
+      T("clocking use case: refusals save nothing", clockSetGrace(61).ok===false && clockSiteSave("","",150).ok===false && saves===0);
+    } finally { clockingPorts.save=keepSave; save=keepGlobal; S=JSON.parse(keepS); normalize(); }
+  })();
   S.viewAs="admin"; S.tab="setup"; render(); S.tab="my"; S.viewAs="s1"; render();
   T("full render passes (setup + my)", true);
 }catch(e){ LOG.push("HARNESS ERROR: "+(e&&((e.message||"")+" @ "+(e.stack||""))||e)); }

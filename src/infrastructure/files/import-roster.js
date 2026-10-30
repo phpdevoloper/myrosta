@@ -140,3 +140,5 @@ function applyEftData(rows,cyc){
     if(rw.hrs!=null){s.hrsFortnight=round2(rw.hrs); if(s.eft==null||s.eft===1)s.eft=round2(rw.hrs/76);} n++;});
   logAudit("import.eftdata",n+" "+ROLES()+" · per-fortnight quota+hours · "+fns+" fortnights/cycle","admin");save();return n;
 }
+function importShift(cyc,sh){ const out=Object.assign({kind:"clinical",period:sh.period,zone:ensureZoneForRole(sh.role)},(sh.type&&typeById(cyc,sh.type))?{type:sh.type}:{});
+  if(sh.start&&sh.end&&hoursOK(sh.start,sh.end)){ const h=hoursNorm(cyc,out,sh.start,sh.end); if(h)out.hours=h; } return out; }   // an imported cell: the type the cycle knows, and the cell's own times as own hours when they differ from that type's window; a pair the rule refuses is dropped

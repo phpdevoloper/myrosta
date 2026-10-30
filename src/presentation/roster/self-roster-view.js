@@ -126,3 +126,7 @@ function daySheetHTML(isoD){   // the day sheet: AM | PM, cover, one chip per zo
       :`<div class="sub">Your admin hasn\u2019t opened a shift type for booking yet.</div>`; }   // nothing bookable: say so rather than offering a shift nobody may take
   body+=ocSheetHTML(cyc,sid,isoD,adm,canPick); body+=clockSheetHTML(cyc,sid,isoD);
   return `<div class="overlay sheetwrap" id="ovlDay"><div class="sheet daysheet" role="dialog" aria-modal="true" aria-label="${escapeHTML(fmtISO(isoD))}"><div class="sheetgrab"></div>${head}${body}</div></div>`; }
+function srHoursFor(cyc,isoD,p,typeId){ const h=_srHours[isoD]; if(!h)return {ok:true,hours:null};
+  const a=String(h.start||"").trim(), b=String(h.end||"").trim(); if(!a&&!b)return {ok:true,hours:null};
+  if(!hoursOK(a,b))return {ok:false,reason:HOURS_RULE};
+  return {ok:true,hours:hoursNorm(cyc,{kind:"clinical",period:p,type:typeId||undefined},a,b)}; }   // what was typed beside a pick: nothing, the type's own window (nothing to store), a pair to store, or a pair the rule refuses
