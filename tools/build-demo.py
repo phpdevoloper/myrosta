@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build deploy/demo.html from app.html + tools/demo-seed.js.
+"""Build deploy/demo.html from the inlined app (tools/inline_app.py) + tools/demo-seed.js.
 
 The demo is the real app, in local mode, with sample data: same script, same CSS, so it can never fall behind the
 product. The test runner rebuilds it in memory and fails if deploy/demo.html differs ("run tools/build-demo.py").
@@ -7,6 +7,9 @@ product. The test runner rebuilds it in memory and fails if deploy/demo.html dif
     python3 tools/build-demo.py          # writes deploy/demo.html
 """
 import pathlib, re, sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import inline_app
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DEMO_KEY = "myrosta_demo_v7"   # bump when the seed changes shape, so earlier visitors reseed
@@ -31,8 +34,7 @@ def build(app_html: str, seed_js: str) -> str:
     s = re.sub(r'<meta name="apple-mobile-web-app-[^"]*" content="[^"]*">\n', "", s)
     s = re.sub(r'<meta name="mobile-web-app-capable" content="[^"]*">\n', "", s)
     # local mode: no cloud, its own storage key
-    s, n = re.subn(r'const CLOUD=\{ url:"[^"]*", key:"[^"]*"', 'const CLOUD={ url:"", key:""', s, count=1)
-    assert n == 1, "CLOUD line not found"
+    s = inline_app.point_cloud(s, "", "")
     s, n = re.subn(r'const KEY="[^"]+";', 'const KEY="%s";' % DEMO_KEY, s, count=1)
     assert n == 1, "KEY line not found"
     # inject at the REAL closing body tag: the Excel exporters contain literal '</body>' inside JS strings
@@ -43,7 +45,7 @@ def build(app_html: str, seed_js: str) -> str:
 
 
 def expected() -> str:
-    return build((ROOT / "app.html").read_text(encoding="utf-8"), (ROOT / "tools" / "demo-seed.js").read_text(encoding="utf-8"))
+    return build(inline_app.inline(ROOT / "app.html"), (ROOT / "tools" / "demo-seed.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

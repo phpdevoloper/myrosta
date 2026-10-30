@@ -378,7 +378,7 @@ input:focus-visible{border-color:var(--accent)}
 
 <section class="filmsec" id="film" aria-labelledby="filmT"><div class="wrap">
   <div class="fhead" data-r><p class="eb">In three minutes</p><h2 id="filmT">Watch it work.</h2><p>The running product at a fictional hospital, narrated. Then every chapter, for staff, admins and directors.</p></div>
-  <div class="player" data-r><video id="filmv" controls preload="none" playsinline crossorigin="anonymous" poster="film-poster.webp" width="1280" height="720"><source src="https://skpdqqhwrqgxsxawniho.supabase.co/storage/v1/object/public/Videos-public/film.mp4" type="video/mp4"><track kind="captions" src="https://skpdqqhwrqgxsxawniho.supabase.co/storage/v1/object/public/Videos-public/film.vtt" srclang="en" label="English"><a href="https://skpdqqhwrqgxsxawniho.supabase.co/storage/v1/object/public/Videos-public/film.mp4">Download the film.</a></video><span class="play" aria-hidden="true"></span></div>
+  <div class="player" data-r><video id="filmv" controls preload="none" playsinline crossorigin="anonymous" poster="img/landing/film-poster.webp" width="1280" height="720"></video><span class="play" aria-hidden="true"></span></div>
   <p class="more"><a href="app.html?go=help">Signed in? Every chapter →</a></p>
 </div></section>
 
@@ -388,8 +388,8 @@ input:focus-visible{border-color:var(--accent)}
     <p>Every zone and every day at once, with the days that still need cover flagged. The Fairness view shows who carried the weekends and the late shifts — the same table for everyone.</p>
   </div>
   <div class="plates" data-r>
-    <picture class="plate cut"><source media="(max-width:600px)" srcset="view-roster-narrow.webp" width="780" height="1120"><img src="view-roster.webp" width="1760" height="989" alt="The roster grid: staff down the side, days across, every booked zone a coloured chip, cover counted under each day" loading="lazy" decoding="async"></picture>
-    <div class="plate small"><img src="view-fairness.webp" width="1000" height="756" alt="The Fairness view: each person's share of weekends, Friday and Monday evenings, as bars against the team average" loading="lazy" decoding="async"></div>
+    <picture class="plate cut"><source media="(max-width:600px)" srcset="img/landing/view-roster-narrow.webp" width="780" height="1120"><img src="img/landing/view-roster.webp" width="1760" height="989" alt="The roster grid: staff down the side, days across, every booked zone a coloured chip, cover counted under each day" loading="lazy" decoding="async"></picture>
+    <div class="plate small"><img src="img/landing/view-fairness.webp" width="1000" height="756" alt="The Fairness view: each person's share of weekends, Friday and Monday evenings, as bars against the team average" loading="lazy" decoding="async"></div>
   </div>
 </div></section>
 
@@ -472,6 +472,8 @@ input:focus-visible{border-color:var(--accent)}
   setTimeout(sweep,3000); window.addEventListener("pageshow",sweep);
 })();
 </script>
+<script src="src/config/cloud.js"></script>
+<script>(function(){var v=document.getElementById("filmv");if(!v||typeof CLOUD==="undefined"||!CLOUD.url)return;var base=CLOUD.url+"/storage/v1/object/public/Videos-public/";var s=document.createElement("source");s.src=base+"film.mp4";s.type="video/mp4";v.appendChild(s);var t=document.createElement("track");t.kind="captions";t.src=base+"film.vtt";t.srclang="en";t.label="English";v.appendChild(t);var a=document.createElement("a");a.href=base+"film.mp4";a.textContent="Download the film.";v.appendChild(a);})();</script>
 <script>(function(){var p=document.querySelector(".player"),v=document.getElementById("filmv");if(!v)return;v.addEventListener("play",function(){p.classList.add("on")});v.addEventListener("pause",function(){p.classList.remove("on")});})();</script>
 </body>
 </html>

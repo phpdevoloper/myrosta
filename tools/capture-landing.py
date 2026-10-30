@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Capture the landing page's images from the demo, and the phone mock-up's screens for a pixel comparison.
 
-    python3 tools/capture-landing.py views              # writes deploy/view-roster.webp, deploy/view-roster-narrow.webp, deploy/view-fairness.webp
+    python3 tools/capture-landing.py views              # writes img/landing/view-roster.webp, view-roster-narrow.webp, view-fairness.webp (then run tools/build-deploy.py)
     python3 tools/capture-landing.py phone OUTDIR       # writes OUTDIR/phone-1.png ... one per screen of the mock-up, at 2x, in the app's fallback font
     python3 tools/capture-landing.py compare DIR_A DIR_B   # exit 1 if any screen differs by more than a hair
 
@@ -116,10 +116,10 @@ def views():
     try:
         png, rect = shoot(tmp, port, "roster", "demo.html", DEMO_SETUP % "roster", BOX % json.dumps(".card"), 1440, 900)
         l, t, w, h = rect
-        save_webp(crop2x(png, [0, 0, 1440, min(900, t + h + 28)]), DEPLOY / "view-roster.webp", 120 * 1024, width=1760)   # the app's own bar and tabs, down to just under the grid
-        save_webp(crop2x(png, [l, t, 390, min(h, 560)]), DEPLOY / "view-roster-narrow.webp", 60 * 1024, width=780)          # phones: names and the first days, 1:1 at 2x
+        save_webp(crop2x(png, [0, 0, 1440, min(900, t + h + 28)]), ROOT / "img" / "landing" / "view-roster.webp", 120 * 1024, width=1760)   # the app's own bar and tabs, down to just under the grid
+        save_webp(crop2x(png, [l, t, 390, min(h, 560)]), ROOT / "img" / "landing" / "view-roster-narrow.webp", 60 * 1024, width=780)          # phones: names and the first days, 1:1 at 2x
         png, rect = shoot(tmp, port, "equity", "demo.html", DEMO_SETUP % "equity", EQUITY_BOX, 1200, 1000)
-        save_webp(crop2x(png, rect), DEPLOY / "view-fairness.webp", 80 * 1024, width=1000)
+        save_webp(crop2x(png, rect), ROOT / "img" / "landing" / "view-fairness.webp", 80 * 1024, width=1000)
     finally:
         srv.shutdown(); shutil.rmtree(tmp, ignore_errors=True)
 

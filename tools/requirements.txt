@@ -1,0 +1,1 @@
+openpyxl>=3.1   # tools/group-files.py, leave-sim.py, roster-sim.py and the group-files test in tests/run.py
