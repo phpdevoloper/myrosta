@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /* ---------- wiring ---------- */
 function cycleRemovalNote(c,sid,shiftN){ const ciN=(c&&c.callins)?Object.keys(c.callins).filter(k=>{ const p=ciParse(k); return !!p&&p.sid===sid&&ciValid(c.callins[k]); }).length:0;

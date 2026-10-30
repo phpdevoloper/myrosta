@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /* ----- auth (cloud only) ----- */
 function domainOk(email){ const list=(CLOUD.allowedDomains||[]).map(d=>String(d).toLowerCase().trim()).filter(Boolean); if(!list.length)return true; const e=String(email).toLowerCase().trim(); const dom=(e.split("@")[1]||""); return list.some(x=> x.indexOf("@")>=0 ? e===x : (dom===x||dom.endsWith("."+x)) ); }

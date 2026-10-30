@@ -1,50 +1,5 @@
-﻿"use strict";
-
-/* ---------- defaults (clean — no demo data) ---------- */
-const LEAVE_CODES = ["AL","CME","UA","UPL","PH","LSL","Sab","PL","Other","Orientation","Vacant"];
-const LEAVE_LABEL = {AL:"Annual leave",CME:"CME leave",UA:"Unavailable",UPL:"Unplanned leave",PH:"Public holiday",LSL:"Long service leave",Sab:"Sabbatical",PL:"Private leave",Other:"Other",Orientation:"Orientation",Vacant:"Vacant"};
-const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-const TIC={share:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>',cal:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>',cst:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M7 9.5v4c0 1 2 2 5 2s5-1 5-2v-4"/></svg>',leave:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4"/></svg>',clock:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 1.8"/></svg>',target:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>',cme:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M12 6c-2.2-1.4-5-1.9-8-1.9v13.8c3 0 5.8.5 8 1.9 2.2-1.4 5-1.9 8-1.9V4.1c-3 0-5.8.5-8 1.9z"/><path d="M12 6v13.8"/></svg>',download:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg>',print:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>',lock:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',flag:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M5 21V4h11l-1.5 4 1.5 4H5"/></svg>',live:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4"/></svg>',chevL:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',chevR:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',chevD:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>',chevU:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M5 15l7-7 7 7"/></svg>',swap:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>',arrowUR:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>',holiday:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4M12 12l1.2 2.4 2.6.4-1.9 1.8.5 2.6L12 18l-2.4 1.2.5-2.6-1.9-1.8 2.6-.4z"/></svg>',check:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',x:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',edit:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17z"/></svg>',warn:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.5v.5"/></svg>',phone:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18h2"/></svg>',mail:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',chat:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 1 1 21 11.5z"/></svg>',reply:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>',help:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17v.5"/></svg>',clean:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M3 21l6-6M14 4l6 6-8 8-6-6z"/></svg>',scale:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M12 3v18M4 7h16M6 7l-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></svg>',bell:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',bellOff:'<svg viewBox="0 0 24 24" class="tic" aria-hidden="true"><path d="M18 8a6 6 0 0 0-9.3-5M6.3 6.3C6.1 6.8 6 7.4 6 8c0 7-3 9-3 9h14M13.7 21a2 2 0 0 1-3.4 0M3 3l18 18"/></svg>'};   // the stroke icon set (24-grid, 1.7 stroke). ic(name) renders one; chrome never uses emoji — they render differently on every device
-function ic(n){const s=TIC[n];return s?s:"";}   // an unknown name renders nothing rather than a broken glyph
-const PALETTE={"--navy":"#0F243A","--mark-am":"#4C86E8","--mark-pm":"#F2A638","--mark-cst":"#2FA86E","--am":"#E6EEFB","--am-t":"#2D5BA6","--pm":"#FBE9CE","--pm-t":"#8A5A12","--cst":"#E4F2E8","--cst-t":"#2F6B43","--locum":"#D6336C","--locum-t":"#A01F55","--neutral-2":"#F1F3F5","--muted":"#5A636E","--lv-al-bg":"#ECEAFB","--lv-al-t":"#5448A8","--lv-cme-bg":"#CFE7D5","--lv-cme-t":"#1C5733","--lv-lsl-bg":"#E7E9F1","--lv-lsl-t":"#4C5474","--lv-pl-bg":"#FBE6EE","--lv-pl-t":"#9B3D63","--lv-ua-bg":"#F8E2DB","--lv-ua-t":"#9E4A2E","--lv-upl-bg":"#EFE6DD","--lv-upl-t":"#6E5440","--lv-ph-bg":"#F6F2AC","--lv-ph-t":"#7E6410","--lv-other-bg":"#EEF0F2"};   // mirrors :root — tests/run.py fails if a value drifts. Only the HTML exporters read it (Excel cannot resolve var()); the DOM uses the tokens.
-const EIC={chat:'<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 1 1 21 11.5z"/></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',check:'<svg viewBox="0 0 24 24"><path d="M9 11l3 3 9-9"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',doc:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>',cal:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>',people:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-5-6.3"/></svg>',scale:'<svg viewBox="0 0 24 24"><path d="M12 3v18M6 21h12M5 7h14M5 7l-3 7h6l-3-7zM19 7l-3 7h6l-3-7z"/></svg>'};
-const NIC={
-  my:'<svg viewBox="0 0 24 24" class="nic"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4M8 14h4"/></svg>',
-  selfroster:'<svg viewBox="0 0 24 24" class="nic"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>',
-  roster:'<svg viewBox="0 0 24 24" class="nic"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>',
-  requests:'<svg viewBox="0 0 24 24" class="nic"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 1 1 21 11.5z"/></svg>',
-  setup:'<svg viewBox="0 0 24 24" class="nic"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
-  more:'<svg viewBox="0 0 24 24" class="nic"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>' };
-function emptyState(icon,title,sub){return `<div class="empty"><div class="empty-ic">${icon||""}</div><div class="empty-t">${escapeHTML(title)}</div>${sub?`<div class="empty-s">${escapeHTML(sub)}</div>`:""}</div>`;}
-
-function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");}
-function initialsFrom(name){
-  const p=name.split(",");
-  if(p.length>=2){return ((p[1].trim()[0]||"")+(p[0].trim()[0]||"")).toUpperCase();}
-  const w=name.trim().split(/\s+/);return w.map(x=>x[0]).join("").slice(0,2).toUpperCase();
-}
-function mondayOf(dt){const x=new Date(dt.getFullYear(),dt.getMonth(),dt.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x;}
-function defaultZones(){ return ["Resus","Acute","Fast track","Paeds"].map(n=>({id:slug(n),name:n,am:true,pm:true,pmLabel:""})); }   // a generic ED's four areas; one hospital's codes (ROC/RAP/PFT/ASAP) live only in that group's saved state
-function defaultState(){
-  // Clean organisation — no demo data. Populate by importing your roster + leave planner.
-  return {
-    zones:defaultZones(),
-    staffing:{amMin:3, amMax:4, pmMin:3, pmMax:4},
-    leaveCapEft:3,
-    fairness:"snake",
-    staff:[],
-    cycles:[{id:"cyc-1", cycle:{start:iso(mondayOf(new Date())), weeks:8}, assign:{}, status:"draft", archived:false}],
-    activeId:"cyc-1",
-    messages:[],
-    notifications:[],
-    requests:[],
-    leave:[],
-    audit:[],
-    viewAs:"admin",
-    tab:"setup"
-  };
-}
-
+"use strict";
+// moved from js/config.js lines 48-126 (Phase 1 split, no edits)
 /* ---------- persistence ---------- */
 const KEY="ed-roster-v1";
 const BUILD="2026-10-17";   // the date of CHANGELOG.md's latest heading — a lint keeps them equal
@@ -124,20 +79,3 @@ function stampBuildIfNew(){ if(inDemo()||!cloudOn())return; if(!devGet("seenBuil
 // existing single-org deployment does not orphan anyone's cached data.
 function orgKey(sfx){ try{ return KEY + ((typeof _org!=="undefined" && _org && _org!==CLOUD.org) ? (":"+_org) : "") + (sfx||""); }catch(e){ return KEY+(sfx||""); } }
 let S;
-// ===== Cloud (Supabase) config — leave url/key EMPTY for local-only mode. =====
-// Fill these in (Supabase project URL + anon public key) to switch the whole app
-// to shared cloud storage. See SUPABASE.md for the 5-minute setup.
-var CLOUD = { 
-  url: "https://rrgrwddxnjrixgkudsxx.supabase.co", 
-  key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZ3J3ZGR4bmpyaXhna3Vkc3h4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5MTU1NTUsImV4cCI6MjEwODQ5MTU1NX0.ycDDlk6d5bXLmnKGI1MwbRRcnL6iU7lHMERweXXH6kQ", 
-  org: "ed-default", 
-  adminEmails: ["mailtochalam@gmail.com"], 
-  allowedDomains: [], 
-  sso: { 
-    azure: false, 
-    google: false 
-  }, 
-    vapidPublic: "BF3eotweaRm_yi8aC4EfzeWJV_cdDO3gCMeuoLwJOHkoyK9nOIPtWzT8pbYEh8cAn3J7pKAogglsQLLlmZyRFgU" };   // sso: flip on AFTER configuring the provider in Supabase (see SUPABASE-SSO.md); session email flows through the same allow-list
-function cloudOn() { 
-  return !!(CLOUD.url && CLOUD.key); 
-}

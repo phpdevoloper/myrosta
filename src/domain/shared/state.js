@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 let authUser=null, authPhone=null, authState="local", _subscribed=false, _members=[], _otpEmail="", _otpPhone="", _otpSent=false, _otpChannel="email", _authMethod="sms", _realAdmin=false; // local | login | denied | in
 let _sharedDevice=false, _idleTimer=null, _idleBound=false; // "shared computer" mode = session-only login + idle auto-logout

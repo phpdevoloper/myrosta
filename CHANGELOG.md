@@ -1,5 +1,12 @@
 # Myrosta — changelog
 
+## 30 Oct 2026 — Code split into Clean Architecture folders (no behaviour change)
+
+- **`js/` (8 files) → `src/` (55 files)** in layers: `config/`, `domain/<feature>/`, `application/<feature>/`, `infrastructure/{supabase,local,push,files}/`, `presentation/<feature>/`, `main.js`. Move-only: every line copied byte for byte along the existing section headers, still classic scripts in the same load order (`app.html` lists them). `deploy/` mirrors `src/`; the landing page loads `src/config/cloud.js`. Layer rules, measured debts and the next phases: `docs/ARCHITECTURE.md`.
+- **Tests run on Windows.** `tests/run.py` reads the app from `app.html`'s tags (`tools/inline_app.py`) and, without `osascript`, runs it under Node with each file as its own script. Lints that could not run now report a failure instead of crashing the run.
+- **Single-file builds restored.** `preview.html`, `deploy/demo.html` and the staging copy are built from `tools/inline_app.py` (broken since the earlier move to `js/`).
+- **Gates:** the secrets gate read nothing on Windows (a decoding crash) and passed anyway; it now reads the diff as UTF-8, and so does the commit guard. Syntax and deploy-parity gates cover `src/`.
+
 ## 30 Oct 2026 — Repo slimmed, docs indexed (no app change)
 
 - **Removed** (about 22 MB, all still in git history at `64445e3`): the two non-refined videos in `media/` (the `*_refined` ones stay), the old `myrosta-deploy/` build, the generated `.staging/` and `graphify-out/`, `getlayers.json`, the film production files (`docs/film/`), the Word/PDF/PowerPoint exports (`docs/office/`) and the September build plans (`docs/superpowers/`). `.staging/` and `graphify-out/` are now gitignored.
