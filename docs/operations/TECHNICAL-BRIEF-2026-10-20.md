@@ -27,7 +27,7 @@ Myrosta lets a hospital department roster itself: an 8-week cycle, a booking rou
 
 ## The two incidents
 
-Both were booking rounds opened at 10:00 for 36 people, and both failed within minutes; the full write-up with log extracts is `docs/INCIDENT-2026-10-14-booking-storm.md` in the repository.
+Both were booking rounds opened at 10:00 for 36 people, and both failed within minutes; the full write-up with log extracts is `docs/operations/INCIDENT-2026-10-14-booking-storm.md` in the repository.
 
 | Date | What people saw | Root cause | Evidence |
 | --- | --- | --- | --- |
@@ -129,7 +129,7 @@ There is no staging environment yet; there is a local harness and a sandbox, and
 | `tests/run.py`, `tests/suite.js`, `tests/stubs.js` | The app suite and lints (JavaScriptCore) |
 | `tests/sql/` | The SQL harness, stand-ins for Supabase, 63 assertions |
 | `tools/storm.py` | The load test; `--savers` and `--refetchers` replay 16 October |
-| `docs/INCIDENT-2026-10-14-booking-storm.md` | Both incidents with log extracts and the fix runbook |
+| `docs/operations/INCIDENT-2026-10-14-booking-storm.md` | Both incidents with log extracts and the fix runbook |
 | `docs/superpowers/specs/2026-10-14-book-through-the-database-design.md` | The design decisions behind the booking call |
 | `SUPABASE.md`, `CHANGELOG.md` | Setup history and a dated change log |
 

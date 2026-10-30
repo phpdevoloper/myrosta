@@ -6,7 +6,7 @@
 -- roster_events and, finding none, books the old way), THEN run this file in the SQL editor,
 -- THEN open the app and check the About row under More reads "bookings go straight to the database".
 -- Spec: docs/superpowers/specs/2026-10-14-book-through-the-database-design.md
--- Incident: docs/INCIDENT-2026-10-14-booking-storm.md
+-- Incident: docs/operations/INCIDENT-2026-10-14-booking-storm.md
 --
 -- What this does, in one breath: a tap on the phone becomes ONE call to roster_commit(), which locks
 -- the group's row, checks the shift against the roster as it is at that instant (the zone, the half's

@@ -78,7 +78,7 @@ any of it is still there (it expires first).
 
 Before sharing: open each CSV and delete any column holding an IP address or a user agent if one is present; the
 `event_message` column (method, path, status, timing, error text) is what the reviewer needs. The write-up with the
-extracts already taken is `docs/INCIDENT-2026-10-14-booking-storm.md` in the repository.
+extracts already taken is `docs/operations/INCIDENT-2026-10-14-booking-storm.md` in the repository.
 
 ## 2. Repository access: a read-only mirror
 
@@ -214,7 +214,7 @@ to them and harmless here: the data is synthetic.
 
 Send the reviewer:
 
-- the technical brief (Word) and a pointer to `docs/INCIDENT-2026-10-14-booking-storm.md`
+- the technical brief (Word) and a pointer to `docs/operations/INCIDENT-2026-10-14-booking-storm.md`
 - the log CSVs from step 1
 - the staging project's URL and anon key (Project Settings → API), and the line to build their own copy of the app:
   `python3 tools/staging-app.py --url https://<ref>.supabase.co --key <anon key>` writes `.staging/app.html`; opened

@@ -4,7 +4,7 @@
     python3 tools/deidentify.py production-export.json --out ~/Desktop/myrosta-staging-seed \
         --keep-email you@example.com --admin engineer@example.com
 
-Input: the result of the export query in docs/STAGING-RUNBOOK.md — one JSON object with org_state, roster_members,
+Input: the result of the export query in docs/operations/STAGING-RUNBOOK.md — one JSON object with org_state, roster_members,
 orgs, hospitals and roster_events (the dashboard's JSON or CSV download of that one-row result is accepted as is).
 
 Output (in --out): one SQL file for the registry (hospitals, orgs, members), one SQL file per group (its events and
