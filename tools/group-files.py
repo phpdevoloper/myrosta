@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Myrosta group files: turn a manager's fortnight-grid workbook into the three files Myrosta imports, plus a settings checklist and a report.
+r"""Myrosta group files: turn a manager's fortnight-grid workbook into the three files Myrosta imports, plus a settings checklist and a report.
 
     python3 tools/group-files.py CONFIG.json [--out DIR] [--check] [--app PATH] [--compare ROSTER.csv]
         builds the files next to the config (or in DIR); --check then runs them through the app's own importers under
@@ -59,7 +59,7 @@ Config (JSON; paths relative to the config):
   board                a line for the Department board (optional)
   names                {"a name as the sheet writes it": "Surname, Given"}: the stored name, over the contacts and the sheet
 """
-import argparse, collections, datetime, json, os, pathlib, re, subprocess, sys, tempfile
+import argparse, collections, datetime, json, os, pathlib, re, shutil, subprocess, sys, tempfile
 
 try:
     import openpyxl
@@ -67,6 +67,8 @@ except ImportError:                                    # the self-test and every
     sys.exit("openpyxl is needed: python3 -m pip install openpyxl")
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO / "tools"))
+import inline_app   # the app lives in src/ (Oct 2026): its scripts, in load order
 SKIP_ROWS = r"^(Total|SHIFTS TO FILL|Line \d|AVAILABLE)"
 MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
 DOW = "Mon Tue Wed Thu Fri Sat Sun".split()                                # by date.weekday(); the app's export heads a day "Mon 26/10"
@@ -651,7 +653,8 @@ def check(cfg, out_dir, app_path=None, clashes=None, samples=None):
     app_path = pathlib.Path(app_path) if app_path else REPO / "app.html"
     stubs = app_path.resolve().parent / "tests" / "stubs.js"
     if not stubs.exists(): stubs = REPO / "tests" / "stubs.js"            # an app.html outside a checkout (deploy/app.html) runs with this repo's stubs
-    html = app_path.read_text(encoding="utf-8"); app = max(re.findall(r"<script>(.*?)</script>", html, re.S), key=len)
+    html = app_path.read_text(encoding="utf-8"); srcs = inline_app.script_files(html)
+    app = "\n".join(inline_app._read(app_path.resolve().parent, s) for s in srcs) if srcs else max(re.findall(r"<script>(.*?)</script>", html, re.S), key=len)
     pre = cfg["prefix"]; plan = type_plan(cfg); pick = lambda t: {"label": t["label"], "start": t["start"], "end": t["end"], "fills": fills_of(t)} if t else None
     data = {"start": cfg["cycle"]["start"], "weeks": int(cfg["cycle"]["weeks"]), "zones": cfg["zones"], "cover": cfg["cover"], "cst": bool((cfg.get("switches") or {}).get("cst")),
             "plan": {"am": pick(plan["am"]), "pm": pick(plan["pm"]), "add": [pick(t) for t in plan["add"]]}, "samples": samples,
@@ -660,7 +663,12 @@ def check(cfg, out_dir, app_path=None, clashes=None, samples=None):
     fd, jsf = tempfile.mkstemp(suffix=".js")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f: f.write(src)
-        o = subprocess.run(["osascript", "-l", "JavaScript", jsf], capture_output=True, text=True, timeout=120)
+        if shutil.which("osascript"): cmd = ["osascript", "-l", "JavaScript", jsf]
+        else:   # Windows / Linux: Node, with the same locale shim tests/run.py uses; vm keeps `this` as the global and returns the last value
+            shim = REPO / "tests" / "node-intl-shim.js"
+            cmd = ["node", "-e", "const vm=require('vm'),fs=require('fs');for(const p of process.argv.slice(1,-1))vm.runInThisContext(fs.readFileSync(p,'utf8'),{filename:p});"
+                   "process.stdout.write(String(vm.runInThisContext(fs.readFileSync(process.argv[process.argv.length-1],'utf8'),{filename:'check.js'})));"] + ([str(shim)] if shim.exists() else []) + [jsf]
+        o = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     except subprocess.TimeoutExpired: raise SystemExit("JavaScriptCore run did not finish in 120 s")
     finally: os.unlink(jsf)
     txt = (o.stdout or "").strip()

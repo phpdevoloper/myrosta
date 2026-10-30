@@ -1,5 +1,10 @@
 # Myrosta — changelog
 
+## 30 Oct 2026 — Test suite fully green on Windows; phones told about code-only releases again
+
+- **Phones were no longer told about a new build.** The newer-build check watches `app.html`'s ETag, and since the code moved into `css/` and `src/`, a change to those files alone left `app.html` unchanged. `tools/stamp.py` now stamps every script and stylesheet tag with `?v=<code hash>` (which also stops browsers running a cached file), and a `stamp` test fails when it is stale. `BUILD` moves to 2026-10-30 to match this release; no new What's new row, so nobody sees a popup.
+- **Tests: 1233 passed, 0 failed on Windows.** `tests/node-intl-shim.js` maps Node's newer locale data ("Sept", "Fri, 30 Oct") to the macOS reference the suite and the on-call golden file were written against; the app is unchanged. `tools/group-files.py` runs its self-test under Node and reads the app from `src/`; its docstring warning is gone. `tools/requirements.txt` lists `openpyxl`.
+
 ## 30 Oct 2026 — Clocking re-layered: the first feature on the Clean Architecture rule (no behaviour change)
 
 - **Clocking and own hours** now sit in their layers: pure rules in `src/domain/clocking/` (state and "now" passed in, nothing saved), use cases in `src/application/clocking/` (they save, redraw, toast, locate and commit only through `clockingPorts`), the device side in `src/infrastructure/device/clock-device.js`, the cards, sheets and poster in `src/presentation/clocking/`, and the wiring in `src/composition/clocking.js`. Every old name still works (thin wrappers), so nothing else changed. Unrelated functions that lived in the same file moved to their own homes: `instantBook…` to `application/settings/group-switches.js`, `?go=help` to `presentation/shell/deep-links.js`, `srHoursFor` to the self-roster view, `importShift` to the roster importer.

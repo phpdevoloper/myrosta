@@ -11,12 +11,17 @@ and executing it under JavaScriptCore (macOS `osascript -l JavaScript`).
 Exit code 0 = every assertion passed.
 """
 import re, subprocess, sys, tempfile, pathlib
+sys.stdout.reconfigure(encoding="utf-8")   # the suite prints arrows and dashes; a Windows console codepage would crash on them
 
 root = pathlib.Path(__file__).resolve().parent.parent
 target = (pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else root / "app.html")
-html = target.read_text(encoding="utf-8")
-blocks = re.findall(r"<script>(.*?)</script>", html, re.S)
-app = max(blocks, key=len)
+sys.path.insert(0, str(root / "tools"))
+import inline_app   # the app lives in src/ (Oct 2026); the lints and the engine read it inlined, as the browser sees it
+
+html_raw = target.read_text(encoding="utf-8")
+html = inline_app.inline(target)
+srcs = inline_app.script_files(html_raw)
+app = "\n".join(inline_app._read(target.parent, s) for s in srcs) if srcs else max(re.findall(r"<script>(.*?)</script>", html, re.S), key=len)
 
 golden = root / "tests" / "oncall-golden.js"   # what the per-zone on-call tick produced before it became a window — see the suite
 
@@ -32,16 +37,27 @@ def edge_src():
     return ("var ICSFN=(function(){\n" + ics + "\nreturn {buildICS:buildICS};})();\n" +
             "var REMINDFN=(function(){\n" + block + "\nreturn {reminderFor:reminderFor};})();\n")
 
-src = (root / "tests" / "stubs.js").read_text(encoding="utf-8") + app + "\n" + \
-      (golden.read_text(encoding="utf-8") + "\n" if golden.exists() else "") + edge_src() + \
-      (root / "tests" / "suite.js").read_text(encoding="utf-8")
+stubs = (root / "tests" / "stubs.js").read_text(encoding="utf-8")
+tail = (golden.read_text(encoding="utf-8") + "\n" if golden.exists() else "") + edge_src() + \
+       (root / "tests" / "suite.js").read_text(encoding="utf-8")
+src = stubs + app + "\n" + tail
 
-with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as f:
-    f.write(src)
-    path = f.name
+def _tmp(text, suffix=".js"):
+    with tempfile.NamedTemporaryFile("w", suffix=suffix, delete=False, encoding="utf-8") as f:
+        f.write(text)
+        return f.name
 
-import os
-out = subprocess.run(["osascript", "-l", "JavaScript", path], capture_output=True, text=True, env={**os.environ, "TZ": "Australia/Melbourne"})   # the group's clock: receipts, windows and daylight-saving checks read the same on any machine (22 Oct 2026: the suite ran abroad)
+import os, shutil, json
+if shutil.which("osascript"):
+    cmd = ["osascript", "-l", "JavaScript", _tmp(src)]
+else:   # Windows / Linux: Node. Each app file runs as its own script, as the browser loads them, so a file that needs a
+        # function from a later file at load time fails here too; vm keeps `this` as the global, as JavaScriptCore does
+    parts = [str(root / "tests" / "node-intl-shim.js"), _tmp(stubs)] + ([str(target.parent / s) for s in srcs] if srcs else [_tmp(app)]) + [_tmp(tail)]
+    cmd = ["node", "-e", "const vm=require('vm'),fs=require('fs'),ps=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));let r;"
+           "for(const p of ps){ try{ r=vm.runInThisContext(fs.readFileSync(p,'utf8').replace(/^\\uFEFF/,''),{filename:p}); }"
+           "catch(e){ console.log('ERROR loading '+p+': '+(e&&e.stack||e)); } }"
+           "process.stdout.write(String(r));", _tmp(json.dumps(parts), ".json")]
+out = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", env={**os.environ, "TZ": "Australia/Melbourne"})   # the group's clock: receipts, windows and daylight-saving checks read the same on any machine (22 Oct 2026: the suite ran abroad)
 text = (out.stdout or "") + (out.stderr or "")
 print(text.strip())
 
@@ -140,7 +156,9 @@ def _webp_size(path):
     if tag == b"VP8 ":
         return ((data[26] | (data[27] << 8)) & 0x3FFF, (data[28] | (data[29] << 8)) & 0x3FFF)
     return None
-MEDIA_HOST = "skpdqqhwrqgxsxawniho.supabase.co"   # the film and the chapters stream from the public "videos-public" bucket (12 Oct 2026); nothing else may be external
+_config_js = (root / "src" / "config" / "cloud.js").read_text(encoding="utf-8")
+_m = re.search(r'url:\s*"https://([^/"]+)"', _config_js)
+MEDIA_HOST = _m.group(1) if _m else ""   # derived from CLOUD.url in src/config/cloud.js — change the project there, not here
 
 def landing_lint():
     bad = []
@@ -173,7 +191,7 @@ def landing_lint():
         for href in re.findall(r'href="([^"]+)"', text):
             if href.startswith(("#", "mailto:", "https://fonts.", "https://myrosta.com.au", "data:", "https://" + MEDIA_HOST)): continue
             f = href.split("#")[0].split("?")[0].lstrip("/")
-            if f and not (root / "deploy" / f).exists(): bad.append(src + " links to a file the deployed site does not have: " + href)   # the site is served from deploy/
+            if f and not (root / f).exists() and not (root / "deploy" / f).exists(): bad.append(src + " links to a file the site does not have: " + href)   # the source tree is the site; generated pages (demo.html) exist only in deploy/
     ld = re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)
     if not ld: bad.append("JSON-LD block missing")
     elif "offers" in ld.group(1) or '"price"' in ld.group(1): bad.append("JSON-LD claims a price")
@@ -214,17 +232,17 @@ def landing_lint():
         if needs_size:   # declared numbers must match reality: the capture tool's crops can change shape when re-run
             local = [u for u in urls if u.split("?")[0].lower().endswith(".webp") and not u.startswith(("http", "data:", "//"))]
             if len(local) == 1:
-                f = root / "deploy" / local[0].lstrip("/")
+                f = root / local[0].lstrip("/")
                 real = _webp_size(f) if f.exists() else None
                 if real and real != (int(wm.group(1)), int(hm.group(1))):
                     bad.append("%s is %dx%d but the page declares %sx%s" % (local[0], real[0], real[1], wm.group(1), hm.group(1)))
     for u in sorted(imgs):
-        f = root / "deploy" / u
-        if not f.exists(): bad.append("image missing from deploy/: " + u); continue
+        f = root / u
+        if not f.exists(): bad.append("image missing: " + u); continue
         total += f.stat().st_size
         if f.stat().st_size > 120 * 1024: bad.append("%s is %d KB (budget 120)" % (u, f.stat().st_size // 1024))
     if total > 300 * 1024: bad.append("landing images total %d KB (budget 300)" % (total // 1024))
-    for need in ("view-roster.webp", "view-roster-narrow.webp", "view-fairness.webp"):
+    for need in ("img/landing/view-roster.webp", "img/landing/view-roster-narrow.webp", "img/landing/view-fairness.webp"):
         if need not in imgs: bad.append("the director's view does not show " + need)
     # every rule (anywhere, including inside @media — matched innermost) whose declarations set opacity:0 (not
     # opacity:0.x) must have EVERY comma-separated selector start with ".js " — .w{opacity:0} or a mixed selector
@@ -237,7 +255,7 @@ def landing_lint():
     for need in ("[data-r]", "prefers-reduced-motion", "setTimeout(sweep"):
         if need not in page: bad.append("motion: missing " + need)
     for name in ("privacy.html", "terms.html", "support.html", "thanks.html"):   # the small pages wear the same brand
-        f = root / "deploy" / name; t = f.read_text(encoding="utf-8") if f.exists() else ""
+        f = root / name; t = f.read_text(encoding="utf-8") if f.exists() else ""
         if re.search("e04b4b", t, re.I): bad.append(name + " still carries the old red (E04B4B)")
         if "family=Inter" in t or "family=Google+Sans+Flex" not in t: bad.append(name + " does not use the page's font")
     return bad
@@ -259,18 +277,26 @@ def demo_lint():
         if z not in seed: bad.append("demo seed is missing the zone " + z)
     return bad
 
-# 7b. the served copies: the site serves deploy/, so deploy/app.html must be app.html byte for byte, and preview.html is app.html
-#     with the cloud blanked (23 Sep 2026: a build reached main without this copy, and the live app kept the old date)
+# 7b. the served copies: the site serves deploy/, which tools/build-deploy.py builds from the source tree. Every served source
+#     file has an identical twin there (src/config/cloud.js aside: it carries the production project), nothing else is there
+#     but the generated demo, and preview.html is the inlined app with the cloud blanked (23 Sep 2026: a build reached main
+#     without this copy, and the live app kept the old date; 30 Oct 2026: deploy/ had drifted into the only copy of five files)
 def deploy_lint():
-    bad = []
-    app = (root / "app.html").read_text(encoding="utf-8")
-    d = root / "deploy" / "app.html"
-    if not d.exists() or d.read_text(encoding="utf-8") != app: bad.append("deploy/app.html differs from app.html — copy app.html over it")
-    m = re.search(r'const CLOUD=\{ url:"[^"]*", key:"[^"]*",', app)
-    if not m: bad.append("CLOUD line not found in app.html"); return bad
-    want = app.replace(m.group(0), 'const CLOUD={ url:"", key:"",', 1)
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_deploy", root / "tools" / "build-deploy.py"); bd = importlib.util.module_from_spec(spec); spec.loader.exec_module(bd)
+    bad, d = [], root / "deploy"
+    want = bd.served_files()
+    for rel in want:
+        if rel in bd.PER_ENV: continue
+        twin = d / rel
+        if not twin.exists() or twin.read_bytes() != (root / rel).read_bytes(): bad.append("deploy/" + rel + " differs from " + rel)
+    known = set(want) | set(bd.GENERATED)
+    for f in sorted(d.rglob("*")) if d.exists() else []:
+        if f.is_file() and f.relative_to(d).as_posix() not in known: bad.append("deploy/" + f.relative_to(d).as_posix() + " has no source (stale or hand-made)")
     pv = root / "preview.html"
-    if not pv.exists() or pv.read_text(encoding="utf-8") != want: bad.append("preview.html is not app.html with the cloud blanked")
+    if not pv.exists() or pv.read_text(encoding="utf-8") != inline_app.point_cloud(inline_app.inline(root / "app.html"), "", ""):
+        bad.append("preview.html is not the inlined app with the cloud blanked")
+    if bad: bad.append("run python tools/build-deploy.py")
     return bad
 
 # 7c. the group-files converter (tools/group-files.py): its self-test builds a synthetic manager workbook, writes the three
@@ -289,6 +315,37 @@ def group_files_lint():
         at = next((i for i, l in enumerate(lines) if "selftest:" in l), None)
         return lines[at:] if at is not None else (lines[-3:] or ["the self-test gave no output"])
     return []
+
+# 7c'. the layer rule (docs/ARCHITECTURE.md), enforced for each feature once it has been re-layered (clocking: 30 Oct 2026).
+#     Domain files are pure: no state, DOM, browser, saving or notifying. Application files reach the outside world only
+#     through their ports. Strings and comments are blanked first, so a word in a message is never mistaken for a call.
+LAYERED = {
+    "domain": ["src/domain/clocking"],
+    "application": ["src/application/clocking"],
+}
+LAYER_BANNED = {
+    "domain": ["S", "document", "window", "location", "navigator", "localStorage", "sessionStorage", "crypto", "active(", "isAdmin(",
+               "render(", "toast(", "save(", "notify(", "logAudit(", "commitGuarded(", "clockingPorts", "Date.now("],
+    "application": ["document", "window", "location", "navigator", "localStorage", "sessionStorage", "render(", "toast(", "save(",
+                    "download(", "commitGuarded(", "shiftLabel(", "clockLocate(", "clockNewKey("],
+}
+def _code_only(js):
+    js = re.sub(r"/\*.*?\*/", " ", js, flags=re.S)
+    js = re.sub(r"`(?:\\.|[^`\\])*`", "``", js, flags=re.S)
+    js = re.sub(r'"(?:\\.|[^"\\\n])*"', '""', js)
+    js = re.sub(r"'(?:\\.|[^'\\\n])*'", "''", js)
+    return re.sub(r"//[^\n]*", " ", js)
+def layering_lint():
+    bad = []
+    for layer, dirs in LAYERED.items():
+        for d in dirs:
+            for f in sorted((root / d).glob("*.js")):
+                code = _code_only(f.read_text(encoding="utf-8"))
+                for name in LAYER_BANNED[layer]:
+                    word = name.rstrip("(")
+                    pat = r"(?<![\w$.])" + re.escape(word) + (r"\s*\(" if name.endswith("(") else r"(?![\w$])")
+                    if re.search(pat, code): bad.append(f.relative_to(root).as_posix() + " uses " + name)
+    return bad
 
 # 7d. the de-identifier (tools/deidentify.py): its self-test runs a fake production export through it and checks that no name,
 #     email, phone, staff id or group slug survives anywhere in the SQL it would write, while the document keeps its shape.
@@ -412,6 +469,14 @@ def tab_wiring_lint(html_text):
 
 # 13. the newer-build check runs when the app comes back to the screen and on a slow interval (a phone on the home screen
 #     keeps the old script until it reloads — 14 Oct 2026)
+def stamp_lint():
+    """app.html's script and stylesheet tags carry the current ?v= code hash (tools/stamp.py): without it a change to src/ or
+    src/ alone leaves app.html unchanged, and _buildCheck never tells a phone to reload (30 Oct 2026)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("stamp", root / "tools" / "stamp.py"); mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+    raw = (root / "app.html").read_bytes().decode("utf-8")
+    return [] if mod.stamped(raw) == raw else ["app.html's ?v= stamp is stale — run python tools/stamp.py"]
+
 def build_check_lint(html_text):
     bad = []
     vis = [l for l in html_text.split("\n") if 'addEventListener("visibilitychange"' in l]
@@ -420,26 +485,35 @@ def build_check_lint(html_text):
     return bad
 
 LINTS = [
-    ("build: the newer-build check is wired to visibility and a slow interval", "build-check: problems", build_check_lint(html)),
-    ("wiring: a tab's own controls are wired in its own block", "wiring: controls rendered on a tab but wired elsewhere", tab_wiring_lint(html)),
-    ("keys: every booking-key handler carries the shift type", "keys: handlers that drop the type segment", pick_key_lint(html)),
-    ("build: BUILD and What's new match the changelog's latest heading", "build: problems", build_lint(html)),
-    ("audit: every logged action has a plain-word sentence", "audit: actions without a sentence", audit_words_lint(html)),
-    ("head: SheetJS is deferred and Inter is optional", "head: problems", head_lint(html)),
-    ("demo: deploy/demo.html is built from today's app and a fictional seed", "demo: problems", demo_lint()),
-    ("deploy: deploy/app.html is today's app, and preview.html the same with the cloud blanked", "deploy: problems", deploy_lint()),
-    ("group files: the converter's self-test round-trips its files through this app", "group files: problems", group_files_lint()),
-    ("de-identify: a fake export comes out with nothing identifying left and its shape intact", "de-identify: problems", deidentify_lint()),
-    ("landing: vocabulary, cast, size, links, form and mark are right", "landing: problems", landing_lint()),
-    ("icon: the brand mark bars are AM / PM / CST", "icon: brand mark still carries the RAG red", icon_lint(html)),
-    ("css: no emoji in buttons, notes, tags or banners", "css: emoji still used as chrome", button_emoji_lint(html)),
-    ("css: the retired small-label classes are gone", "css: retired small-label classes still used", retired_class_lint(html)),
-    ("css: hex literals only in :root and PALETTE", "css: hex literals outside :root / PALETTE", css_hex_lint(html)),
-    ("css: PALETTE mirrors :root", "css: PALETTE keys that differ from :root", palette_mirror_lint(html)),
-    ("css: every var(--x) reference is defined", "css: var() references with no definition and no fallback", css_token_lint(html)),
-    ("css: no font-size px literal outside :root", "css: font-size px literals outside :root", css_fontsize_lint(html)),
+    ("stamp: every code tag in app.html carries the current code hash", "stamp: problems", lambda: stamp_lint()),
+    ("build: the newer-build check is wired to visibility and a slow interval", "build-check: problems", lambda: build_check_lint(html)),
+    ("wiring: a tab's own controls are wired in its own block", "wiring: controls rendered on a tab but wired elsewhere", lambda: tab_wiring_lint(html)),
+    ("keys: every booking-key handler carries the shift type", "keys: handlers that drop the type segment", lambda: pick_key_lint(html)),
+    ("build: BUILD and What's new match the changelog's latest heading", "build: problems", lambda: build_lint(html)),
+    ("audit: every logged action has a plain-word sentence", "audit: actions without a sentence", lambda: audit_words_lint(html)),
+    ("head: SheetJS is deferred and Inter is optional", "head: problems", lambda: head_lint(html)),
+    ("demo: deploy/demo.html is built from today's app and a fictional seed", "demo: problems", lambda: demo_lint()),
+    ("deploy: deploy/app.html is today's app, and preview.html the same with the cloud blanked", "deploy: problems", lambda: deploy_lint()),
+    ("group files: the converter's self-test round-trips its files through this app", "group files: problems", lambda: group_files_lint()),
+    ("layers: re-layered features keep the dependency rule", "layers: a re-layered feature reaches past its layer", lambda: layering_lint()),
+    ("de-identify: a fake export comes out with nothing identifying left and its shape intact", "de-identify: problems", lambda: deidentify_lint()),
+    ("landing: vocabulary, cast, size, links, form and mark are right", "landing: problems", lambda: landing_lint()),
+    ("icon: the brand mark bars are AM / PM / CST", "icon: brand mark still carries the RAG red", lambda: icon_lint(html)),
+    ("css: no emoji in buttons, notes, tags or banners", "css: emoji still used as chrome", lambda: button_emoji_lint(html)),
+    ("css: the retired small-label classes are gone", "css: retired small-label classes still used", lambda: retired_class_lint(html)),
+    ("css: hex literals only in :root and PALETTE", "css: hex literals outside :root / PALETTE", lambda: css_hex_lint(html)),
+    ("css: PALETTE mirrors :root", "css: PALETTE keys that differ from :root", lambda: palette_mirror_lint(html)),
+    ("css: every var(--x) reference is defined", "css: var() references with no definition and no fallback", lambda: css_token_lint(html)),
+    ("css: no font-size px literal outside :root", "css: font-size px literals outside :root", lambda: css_fontsize_lint(html)),
 ]
-for ok_msg, fail_msg, bad in LINTS:
+def _run_lint(fn):
+    try:
+        return fn()
+    except Exception as e:   # a lint that cannot run is a failure to report, not a crash that hides every later lint
+        return ["lint crashed: %s: %s" % (type(e).__name__, e)]
+
+for ok_msg, fail_msg, fn in LINTS:
+    bad = _run_lint(fn)
     line = ("FAIL  " + fail_msg + " (" + str(len(bad)) + "): " + ", ".join(str(b) for b in bad[:12])) if bad else ("PASS  " + ok_msg)
     print(line); text += "\n" + line
 fails = [l for l in text.splitlines() if l.startswith("FAIL") or "ERROR" in l]
