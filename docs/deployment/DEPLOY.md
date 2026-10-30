@@ -39,6 +39,29 @@ This needs a **backend** (a shared database + simple login) because browsers can
 
 ---
 
+## Environments — dev vs production backend
+
+The app is static, so the Supabase project is baked into `src/config/cloud.js` (the `CLOUD` block). Two gitignored files at the repo root hold the values; copy `.dev_config.example` / `.prod_config.example` and fill them in (project URL, **anon** key, org, admin emails, VAPID public key — never the service key).
+
+| Command | Writes | Use for |
+|---|---|---|
+| `python tools/use-env.py dev` | `src/config/cloud.js` | local work / staging |
+| `python tools/use-env.py prod` | `src/config/cloud.js` and `deploy/src/config/cloud.js` | building `deploy/` for myrosta.com.au |
+| `python tools/use-env.py prod --check` | nothing; exit 1 if `deploy/src/config/cloud.js` differs from `.prod_config` | verify before shipping |
+
+Rules: never copy `src/config/cloud.js` into `deploy/` by hand (it holds the dev project); run `use-env.py prod` instead. The `env-config` gate in `.claude/myrousta-dlc/gates/run_gates.py` runs the `--check` on every release and blocks a commit if `deploy/` points at the wrong project. It only warns when `.prod_config` is missing or still has placeholders.
+
+---
+
+## Shipping a code change
+
+1. `python tools/build-deploy.py`. It stamps `app.html`'s tags with `?v=<code hash>` (phones learn about a new release from `app.html` changing), rebuilds `preview.html`, rewrites `deploy/` from the source tree with the production `cloud.js` from `.prod_config`, and builds `deploy/demo.html`. It refuses while `.prod_config` has placeholders; `--allow-dev` builds with the dev project for local checks only.
+2. Never edit `deploy/` by hand: change the source and rebuild. The `deploy` test fails on any difference.
+3. For an app release, bump `BUILD` in `src/infrastructure/local/persistence.js` to the date of the newest CHANGELOG heading (entries marked "(tools only)" or "(site only)" don't count).
+4. `python tests/run.py`. On Windows and Linux it needs Node and `pip install -r tools/requirements.txt`.
+
+---
+
 ## Important before using real staff data online
 - The data includes **mobile numbers and leave** — personal information. Keep it behind a **login** (Phase B) and check your hospital's **information-governance / IT security** rules first.
 - For a pilot with real data, prefer **hospital intranet hosting** (Option 3) over public hosting.
@@ -47,6 +70,6 @@ This needs a **backend** (a shared database + simple login) because browsers can
 ---
 
 ## Quick reference
-- **Use locally:** double-click `index.html`, or serve with `python3 serve.py` → http://localhost:4173
+- **Use locally:** double-click `index.html`, or serve with `python3 tools/serve.py` → http://localhost:4173
 - **Back up:** automatic — the cloud database keeps continuous point‑in‑time backups (no in‑app backup to manage).
 - **Start clean for a demo:** Admin settings → New organisation, then Import your cleaned roster + leave planner
