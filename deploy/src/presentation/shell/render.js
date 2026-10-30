@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 /* ---------- rendering ---------- */
 const TABS=[["setup","Settings","admin"],["staff","Staff","admin"],["roster","Roster","all"],["selfroster","Self-roster","all"],["daily","Daily","all"],["planner","Leave planner","all"],["equity","Equity","all"],["requests","Requests","all"],["my","My shifts","all"],["messages","Messages","all"],["help","Help","all"],["audit","Audit","admin"]];
