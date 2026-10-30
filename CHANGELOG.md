@@ -1,5 +1,11 @@
 # Myrosta — changelog
 
+## 30 Oct 2026 — Repo slimmed, docs indexed (no app change)
+
+- **Removed** (about 22 MB, all still in git history at `64445e3`): the two non-refined videos in `media/` (the `*_refined` ones stay), the old `myrosta-deploy/` build, the generated `.staging/` and `graphify-out/`, `getlayers.json`, the film production files (`docs/film/`), the Word/PDF/PowerPoint exports (`docs/office/`) and the September build plans (`docs/superpowers/`). `.staging/` and `graphify-out/` are now gitignored.
+- **Moved** the incident report, staging runbook and technical brief into `docs/operations/`, with links updated.
+- **New** `README.md` (layout, run, dev/prod config) and `docs/README.md` (every doc with a one-line purpose).
+
 ## 22 Oct 2026 — A de-identified staging copy for an outside reviewer (tools only)
 
 - **Run against the real export (22 Oct):** two defects the fixture had not reached. A member row named "Admin" was treated as a person, so the checker read every "admin" in the role column as a surviving name: a name made only of generic words is no longer a person, and keeps its own wording. And a call-in is keyed `day|zone|staffId`, so a staff id is not always the first segment of a key: keys are now scrubbed anywhere inside, like values. The mapping file also carries each person's real ids.
