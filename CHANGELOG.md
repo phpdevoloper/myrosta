@@ -1,5 +1,10 @@
 # Myrosta — changelog
 
+## 30 Oct 2026 — One source for the website; styles under presentation (tools only)
+
+- **`deploy/` had become the only copy of five files**: `terms.html`, `sw.js` (push notifications) and the landing page's four images existed nowhere else, and `privacy.html` / `support.html` in the source were older than the live ones. All are now in the source tree (the images in `img/landing/`), and **`tools/build-deploy.py`** writes `deploy/` from it: every served file, the production `cloud.js` from `.prod_config` (it refuses while that has placeholders, unless `--allow-dev`), the demo, and the `?v=` stamp. The `deploy` test now fails on any difference, or on a file in `deploy/` with no source.
+- **`css/` → `src/presentation/styles/`.** The entry pages, `manifest.json`, `sw.js` and `img/` stay where they are: posters, emails, search engines, the installed app and the push worker reach them by URL. Brand files that are never served moved to `brand/`. See `docs/ARCHITECTURE.md`, "Web root, styles and images".
+
 ## 30 Oct 2026 — Test suite fully green on Windows; phones told about code-only releases again
 
 - **Phones were no longer told about a new build.** The newer-build check watches `app.html`'s ETag, and since the code moved into `css/` and `src/`, a change to those files alone left `app.html` unchanged. `tools/stamp.py` now stamps every script and stylesheet tag with `?v=<code hash>` (which also stops browsers running a cached file), and a `stamp` test fails when it is stale. `BUILD` moves to 2026-10-30 to match this release; no new What's new row, so nobody sees a popup.
