@@ -1,0 +1,11 @@
+# MyRosta DEV config - read by tools/use-env.py. Not committed.
+# See .dev_config.example for key descriptions.
+
+SUPABASE_URL=https://rrgrwddxnjrixgkudsxx.supabase.co  # Supabase project URL (e.g. https://project-ref.supabase.co)
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZ3J3ZGR4bmpyaXhna3Vkc3h4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5MTU1NTUsImV4cCI6MjEwODQ5MTU1NX0.ycDDlk6d5bXLmnKGI1MwbRRcnL6iU7lHMERweXXH6kQ  # Public anon key (Project Settings → API, never the service key)
+ORG=ed-default  # Default organization name that staff belong to
+ADMIN_EMAILS=mailtochalam@gmail.com  # Comma-separated emails with admin access (can import/export data, configure cycles, manage SSO)
+ALLOWED_DOMAINS=  # Comma-separated allowed email domains (e.g. health.vic.gov.au). Empty = any domain allowed
+SSO_AZURE=false  # Enable Azure AD sign-in (requires Azure OAuth configured in Supabase first)
+SSO_GOOGLE=false  # Enable Google sign-in (requires Google OAuth configured in Supabase first)
+VAPID_PUBLIC=BF3eotweaRm_yi8aC4EfzeWJV_cdDO3gCMeuoLwJOHkoyK9nOIPtWzT8pbYEh8cAn3J7pKAogglsQLLlmZyRFgU  # Public key for web push notifications (never changes per project)

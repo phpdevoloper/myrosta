@@ -19,7 +19,11 @@
       "Bash(osascript -l JavaScript _test9.js)",
       "Bash(Get-ChildItem -Path \"c:\\\\xampp\\\\htdocs\\\\myrosta-review-main\" -Force)",
       "Bash(Select-Object Name, FullName)",
-      "PowerShell(Get-ChildItem -Recurse \"c:\\\\xampp\\\\htdocs\\\\myrosta-review-main\" -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })"
+      "PowerShell(Get-ChildItem -Recurse \"c:\\\\xampp\\\\htdocs\\\\myrosta-review-main\" -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\orchestrator\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\agents\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\skills\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\gates\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\hooks\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\templates\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\integration\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\workflows\" \"C:\\\\Users\\\\Arun\\\\.claude\\\\myrousta-dlc\\\\logs\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Arun\\.claude\\myrousta-dlc"
     ]
   }
 }
